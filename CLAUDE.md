@@ -84,7 +84,7 @@ packaging/package.sh        # dist/release: .deb, .rpm, tarball, PKGBUILD, SHA25
 ```
 
 Vydání: zvedni verzi v `pyproject.toml` a `src/repo_doctor/__init__.py`, doplň CHANGELOG
-a pushni tag `vX.Y.Z` – `.github/workflows/release.yml` sestaví, otestuje instalaci na
+a pushni tag `X.Y.Z` (bez `v`) – `.github/workflows/release.yml` sestaví, otestuje instalaci na
 distribucích, vytvoří GitHub Release a nasadí APT/RPM repozitář na Pages (secret
 `RELEASE_SIGNING_KEY`).
 

@@ -1,12 +1,12 @@
 name: Release
-# Vydání se spouští tagem `vX.Y.Z` (musí odpovídat verzi v pyproject.toml):
+# Vydání se spouští tagem `X.Y.Z` bez `v` (musí přesně odpovídat verzi v pyproject.toml):
 #   sestavení → test instalace na distribucích → GitHub Release → APT/RPM repozitář na Pages.
 # Nové verze se publikují do společného repozitáře Icenux (github.com/Luquas95/icenux), který si
 # nejnovější vydání vezme sám. Job `pages` plní starý samostatný repozitář repo-doctoru jen
 # přechodně: nese verzi, která uživatele přepne na Icenux. Po ní se job i packaging/repo.sh smažou.
 on:
   push:
-    tags: ["v*"]
+    tags: ["[0-9]*"]
 permissions:
   contents: read
 concurrency:
@@ -39,7 +39,7 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           version=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
-          test "$TAG" = "v$version" || { echo "Tag $TAG ≠ verze $version v pyproject.toml"; exit 1; }
+          test "$TAG" = "$version" || { echo "Tag $TAG ≠ verze $version v pyproject.toml"; exit 1; }
       - run: uv sync --locked --no-dev --group build
       - name: sestavení aplikace
         run: uv run --no-sync packaging/build.sh
