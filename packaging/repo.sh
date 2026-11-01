@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# PŘECHODNÉ (starý samostatný repozitář repo-doctoru; nové verze jdou do Icenux, viz release.yml).
 # Z balíčků vydání (dist/release, viz packaging/package.sh) vyrobí podepsaný APT a RPM
 # repozitář pro GitHub Pages do dist/site/:
 #   apt/  – plochý repozitář (Packages, Release, InRelease, Release.gpg)

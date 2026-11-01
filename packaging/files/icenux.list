@@ -1,0 +1,2 @@
+# Repozitář Icenux (přidal ho balíček repo-doctor) – nové verze přijdou s aktualizací systému.
+deb [signed-by=/usr/share/keyrings/icenux.asc] https://luquas95.github.io/icenux/apt ./

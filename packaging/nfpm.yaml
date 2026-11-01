@@ -1,6 +1,6 @@
 # Balíčky .deb a .rpm ze sestavené aplikace (dist/repo-doctor) – volá packaging/package.sh.
-# Balíček kromě aplikace přidá i repozitář repo-doctoru a jeho podpisový klíč, takže
-# další verze už přicházejí běžnou aktualizací systému (apt upgrade / dnf upgrade).
+# Balíček kromě aplikace při instalaci přidá společný repozitář Icenux a jeho podpisový klíč
+# (postinst.sh), takže další verze už přicházejí běžnou aktualizací systému.
 name: repo-doctor
 arch: amd64
 platform: linux
@@ -28,6 +28,9 @@ overrides:
     recommends: [xdg-utils, libnotify]
     suggests: [gitleaks, wl-clipboard]
 
+scripts:
+  postinstall: packaging/scripts/postinst.sh
+
 contents:
   - src: dist/repo-doctor/
     dst: /usr/lib/repo-doctor
@@ -44,22 +47,19 @@ contents:
     dst: /usr/lib/repo-doctor/install-kind
     packager: rpm
 
-  # APT repozitář + klíč
-  - src: src/repo_doctor/data/signing-key.asc
-    dst: /usr/share/keyrings/repo-doctor.asc
+  # zdroj balíčků Icenux: soubory leží vedle aplikace, na místo je dá packaging/scripts/postinst.sh
+  - src: packaging/files/icenux.asc
+    dst: /usr/lib/repo-doctor/icenux.asc
     packager: deb
-  - src: packaging/files/repo-doctor.list
-    dst: /etc/apt/sources.list.d/repo-doctor.list
-    type: config|noreplace
+  - src: packaging/files/icenux.list
+    dst: /usr/lib/repo-doctor/icenux.list
     packager: deb
-
-  # DNF repozitář + klíč
-  - src: src/repo_doctor/data/signing-key.asc
-    dst: /etc/pki/rpm-gpg/RPM-GPG-KEY-repo-doctor
+  # RPM: klíč Icenux (podpis metadat) + klíč vydání repo-doctoru (podpis .rpm)
+  - src: packaging/files/icenux-rpm.asc
+    dst: /usr/lib/repo-doctor/icenux-rpm.asc
     packager: rpm
-  - src: packaging/files/repo-doctor.repo
-    dst: /etc/yum.repos.d/repo-doctor.repo
-    type: config|noreplace
+  - src: packaging/files/icenux.repo
+    dst: /usr/lib/repo-doctor/icenux.repo
     packager: rpm
 
   - src: LICENSE

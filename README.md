@@ -96,7 +96,8 @@ Staženou binárku `u` (`--update`) aktualizuje na verzi připnutou v repo-docto
 
 ### Aktualizace
 
-- **.deb / .rpm:** balíček při instalaci přidá podepsaný repozitář repo-doctoru, takže nové
+- **.deb / .rpm:** balíček při instalaci přidá podepsaný repozitář
+  [Icenux](https://github.com/Luquas95/icenux) (společný pro mé aplikace), takže nové
   verze přijdou **s běžnou aktualizací systému** (`sudo apt update && sudo apt upgrade`,
   `sudo dnf upgrade` nebo grafické Aktualizace softwaru).
 - **AUR:** s aktualizací přes AUR helper (`yay -Syu`).
@@ -109,8 +110,8 @@ v offline režimu se nekontroluje. Ručně: `repo-doctor update --check`.
 ### Odinstalace
 
 ```sh
-sudo apt remove repo-doctor          # Debian/Ubuntu (odebere i repozitář repo-doctoru)
-sudo dnf remove repo-doctor          # Fedora
+sudo apt remove repo-doctor          # Debian/Ubuntu (repozitář Icenux zůstane, patří všem aplikacím)
+sudo dnf remove repo-doctor          # Fedora (repozitář Icenux zůstane)
 sudo pacman -R repo-doctor-bin       # Arch
 rm -rf ~/.local/lib/repo-doctor ~/.local/bin/repo-doctor   # tarball
 ```
