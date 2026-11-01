@@ -7,6 +7,8 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 ## [0.4.0] – 2026-11-01
 
 ### Změněno
+- **Tag vydání je číslo verze bez `v`** (`0.4.0`, ne `v0.4.0`): `release.yml` se spouští tagem začínajícím číslicí a
+  kontroluje, že se tag přesně shoduje s verzí v `pyproject.toml`. Starší tagy `v0.x.y` zůstávají.
 - **Repozitář balíčků je teď společný Icenux** (`luquas95.github.io/icenux`), ne samostatný
   repozitář repo-doctoru. Balíček `.deb`/`.rpm` při aktualizaci sám přepne zdroj a starý
   smaže; nic dělat nemusíš. Po `apt remove` zdroj Icenux zůstane (patří všem aplikacím).
