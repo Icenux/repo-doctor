@@ -275,7 +275,9 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   `Luquas95/icenux` na GitHub Pages, podepsaný (`InRelease`, `repomd.xml.asc`, RPM podepsané
   nfpm); icenux si hodinově bere nejnovější vydání aplikací z `apps.txt` a ověřuje podpis
   `SHA256SUMS`. Bez vlastní serverové infrastruktury, drží se jen poslední verze každé aplikace.
-  Soubory zdroje **nepatří balíčku**: zapisuje je `packaging/scripts/postinst.sh` (jen když chybí),
+  Metadata podepisuje samostatný klíč
+  Icenux (`keys/icenux.asc` v icenux), balíčky a `SHA256SUMS` dál klíč vydání repo-doctoru;
+  RPM `gpgkey` proto obsahuje oba. Soubory zdroje **nepatří balíčku**: zapisuje je `packaging/scripts/postinst.sh` (jen když chybí),
   protože by se jinak další aplikace Icenux s repo-doctorem tloukly o jednu cestu v dpkg.
   Po `apt remove` proto zdroj Icenux zůstane. Postinst zároveň maže starý samostatný
   repozitář repo-doctoru (`…/repo-doctor/apt`), jehož klíč s aktualizací zmizí. Ten web

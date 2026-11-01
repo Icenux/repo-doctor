@@ -48,11 +48,16 @@ contents:
     packager: rpm
 
   # zdroj balíčků Icenux: soubory leží vedle aplikace, na místo je dá packaging/scripts/postinst.sh
-  - src: src/repo_doctor/data/signing-key.asc
+  - src: packaging/files/icenux.asc
     dst: /usr/lib/repo-doctor/icenux.asc
+    packager: deb
   - src: packaging/files/icenux.list
     dst: /usr/lib/repo-doctor/icenux.list
     packager: deb
+  # RPM: klíč Icenux (podpis metadat) + klíč vydání repo-doctoru (podpis .rpm)
+  - src: packaging/files/icenux-rpm.asc
+    dst: /usr/lib/repo-doctor/icenux-rpm.asc
+    packager: rpm
   - src: packaging/files/icenux.repo
     dst: /usr/lib/repo-doctor/icenux.repo
     packager: rpm

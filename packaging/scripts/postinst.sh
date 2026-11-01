@@ -7,7 +7,7 @@
 set -e
 lib=/usr/lib/repo-doctor
 
-if [ -d /etc/apt/sources.list.d ]; then
+if [ -d /etc/apt/sources.list.d ] && [ -f "$lib/icenux.asc" ]; then
     install -d /usr/share/keyrings
     install -m 644 "$lib/icenux.asc" /usr/share/keyrings/icenux.asc
     [ -e /etc/apt/sources.list.d/icenux.list ] ||
@@ -18,9 +18,9 @@ if [ -d /etc/apt/sources.list.d ]; then
     fi
 fi
 
-if [ -d /etc/yum.repos.d ]; then
+if [ -d /etc/yum.repos.d ] && [ -f "$lib/icenux-rpm.asc" ]; then
     install -d /etc/pki/rpm-gpg
-    install -m 644 "$lib/icenux.asc" /etc/pki/rpm-gpg/RPM-GPG-KEY-icenux
+    install -m 644 "$lib/icenux-rpm.asc" /etc/pki/rpm-gpg/RPM-GPG-KEY-icenux
     [ -e /etc/yum.repos.d/icenux.repo ] ||
         install -m 644 "$lib/icenux.repo" /etc/yum.repos.d/icenux.repo
     old=/etc/yum.repos.d/repo-doctor.repo
