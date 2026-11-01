@@ -1,6 +1,9 @@
 name: Release
 # Vydání se spouští tagem `vX.Y.Z` (musí odpovídat verzi v pyproject.toml):
 #   sestavení → test instalace na distribucích → GitHub Release → APT/RPM repozitář na Pages.
+# Nové verze se publikují do společného repozitáře Icenux (github.com/Luquas95/icenux), který si
+# nejnovější vydání vezme sám. Job `pages` plní starý samostatný repozitář repo-doctoru jen
+# přechodně: nese verzi, která uživatele přepne na Icenux. Po ní se job i packaging/repo.sh smažou.
 on:
   push:
     tags: ["v*"]
@@ -90,10 +93,11 @@ jobs:
             deb)
               apt-get update -qq
               DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "$PWD/rel/repo-doctor_amd64.deb"
-              test -f /etc/apt/sources.list.d/repo-doctor.list ;;
+              test -f /etc/apt/sources.list.d/icenux.list
+              test -f /usr/share/keyrings/icenux.asc ;;
             rpm)
               dnf install -y -q rel/repo-doctor.x86_64.rpm
-              test -f /etc/yum.repos.d/repo-doctor.repo ;;
+              test -f /etc/yum.repos.d/icenux.repo ;;
             aur)
               pacman -Sy --noconfirm --needed base-devel git
               useradd -m builder && install -d -o builder /build
@@ -141,7 +145,7 @@ jobs:
             dist/release/repo-doctor-linux-x86_64.tar.gz dist/release/PKGBUILD \
             dist/release/SHA256SUMS dist/release/SHA256SUMS.asc
 
-  pages:
+  pages:  # PŘECHODNÉ – starý repozitář repo-doctoru, viz komentář nahoře
     needs: publish
     runs-on: ubuntu-24.04
     permissions:

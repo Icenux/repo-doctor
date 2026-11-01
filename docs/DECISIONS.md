@@ -269,12 +269,17 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
 - **Balíčky přes nfpm** z jedné konfigurace (`packaging/nfpm.yaml`). Aplikace v
   `/usr/lib/repo-doctor`, odkaz `/usr/bin/repo-doctor`. Značka `install-kind` vedle binárky
   (`deb`/`rpm`/`pacman`/`tarball`) říká aplikaci, jak radit s aktualizací.
-- **Aktualizace přes správce balíčků:** `.deb`/`.rpm` instalují zdroj repozitáře
-  (`/etc/apt/sources.list.d/repo-doctor.list`, `/etc/yum.repos.d/repo-doctor.repo`, oba
-  `config|noreplace`) a veřejný klíč. Repozitáře (plochý APT, createrepo_c) jsou na GitHub
-  Pages, podepsané (`InRelease`, `repomd.xml.asc`, RPM podepsané nfpm). Bez vlastní
-  serverové infrastruktury a bez další větve (Pages přes Actions artefakt) – drží se jen
-  poslední verze.
+- **Aktualizace přes správce balíčků:** `.deb`/`.rpm` přidají zdroj společného repozitáře
+  Icenux (`/etc/apt/sources.list.d/icenux.list`, `/etc/yum.repos.d/icenux.repo`) a jeho
+  veřejný klíč. Repozitář (plochý APT, createrepo_c) je v samostatném repu
+  `Luquas95/icenux` na GitHub Pages, podepsaný (`InRelease`, `repomd.xml.asc`, RPM podepsané
+  nfpm); icenux si hodinově bere nejnovější vydání aplikací z `apps.txt` a ověřuje podpis
+  `SHA256SUMS`. Bez vlastní serverové infrastruktury, drží se jen poslední verze každé aplikace.
+  Soubory zdroje **nepatří balíčku**: zapisuje je `packaging/scripts/postinst.sh` (jen když chybí),
+  protože by se jinak další aplikace Icenux s repo-doctorem tloukly o jednu cestu v dpkg.
+  Po `apt remove` proto zdroj Icenux zůstane. Postinst zároveň maže starý samostatný
+  repozitář repo-doctoru (`…/repo-doctor/apt`), jehož klíč s aktualizací zmizí. Ten web
+  ještě jednou dostane verzi s přepnutím (job `pages` v release.yml), potom se job smaže.
 - **Samoaktualizace jen pro tarball** (balíčky by tím obešly správce balíčků). Podpis
   `SHA256SUMS` se ověřuje přes `gpgv`/`gpg` jen proti klíči zabudovanému v aplikaci
   (otisk `update.FINGERPRINT`), tarball se rozbaluje s `filter="data"`, výměna složek je dvojí

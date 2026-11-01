@@ -1,2 +1,0 @@
-# Repozitář repo-doctoru (přidal ho balíček repo-doctor) – nové verze přijdou s aktualizací systému.
-deb [signed-by=/usr/share/keyrings/repo-doctor.asc] https://luquas95.github.io/repo-doctor/apt ./

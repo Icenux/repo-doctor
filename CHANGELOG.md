@@ -4,6 +4,11 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Změněno
+- **Repozitář balíčků je teď společný Icenux** (`luquas95.github.io/icenux`), ne samostatný
+  repozitář repo-doctoru. Balíček `.deb`/`.rpm` při aktualizaci sám přepne zdroj a starý
+  smaže; nic dělat nemusíš. Po `apt remove` zdroj Icenux zůstane (patří všem aplikacím).
+
 ### Přidáno
 - **Hygiena stromu a historie (#34, 1/4):** sedm nových kontrol, které nepotřebují síť
   a nespouštějí žádný kód z repa: `conflict-markers` (nevyřešené značky konfliktu),
