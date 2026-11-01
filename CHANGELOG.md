@@ -4,6 +4,8 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+## [0.4.0] – 2026-11-01
+
 ### Změněno
 - **Repozitář balíčků je teď společný Icenux** (`luquas95.github.io/icenux`), ne samostatný
   repozitář repo-doctoru. Balíček `.deb`/`.rpm` při aktualizaci sám přepne zdroj a starý
