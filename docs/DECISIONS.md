@@ -280,8 +280,9 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   RPM `gpgkey` proto obsahuje oba. Soubory zdroje **nepatří balíčku**: zapisuje je `packaging/scripts/postinst.sh` (jen když chybí),
   protože by se jinak další aplikace Icenux s repo-doctorem tloukly o jednu cestu v dpkg.
   Po `apt remove` proto zdroj Icenux zůstane. Postinst zároveň maže starý samostatný
-  repozitář repo-doctoru (`…/repo-doctor/apt`), jehož klíč s aktualizací zmizí. Ten web
-  ještě jednou dostane verzi s přepnutím (job `pages` v release.yml), potom se job smaže.
+  repozitář repo-doctoru (`…/repo-doctor/apt`), jehož klíč s aktualizací zmizí. Ten web dostal
+  naposledy verzi 0.4.0 s přepnutím a dál se neplní (job `pages` a `packaging/repo.sh` jsou smazané);
+  zůstává na posledním nasazeném stavu.
 - **Samoaktualizace jen pro tarball** (balíčky by tím obešly správce balíčků). Podpis
   `SHA256SUMS` se ověřuje přes `gpgv`/`gpg` jen proti klíči zabudovanému v aplikaci
   (otisk `update.FINGERPRINT`), tarball se rozbaluje s `filter="data"`, výměna složek je dvojí

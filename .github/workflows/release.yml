@@ -1,9 +1,8 @@
 name: Release
 # Vydání se spouští tagem `X.Y.Z` bez `v` (musí přesně odpovídat verzi v pyproject.toml):
-#   sestavení → test instalace na distribucích → GitHub Release → APT/RPM repozitář na Pages.
-# Nové verze se publikují do společného repozitáře Icenux (github.com/Luquas95/icenux), který si
-# nejnovější vydání vezme sám. Job `pages` plní starý samostatný repozitář repo-doctoru jen
-# přechodně: nese verzi, která uživatele přepne na Icenux. Po ní se job i packaging/repo.sh smažou.
+#   sestavení → test instalace na distribucích → GitHub Release.
+# APT/RPM repozitář se tu nenasazuje: společný repozitář Icenux (github.com/Luquas95/icenux)
+# si nejnovější vydání vezme sám.
 on:
   push:
     tags: ["[0-9]*"]
@@ -144,35 +143,3 @@ jobs:
             dist/release/repo-doctor_amd64.deb dist/release/repo-doctor.x86_64.rpm \
             dist/release/repo-doctor-linux-x86_64.tar.gz dist/release/PKGBUILD \
             dist/release/SHA256SUMS dist/release/SHA256SUMS.asc
-
-  pages:  # PŘECHODNÉ – starý repozitář repo-doctoru, viz komentář nahoře
-    needs: publish
-    runs-on: ubuntu-24.04
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          name: release
-          path: dist/release
-      - name: APT a RPM repozitář
-        env:
-          RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
-        run: |
-          sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq apt-utils createrepo-c
-          export GNUPGHOME="$RUNNER_TEMP/gnupg"
-          install -d -m 700 "$GNUPGHOME"
-          printf '%s\n' "$RELEASE_SIGNING_KEY" | gpg --batch --quiet --import
-          packaging/repo.sh
-      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
-      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
-        with:
-          path: dist/site
-      - id: deploy
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5

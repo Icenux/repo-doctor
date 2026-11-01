@@ -4,6 +4,10 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Odstraněno
+- Přechodný job `pages` ve `release.yml` a `packaging/repo.sh`: starý samostatný repozitář repo-doctoru
+  se už neplní, balíčky se publikují jen přes Icenux.
+
 ## [0.4.0] – 2026-11-01
 
 ### Změněno
