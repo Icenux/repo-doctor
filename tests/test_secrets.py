@@ -58,6 +58,50 @@ def test_negatives(line: str) -> None:
     assert scan_text(line, "app.py") == []
 
 
+SEQ_DIGITS = "".join(str(i) for i in range(10))
+SEQ_UP = "abcdefghijklmnopqrstuvwxyz"
+SEQ_DOWN = SEQ_UP[::-1]
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        'api_key = "123..."',
+        'api_key = "abc..."',
+        'api_key = "zxyx..."',
+        "OPENAI_API_KEY=" + "sk-" + "abc...xyz",
+        'api_key = "' + SEQ_DIGITS + SEQ_UP[:16] + '"',
+        'token: "' + SEQ_UP + '"',
+        'secret = "' + SEQ_DOWN + '"',
+        'api_key = "' + "sk" + "-" + SEQ_UP + SEQ_DIGITS + '"',
+        "key = " + "AK" + "IA" + SEQ_DIGITS + "ABCDEF",
+        "GH=" + "gh" + "p_" + SEQ_DIGITS * 4,
+        'token = "' + "zxyx" * 6 + '"',
+        "export API_KEY=" + SEQ_DIGITS * 2,
+    ],
+)
+def test_obviously_fake_values_are_not_findings(line: str) -> None:
+    assert scan_text(line, "docs/config.yml") == []
+
+
+def test_fake_filter_keeps_realistic_values() -> None:
+    # náhodné hodnoty z továrny se nesmí tvářit jako sekvence
+    for rule in ("aws-access-key", "github-token", "openai-key", "generic-secret"):
+        assert scan_text(ALL_FAKES[rule](), "config/app.env"), rule
+
+
+def test_has_sequence_and_periodic() -> None:
+    assert secrets_scan._has_sequence("xx123456yy")
+    assert secrets_scan._has_sequence("QPONMLk")
+    assert not secrets_scan._has_sequence("12345")  # pět znaků ještě není řada
+    assert not secrets_scan._has_sequence("abc123def456")
+    assert not secrets_scan._has_sequence("9a" * 10)
+    assert secrets_scan._is_periodic("zxyx" * 3)
+    assert secrets_scan._is_periodic("ab" * 5 + "a")
+    assert not secrets_scan._is_periodic("abcde")
+    assert not secrets_scan._is_periodic("k3Jd9sLq2Xv8")
+
+
 def test_excluded_paths() -> None:
     assert is_excluded_path("package-lock.json")
     assert is_excluded_path("tests/fixtures/keys.txt")

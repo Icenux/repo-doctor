@@ -4,6 +4,11 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Opraveno
+- Falešné nálezy tajemství (#74): zjevně vymyšlené hodnoty z dokumentace a testů (`sk-abc...xyz`,
+  `123...`, `1234567890abcdef`, `abcdefgh…`, `zyxwvut…`, `zxyxzxyx…`) se už nehlásí. Skener je pozná
+  podle výpustky `...`, řady 6 a více po sobě jdoucích znaků a krátce se opakujícího vzoru.
+
 ### Odstraněno
 - Přechodný job `pages` ve `release.yml` a `packaging/repo.sh`: starý samostatný repozitář repo-doctoru
   se už neplní, balíčky se publikují jen přes Icenux.

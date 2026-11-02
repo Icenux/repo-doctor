@@ -15,6 +15,7 @@ from collections import Counter
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from functools import lru_cache
+from itertools import pairwise
 from pathlib import Path, PurePosixPath
 
 from repo_doctor.gitwrap import Git, git_env, run_process
@@ -203,10 +204,47 @@ def is_excluded_path(path: str) -> bool:
     return any(part in FIXTURE_DIRS for part in p.parts[:-1])
 
 
+SEQUENCE_RUN = 6  # tolik po sobě jdoucích znaků (123456, abcdef, zyxwvu) už není náhoda
+MAX_PERIOD = 4  # opakující se vzor typu zxyxzxyx…
+
+
+def _has_sequence(value: str) -> bool:
+    """Obsahuje souvislou vzestupnou či sestupnou řadu písmen nebo číslic (bez rozlišení velikosti)."""
+    lowered = value.lower()
+    run = 1
+    step = 0
+    for prev, cur in pairwise(lowered):
+        diff = ord(cur) - ord(prev)
+        same_class = prev.isalnum() and cur.isalnum() and prev.isdigit() == cur.isdigit()
+        if diff in (1, -1) and same_class:
+            run = run + 1 if diff == step else 2
+            step = diff
+        else:
+            run, step = 1, 0
+        if run >= SEQUENCE_RUN:
+            return True
+    return False
+
+
+def _is_periodic(value: str) -> bool:
+    n = len(value)
+    if n < 2 * MAX_PERIOD:
+        return False
+    for period in range(1, MAX_PERIOD + 1):
+        if all(value[i] == value[i - period] for i in range(period, n)):
+            return True
+    return False
+
+
+def _is_obvious_fake(value: str) -> bool:
+    """Zjevně vymyšlená hodnota z dokumentace a testů: `sk-abc...xyz`, `1234567890`, `abcdefgh`, `zxyxzxyx`."""
+    return "..." in value or "…" in value or _has_sequence(value) or _is_periodic(value)
+
+
 def _looks_placeholder(value: str) -> bool:
     if PLACEHOLDER.search(value):
         return True
-    return len(set(value)) <= 3
+    return len(set(value)) <= 3 or _is_obvious_fake(value)
 
 
 FINGERPRINT_SALT = b"repo-doctor/secret-fingerprint/v2"
@@ -234,6 +272,8 @@ PLACEHOLDER_RULES = {
     "aws-secret-key",
     "openai-key",
 }
+# Hlavička privátního klíče je pevný text, ne hodnota k posouzení.
+NO_FAKE_FILTER = {"private-key"}
 DEFAULT_DB_PASSWORDS = {
     "postgres",
     "password",
@@ -251,6 +291,8 @@ def _first_match(rule: Rule, line: str) -> str | None:
     for m in rule.pattern.finditer(line):
         value = m.group(rule.group)
         if rule.id in PLACEHOLDER_RULES and _looks_placeholder(value):
+            continue
+        if rule.id not in NO_FAKE_FILTER and _is_obvious_fake(value):
             continue
         if rule.id == "connection-string" and value.lower() in DEFAULT_DB_PASSWORDS:
             continue
