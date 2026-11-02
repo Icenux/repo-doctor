@@ -602,3 +602,29 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   a u jobu je řádek „↳ po …“ – spojnice by musely vést přes jiné uzly.
 - **Widget `PipelineView`** kreslí do mřížky znaků (box-drawing, spojnice skládané z bitových masek směrů)
   a animuje spinner jen když něco běží. Vzhled je aproximace GitHub Actions v terminálu, ne kopie.
+
+## Zásada: žádné další programy; oprava zranitelných závislostí (#71)
+
+- **Zásada:** repo-doctor se instaluje z balíčku a musí fungovat hned, stačí `git`. Nesmí vyžadovat
+  ani spouštět `uv`, `npm`, `pip`, `cargo`… První verze opravy (#71) volala `uv lock` / `npm update`
+  v dočasné složce – zamítnuto, protože uživatel by musel nástroj doinstalovat (přesně to issue kritizuje)
+  a spouštění programů nad cizím repem je navíc bezpečnostní riziko (konfigurace, env, git/URL závislosti).
+  Zásada je v `CLAUDE.md` a hlídá ji `tests/test_no_external_tools.py` (kdo smí spouštět procesy,
+  které programy jsou volitelné, zákaz správců balíčků).
+- **Čistě Pythonový přepis lockfilu (`lockfiles/`):** změní se jen verze jednoho balíčku; verze, odkaz
+  a hash se berou z PyPI JSON API / npm registru (`HttpRegistry`, sdílí cache a síťová pravidla).
+  Ruční přepis je jinak nebezpečný (hashe, strom závislostí), proto **odmítá**, co neumí bezpečně: nová
+  verze s jinými závislostmi, omezení jiného balíčku (npm: mini-semver `lockfiles/semver.py`; uv:
+  `requires_dist` závislých balíčků z PyPI), jiný než veřejný registr, neobvyklé formátování, větve řešení
+  a `exclude-newer` v `uv.lock`, alias/workspace v npm, změna instalačních skriptů, zastaralé vydání.
+- **Ověření formátu `uv.lock`:** před zápisem se z metadat **staré** verze vykreslí její `sdist` a `wheels`
+  (pořadí podle názvu souboru, výběr podle `requires-python`, čas zkrácený na milisekundy) a musí to
+  přesně sedět na to, co v lockfilu je. Tak se nikdy nezapíše tvar, který neumíme zreprodukovat.
+  Fixtury v `tests/fixtures/lockfiles` jsou skutečné výstupy `uv lock` a `npm install --package-lock-only`
+  (verze připnuté `--upgrade-package X==Y`); test vyžaduje shodu textu.
+- **Cílová verze:** `deps.fixed_in` bere z OSV (`affected[].ranges[].events[].fixed`) u každé zranitelnosti
+  nejnižší opravenou verzi vyšší než současná a z nich nejvyšší. Nález je `fixable`, když opravená verze
+  existuje a lockfile je podporovaný (závisí jen na datech, ne na programech v `PATH`); v nálezu je
+  `package`, `version`, `fixed_in`, aby léčba nepotřebovala síťová data skenu.
+- **Mimo rozsah:** Cargo, Go, yarn, pnpm, poetry, npm lockfileVersion 1–2 – zatím ruční postup. Odmítnutou
+  opravu léčba nenabídne (důvody odmítnutí jdou jen do poznámek úspěšné opravy).

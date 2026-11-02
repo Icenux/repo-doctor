@@ -1,0 +1,34 @@
+{
+ "info": {
+  "requires_dist": null,
+  "version": "3.4"
+ },
+ "urls": [
+  {
+   "digests": {
+    "blake2b_256": "fc343030de6f1370931b9dbb4dad48f6ab1015ab1d32447850b9fc94e60097be",
+    "md5": "7ab9782a3a1180cfa1fef20a1c9c166c",
+    "sha256": "90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"
+   },
+   "filename": "idna-3.4-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "size": 61538,
+   "upload_time_iso_8601": "2022-09-14T00:24:23.220218Z",
+   "url": "https://files.pythonhosted.org/packages/fc/34/3030de6f1370931b9dbb4dad48f6ab1015ab1d32447850b9fc94e60097be/idna-3.4-py3-none-any.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "8be143beb3d38dba6cb420cefa297822eac205a277ab43e5ba5d5c46faf96438",
+    "md5": "13ea24e076212b6baae1135a116d1e0e",
+    "sha256": "814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4"
+   },
+   "filename": "idna-3.4.tar.gz",
+   "packagetype": "sdist",
+   "size": 183077,
+   "upload_time_iso_8601": "2022-09-14T00:24:27.719798Z",
+   "url": "https://files.pythonhosted.org/packages/8b/e1/43beb3d38dba6cb420cefa297822eac205a277ab43e5ba5d5c46faf96438/idna-3.4.tar.gz",
+   "yanked": false
+  }
+ ]
+}

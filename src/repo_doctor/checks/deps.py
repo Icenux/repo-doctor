@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from repo_doctor import lockfiles
 from repo_doctor.checks.base import Check, RepoContext, SkipCheck, register
+from repo_doctor.deps import fixed_in
 from repo_doctor.i18n import N_, _
-from repo_doctor.models import Category, Finding, Severity
+from repo_doctor.models import Category, FileChange, Finding, Patch, Severity
 
 if TYPE_CHECKING:
     from repo_doctor.deps import DepsData
@@ -27,6 +29,7 @@ class DepsVulnerable(Check):
     severity = Severity.HIGH
     category = Category.SECURITY
     network = True
+    fixable = True  # jen nálezy s opravenou verzí v podporovaném lockfilu (viz `can_fix`)
 
     def run(self, repo: RepoContext) -> list[Finding]:
         deps = _require_network(repo)
@@ -36,16 +39,82 @@ class DepsVulnerable(Check):
             ids = ", ".join(v.id for v in vulns[:6]) + (
                 f" (+{len(vulns) - 6})" if len(vulns) > 6 else ""
             )
+            fixed = fixed_in(dep, vulns)
+            can_fix = (
+                fixed is not None
+                and lockfiles.valid_target(dep.name, fixed)
+                and lockfiles.supported(dep.source)
+            )
             findings.append(
                 self.finding(
                     f"{dep.name} {dep.version} ({dep.ecosystem}): {ids}",
                     severity=worst,
                     path=dep.source,
                     key=f"{dep.ecosystem}:{dep.name}:{dep.version}",
+                    fixable=can_fix,
                     vulns=[v.id for v in vulns],
+                    package=dep.name,
+                    version=dep.version,
+                    fixed_in=fixed or "",
                 )
             )
         return findings
+
+    def fix(self, repo: RepoContext, findings: list[Finding]) -> Patch | None:
+        """Přepíše verze zranitelných závislostí v lockfilech (čistě v Pythonu, bez dalších nástrojů)."""
+        head = repo.git.head_sha()
+        if head is None:
+            return None
+        grouped: dict[str, list[lockfiles.Target]] = {}
+        for f in findings:
+            lock, name, version, fixed = (
+                f.location.path,
+                f.data.get("package"),
+                f.data.get("version"),
+                f.data.get("fixed_in"),
+            )
+            if not (
+                lock
+                and isinstance(name, str)
+                and isinstance(version, str)
+                and isinstance(fixed, str)
+            ):
+                continue
+            grouped.setdefault(lock, []).append(lockfiles.Target(name, version, fixed))
+        changes: list[FileChange] = []
+        notes: list[str] = []
+        upgraded: list[str] = []
+        for lock, targets in sorted(grouped.items()):
+            update = lockfiles.update_lock(repo.git, head, lock, targets)
+            if update.error:
+                notes.append(
+                    _("{lock}: aktualizace se nepovedla ({error})").format(
+                        lock=lock, error=update.error
+                    )
+                )
+                continue
+            for name, (old, new) in sorted(update.upgraded.items()):
+                upgraded.append(f"{name} {old}→{new}")
+            notes.extend(
+                _("{lock}: {dep} zůstává na zranitelné verzi ({reason}) – uprav ručně").format(
+                    lock=lock, dep=dep, reason=reason
+                )
+                for dep, reason in update.unresolved
+            )
+            if update.content is not None:
+                changes.append(
+                    FileChange(path=lock, action="replace", content=update.content, old=update.old)
+                )
+        if not changes:
+            return None
+        notes.append(_("Po mergi spusť testy projektu – aktualizace mohou změnit chování."))
+        return Patch(
+            check_id=self.id,
+            title=_("Aktualizovat zranitelné závislosti"),
+            summary=", ".join(upgraded),
+            changes=changes,
+            notes=notes,
+        )
 
 
 @register

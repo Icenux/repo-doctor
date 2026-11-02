@@ -42,6 +42,8 @@ class Vuln:
     id: str
     severity: Severity
     summary: str = ""
+    # opravené verze podle OSV: (ekosystém, normalizovaný název balíčku) → verze s opravou
+    fixed: dict[tuple[str, str], list[str]] = field(default_factory=dict)
 
 
 @dataclass
@@ -545,7 +547,54 @@ async def osv_details(client: HttpClient, vuln_id: str, *, ttl: float) -> Vuln:
         return Vuln(vuln_id, Severity.MEDIUM)
     sev_raw = str((body.get("database_specific") or {}).get("severity", "")).upper()
     severity = SEVERITY_MAP.get(sev_raw, Severity.MEDIUM)
-    return Vuln(vuln_id, severity, str(body.get("summary", ""))[:200])
+    return Vuln(vuln_id, severity, str(body.get("summary", ""))[:200], _fixed_versions(body))
+
+
+def _fixed_versions(body: dict[str, Any]) -> dict[tuple[str, str], list[str]]:
+    """Verze, ve kterých je zranitelnost opravená (události `fixed` v rozsazích `affected`)."""
+    result: dict[tuple[str, str], list[str]] = {}
+    for affected in body.get("affected") or []:
+        pkg = affected.get("package") or {}
+        eco, name = str(pkg.get("ecosystem") or ""), str(pkg.get("name") or "")
+        if not eco or not name:
+            continue
+        for rng in affected.get("ranges") or []:
+            if rng.get("type") not in ("ECOSYSTEM", "SEMVER"):
+                continue
+            for event in rng.get("events") or []:
+                fixed = event.get("fixed")
+                if fixed:
+                    result.setdefault((eco, norm_name(eco, name)), []).append(str(fixed))
+    return result
+
+
+def norm_name(ecosystem: str, name: str) -> str:
+    return _norm_py(name) if ecosystem == "PyPI" else name
+
+
+def fixed_in(dep: Dependency, vulns: list[Vuln]) -> str | None:
+    """Nejnižší verze, která opravuje všechny zranitelnosti závislosti, kde oprava existuje.
+
+    U každé zranitelnosti se bere nejnižší opravená verze vyšší než ta současná (jiná větev
+    vydání téže řady opravená být nemusí); výsledek je nejvyšší z nich. `None` = oprava neexistuje.
+    """
+    try:
+        current = Version(dep.version)
+    except InvalidVersion:
+        return None
+    key = (dep.ecosystem, norm_name(dep.ecosystem, dep.name))
+    targets: list[tuple[Version, str]] = []
+    for vuln in vulns:
+        candidates: list[tuple[Version, str]] = []
+        for raw in vuln.fixed.get(key, []):
+            try:
+                candidates.append((Version(raw), raw))
+            except InvalidVersion:
+                continue
+        higher = [c for c in candidates if c[0] > current]
+        if higher:
+            targets.append(min(higher))
+    return max(targets)[1] if targets else None
 
 
 def compare_versions(current: str, latest: str) -> Literal["major", "minor", "patch"] | None:

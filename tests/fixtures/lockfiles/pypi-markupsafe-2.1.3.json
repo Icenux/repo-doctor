@@ -1,0 +1,788 @@
+{
+ "info": {
+  "requires_dist": null,
+  "version": "2.1.3"
+ },
+ "urls": [
+  {
+   "digests": {
+    "blake2b_256": "201d713d443799d935f4d26a4f1510c9e61b1d288592fb869845e5cc92a1e055",
+    "md5": "c0046b6c7978870f1ee687abacf401d9",
+    "sha256": "cd0f502fe016460680cd20aaa5a76d241d6f35a1c3350c474bac1273803893fa"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-macosx_10_9_universal2.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17846,
+   "upload_time_iso_8601": "2023-06-02T21:42:33.954412Z",
+   "url": "https://files.pythonhosted.org/packages/20/1d/713d443799d935f4d26a4f1510c9e61b1d288592fb869845e5cc92a1e055/MarkupSafe-2.1.3-cp310-cp310-macosx_10_9_universal2.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "f79c86cbd8e0e1d81f0ba420f20539dd459c50537c7751e28102dbfee2b6f28c",
+    "md5": "560298cd53c1b1a6dab03cc6f2856741",
+    "sha256": "e09031c87a1e51556fdcb46e5bd4f59dfb743061cf93c4d6831bf894f125eb57"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-macosx_10_9_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 13720,
+   "upload_time_iso_8601": "2023-06-02T21:42:35.102828Z",
+   "url": "https://files.pythonhosted.org/packages/f7/9c/86cbd8e0e1d81f0ba420f20539dd459c50537c7751e28102dbfee2b6f28c/MarkupSafe-2.1.3-cp310-cp310-macosx_10_9_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "a656f1d4ee39e898a9e63470cbb7fae1c58cce6874f25f54220b89213a47f273",
+    "md5": "da1c181a47508ac854e29980e6ad9cb1",
+    "sha256": "68e78619a61ecf91e76aa3e6e8e33fc4894a2bebe93410754bd28fce0a8a4f9f"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 26498,
+   "upload_time_iso_8601": "2023-06-02T21:42:36.608709Z",
+   "url": "https://files.pythonhosted.org/packages/a6/56/f1d4ee39e898a9e63470cbb7fae1c58cce6874f25f54220b89213a47f273/MarkupSafe-2.1.3-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "12b3d9ed2c0971e1435b8a62354b18d3060b66c8cb1d368399ec0b9baa7c0ee5",
+    "md5": "222b1015c56628a73fc54c601b78758c",
+    "sha256": "65c1a9bcdadc6c28eecee2c119465aebff8f7a584dd719facdd9e825ec61ab52"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 25691,
+   "upload_time_iso_8601": "2023-06-02T21:42:37.778995Z",
+   "url": "https://files.pythonhosted.org/packages/12/b3/d9ed2c0971e1435b8a62354b18d3060b66c8cb1d368399ec0b9baa7c0ee5/MarkupSafe-2.1.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "bfb7c5ba9b7ad9ad21fc4a60df226615cf43ead185d328b77b0327d603d00cc5",
+    "md5": "9eec4edc6dcbe1394d77b05d49e65027",
+    "sha256": "525808b8019e36eb524b8c68acdd63a37e75714eac50e988180b169d64480a00"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 25366,
+   "upload_time_iso_8601": "2023-06-02T21:42:39.441001Z",
+   "url": "https://files.pythonhosted.org/packages/bf/b7/c5ba9b7ad9ad21fc4a60df226615cf43ead185d328b77b0327d603d00cc5/MarkupSafe-2.1.3-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "7161f5673d7aac2cf7f203859008bb3fc2b25187aa330067c5e9955e5c5ebbab",
+    "md5": "fedc48e362eff2b03037a15156c4f7f8",
+    "sha256": "962f82a3086483f5e5f64dbad880d31038b698494799b097bc59c2edf392fce6"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-musllinux_1_1_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 30505,
+   "upload_time_iso_8601": "2023-06-02T21:42:41.088135Z",
+   "url": "https://files.pythonhosted.org/packages/71/61/f5673d7aac2cf7f203859008bb3fc2b25187aa330067c5e9955e5c5ebbab/MarkupSafe-2.1.3-cp310-cp310-musllinux_1_1_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "4726932140621773bfd4df3223fbdd9e78de3477f424f0d2987c313b1cb655ff",
+    "md5": "f058ba62144436634b2206728371a425",
+    "sha256": "aa7bd130efab1c280bed0f45501b7c8795f9fdbeb02e965371bbef3523627779"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-musllinux_1_1_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 29616,
+   "upload_time_iso_8601": "2023-06-02T21:42:42.273459Z",
+   "url": "https://files.pythonhosted.org/packages/47/26/932140621773bfd4df3223fbdd9e78de3477f424f0d2987c313b1cb655ff/MarkupSafe-2.1.3-cp310-cp310-musllinux_1_1_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "3cc874d13c999cbb49e3460bf769025659a37ef4a8e884de629720ab4e42dcdb",
+    "md5": "d47263f5c6ceefe9a25a2b83d6c4709a",
+    "sha256": "c9c804664ebe8f83a211cace637506669e7890fec1b4195b505c214e50dd4eb7"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-musllinux_1_1_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 29891,
+   "upload_time_iso_8601": "2023-06-02T21:42:43.635400Z",
+   "url": "https://files.pythonhosted.org/packages/3c/c8/74d13c999cbb49e3460bf769025659a37ef4a8e884de629720ab4e42dcdb/MarkupSafe-2.1.3-cp310-cp310-musllinux_1_1_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "96e44db3b1abc5a1fe7295aa0683eafd13832084509c3b8236f3faf8dd4eff75",
+    "md5": "95f160db6becc10994e2f3f991fde95e",
+    "sha256": "10bbfe99883db80bdbaff2dcf681dfc6533a614f700da1287707e8a5d78a8431"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 16525,
+   "upload_time_iso_8601": "2023-06-02T21:42:45.271664Z",
+   "url": "https://files.pythonhosted.org/packages/96/e4/4db3b1abc5a1fe7295aa0683eafd13832084509c3b8236f3faf8dd4eff75/MarkupSafe-2.1.3-cp310-cp310-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "84a8c4aebb8a14a1d39d5135eb8233a0b95831cdc42c4088358449c3ed657044",
+    "md5": "d88c2dcfc740b1358aaa14280da50133",
+    "sha256": "1577735524cdad32f9f694208aa75e422adba74f1baee7551620e43a3141f559"
+   },
+   "filename": "MarkupSafe-2.1.3-cp310-cp310-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17083,
+   "upload_time_iso_8601": "2023-06-02T21:42:46.948465Z",
+   "url": "https://files.pythonhosted.org/packages/84/a8/c4aebb8a14a1d39d5135eb8233a0b95831cdc42c4088358449c3ed657044/MarkupSafe-2.1.3-cp310-cp310-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "fe09c31503cb8150cf688c1534a7135cc39bb9092f8e0e6369ec73494d16ee0e",
+    "md5": "019cd0b18e9ddffbee5766590749a5d9",
+    "sha256": "ad9e82fb8f09ade1c3e1b996a6337afac2b8b9e365f926f5a61aacc71adc5b3c"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-macosx_10_9_universal2.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17862,
+   "upload_time_iso_8601": "2023-06-02T21:42:48.569751Z",
+   "url": "https://files.pythonhosted.org/packages/fe/09/c31503cb8150cf688c1534a7135cc39bb9092f8e0e6369ec73494d16ee0e/MarkupSafe-2.1.3-cp311-cp311-macosx_10_9_universal2.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "c0c7171f5ac6b065e1425e8fabf4a4dfbeca76fd8070072c6a41bd5c07d90d8b",
+    "md5": "abde7f386194e7178163bd8cfbc6fc36",
+    "sha256": "3c0fae6c3be832a0a0473ac912810b2877c8cb9d76ca48de1ed31e1c68386575"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-macosx_10_9_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 13738,
+   "upload_time_iso_8601": "2023-06-02T21:42:49.727342Z",
+   "url": "https://files.pythonhosted.org/packages/c0/c7/171f5ac6b065e1425e8fabf4a4dfbeca76fd8070072c6a41bd5c07d90d8b/MarkupSafe-2.1.3-cp311-cp311-macosx_10_9_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "a2f79175ad1b8152092f7c3b78c513c1bdfe9287e0564447d1c2d3d1a2471540",
+    "md5": "c3376eb045a126e91c81b155df56e396",
+    "sha256": "b076b6226fb84157e3f7c971a47ff3a679d837cf338547532ab866c57930dbee"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 28891,
+   "upload_time_iso_8601": "2023-06-02T21:42:51.330188Z",
+   "url": "https://files.pythonhosted.org/packages/a2/f7/9175ad1b8152092f7c3b78c513c1bdfe9287e0564447d1c2d3d1a2471540/MarkupSafe-2.1.3-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "fe212eff1de472ca6c99ec3993eab11308787b9879af9ca8bbceb4868cf4f2ca",
+    "md5": "830093013b05dc746dc282b4e588b44f",
+    "sha256": "bfce63a9e7834b12b87c64d6b155fdd9b3b96191b6bd334bf37db7ff1fe457f2"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 28096,
+   "upload_time_iso_8601": "2023-06-02T21:42:52.966230Z",
+   "url": "https://files.pythonhosted.org/packages/fe/21/2eff1de472ca6c99ec3993eab11308787b9879af9ca8bbceb4868cf4f2ca/MarkupSafe-2.1.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "f4a0103f94793c3bf829a18d2415117334ece115aeca56f2df1c47fa02c6dbd6",
+    "md5": "0c51cf9ce52a0dea0e9d60971309d517",
+    "sha256": "338ae27d6b8745585f87218a3f23f1512dbf52c26c28e322dbe54bcede54ccb9"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 27631,
+   "upload_time_iso_8601": "2023-06-02T21:42:54.518807Z",
+   "url": "https://files.pythonhosted.org/packages/f4/a0/103f94793c3bf829a18d2415117334ece115aeca56f2df1c47fa02c6dbd6/MarkupSafe-2.1.3-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "4370f24470f33b2035b035ef0c0ffebf57006beb2272cf3df068fc5154e04ead",
+    "md5": "d65779da8bc5370e4ed1b0236810c335",
+    "sha256": "e4dd52d80b8c83fdce44e12478ad2e85c64ea965e75d66dbeafb0a3e77308fcc"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-musllinux_1_1_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 33863,
+   "upload_time_iso_8601": "2023-06-02T21:42:55.777205Z",
+   "url": "https://files.pythonhosted.org/packages/43/70/f24470f33b2035b035ef0c0ffebf57006beb2272cf3df068fc5154e04ead/MarkupSafe-2.1.3-cp311-cp311-musllinux_1_1_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "32d4ce98c4ca713d91c4a17c1a184785cc00b9e9c25699d618956c2b9999500a",
+    "md5": "a41042ecca3e1980c18db1dcba3d7398",
+    "sha256": "df0be2b576a7abbf737b1575f048c23fb1d769f267ec4358296f31c2479db8f9"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-musllinux_1_1_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 32591,
+   "upload_time_iso_8601": "2023-06-02T21:42:57.415922Z",
+   "url": "https://files.pythonhosted.org/packages/32/d4/ce98c4ca713d91c4a17c1a184785cc00b9e9c25699d618956c2b9999500a/MarkupSafe-2.1.3-cp311-cp311-musllinux_1_1_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "bb82f88ccb3ca6204a4536cf7af5abdad7c3657adac06ab33699aa67279e0744",
+    "md5": "104c70425341404174eea636ed001650",
+    "sha256": "5bbe06f8eeafd38e5d0a4894ffec89378b6c6a625ff57e3028921f8ff59318ac"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-musllinux_1_1_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 33186,
+   "upload_time_iso_8601": "2023-06-02T21:42:59.107861Z",
+   "url": "https://files.pythonhosted.org/packages/bb/82/f88ccb3ca6204a4536cf7af5abdad7c3657adac06ab33699aa67279e0744/MarkupSafe-2.1.3-cp311-cp311-musllinux_1_1_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "445393405d37bb04a10c43b1bdd6f548097478d494d7eadb4b364e3e1337f0cc",
+    "md5": "a7dc6e84ce968b45dd57efe45275ba80",
+    "sha256": "dd15ff04ffd7e05ffcb7fe79f1b98041b8ea30ae9234aed2a9168b5797c3effb"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 16537,
+   "upload_time_iso_8601": "2023-06-02T21:43:00.927465Z",
+   "url": "https://files.pythonhosted.org/packages/44/53/93405d37bb04a10c43b1bdd6f548097478d494d7eadb4b364e3e1337f0cc/MarkupSafe-2.1.3-cp311-cp311-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "bebb08b85bc194034efbf572e70c3951549c8eca0ada25363afc154386b5390a",
+    "md5": "e2934c07ee2416530c13edcc196e68a4",
+    "sha256": "134da1eca9ec0ae528110ccc9e48041e0828d79f24121a1a146161103c76e686"
+   },
+   "filename": "MarkupSafe-2.1.3-cp311-cp311-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17089,
+   "upload_time_iso_8601": "2023-06-02T21:43:02.355355Z",
+   "url": "https://files.pythonhosted.org/packages/be/bb/08b85bc194034efbf572e70c3951549c8eca0ada25363afc154386b5390a/MarkupSafe-2.1.3-cp311-cp311-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "895aee546f2aa73a1d6fcfa24272f356fe06d29acca81e76b8d32ca53e429a2e",
+    "md5": "319fa8fd6d2b45196d3132e9f0e6182c",
+    "sha256": "f698de3fd0c4e6972b92290a45bd9b1536bffe8c6759c62471efaa8acb4c37bc"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-macosx_10_9_universal2.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17849,
+   "upload_time_iso_8601": "2023-09-07T16:00:43.795275Z",
+   "url": "https://files.pythonhosted.org/packages/89/5a/ee546f2aa73a1d6fcfa24272f356fe06d29acca81e76b8d32ca53e429a2e/MarkupSafe-2.1.3-cp312-cp312-macosx_10_9_universal2.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "3a729f683a059bde096776e8acf9aa34cbbba21ddc399861fe3953790d4f2cde",
+    "md5": "cac12a1ff3f2f532f54a94db2468d4a9",
+    "sha256": "aa57bd9cf8ae831a362185ee444e15a93ecb2e344c8e52e4d721ea3ab6ef1823"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-macosx_10_9_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 13700,
+   "upload_time_iso_8601": "2023-09-07T16:00:45.384632Z",
+   "url": "https://files.pythonhosted.org/packages/3a/72/9f683a059bde096776e8acf9aa34cbbba21ddc399861fe3953790d4f2cde/MarkupSafe-2.1.3-cp312-cp312-macosx_10_9_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "9d7892f15eb9b1e8f1668a9787ba103cf6f8d19a9efed8150245404836145c24",
+    "md5": "f44c2dc510cdfa82ae9e142fe035109d",
+    "sha256": "ffcc3f7c66b5f5b7931a5aa68fc9cecc51e685ef90282f4a82f0f5e9b704ad11"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 29319,
+   "upload_time_iso_8601": "2023-09-07T16:00:46.480919Z",
+   "url": "https://files.pythonhosted.org/packages/9d/78/92f15eb9b1e8f1668a9787ba103cf6f8d19a9efed8150245404836145c24/MarkupSafe-2.1.3-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "51949a04085114ff2c24f7424dbc890a281d73c5a74ea935dc2e69c66a3bd558",
+    "md5": "1870a4efefdcf7017f209890b9f8796a",
+    "sha256": "47d4f1c5f80fc62fdd7777d0d40a2e9dda0a05883ab11374334f6c4de38adffd"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 28314,
+   "upload_time_iso_8601": "2023-09-07T16:00:47.640376Z",
+   "url": "https://files.pythonhosted.org/packages/51/94/9a04085114ff2c24f7424dbc890a281d73c5a74ea935dc2e69c66a3bd558/MarkupSafe-2.1.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "ec53fcb3214bd370185e223b209ce6bb010fb887ea57173ca4f75bd211b24e10",
+    "md5": "fe42b26a86cae5aec5ac50cbb94ea3b8",
+    "sha256": "1f67c7038d560d92149c060157d623c542173016c4babc0c1913cca0564b9939"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 27696,
+   "upload_time_iso_8601": "2023-09-07T16:00:48.920309Z",
+   "url": "https://files.pythonhosted.org/packages/ec/53/fcb3214bd370185e223b209ce6bb010fb887ea57173ca4f75bd211b24e10/MarkupSafe-2.1.3-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "e73354d29854716725d7826079b8984dd235fac76dab1c32321e555d493e61f5",
+    "md5": "6beac07dc2278802eee6f5e23fd6e692",
+    "sha256": "9aad3c1755095ce347e26488214ef77e0485a3c34a50c5a5e2471dff60b9dd9c"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-musllinux_1_1_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 33746,
+   "upload_time_iso_8601": "2023-09-07T16:00:50.081440Z",
+   "url": "https://files.pythonhosted.org/packages/e7/33/54d29854716725d7826079b8984dd235fac76dab1c32321e555d493e61f5/MarkupSafe-2.1.3-cp312-cp312-musllinux_1_1_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "1140ea7f85e2681d29bc9301c757257de561923924f24de1802d9c3baa396bb4",
+    "md5": "d4a98ff585aa838e01a529e12c244108",
+    "sha256": "14ff806850827afd6b07a5f32bd917fb7f45b046ba40c57abdb636674a8b559c"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-musllinux_1_1_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 32131,
+   "upload_time_iso_8601": "2023-09-07T16:00:51.822095Z",
+   "url": "https://files.pythonhosted.org/packages/11/40/ea7f85e2681d29bc9301c757257de561923924f24de1802d9c3baa396bb4/MarkupSafe-2.1.3-cp312-cp312-musllinux_1_1_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "41f1bc770c37ecd58638c18f8ec85df205dacb818ccf933692082fd93010a4bc",
+    "md5": "11786042a84807af638b155d84c441c2",
+    "sha256": "8f9293864fe09b8149f0cc42ce56e3f0e54de883a9de90cd427f191c346eb2e1"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-musllinux_1_1_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 32878,
+   "upload_time_iso_8601": "2023-09-07T16:00:53.575465Z",
+   "url": "https://files.pythonhosted.org/packages/41/f1/bc770c37ecd58638c18f8ec85df205dacb818ccf933692082fd93010a4bc/MarkupSafe-2.1.3-cp312-cp312-musllinux_1_1_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "4974bf95630aab0a9ed6a67556cd4e54f6aeb0e74f4cb0fd2f229154873a4be4",
+    "md5": "a1c4be9c71db2fef35a651f3402ea795",
+    "sha256": "715d3562f79d540f251b99ebd6d8baa547118974341db04f5ad06d5ea3eb8007"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 16426,
+   "upload_time_iso_8601": "2023-09-07T16:00:55.987279Z",
+   "url": "https://files.pythonhosted.org/packages/49/74/bf95630aab0a9ed6a67556cd4e54f6aeb0e74f4cb0fd2f229154873a4be4/MarkupSafe-2.1.3-cp312-cp312-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "4444dbaf65876e258facd65f586dde158387ab89963e7f2235551afc9c2e24c2",
+    "md5": "9961a6ba855b562db2899e8c15c74e53",
+    "sha256": "1b8dd8c3fd14349433c79fa8abeb573a55fc0fdd769133baac1f5e07abf54aeb"
+   },
+   "filename": "MarkupSafe-2.1.3-cp312-cp312-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 16979,
+   "upload_time_iso_8601": "2023-09-07T16:00:57.770768Z",
+   "url": "https://files.pythonhosted.org/packages/44/44/dbaf65876e258facd65f586dde158387ab89963e7f2235551afc9c2e24c2/MarkupSafe-2.1.3-cp312-cp312-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "a812fd9ef3e09a7312d60467c71037283553ff2acfcd950159cd4c3ca9558af4",
+    "md5": "8c656aa542c3a912e5d71701a8cf61f2",
+    "sha256": "8e254ae696c88d98da6555f5ace2279cf7cd5b3f52be2b5cf97feafe883b58d2"
+   },
+   "filename": "MarkupSafe-2.1.3-cp37-cp37m-macosx_10_9_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 13626,
+   "upload_time_iso_8601": "2023-06-02T21:43:04.084807Z",
+   "url": "https://files.pythonhosted.org/packages/a8/12/fd9ef3e09a7312d60467c71037283553ff2acfcd950159cd4c3ca9558af4/MarkupSafe-2.1.3-cp37-cp37m-macosx_10_9_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "4f13cf36eff21600fb21d5bd8c4c1b6ff0b7cc0ff37b955017210cfc6f367972",
+    "md5": "1daff91b4d14900e17a3f50372844049",
+    "sha256": "cb0932dc158471523c9637e807d9bfb93e06a95cbf010f1a38b98623b929ef2b"
+   },
+   "filename": "MarkupSafe-2.1.3-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 26215,
+   "upload_time_iso_8601": "2023-06-02T21:43:05.919719Z",
+   "url": "https://files.pythonhosted.org/packages/4f/13/cf36eff21600fb21d5bd8c4c1b6ff0b7cc0ff37b955017210cfc6f367972/MarkupSafe-2.1.3-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "e5dd49576e803c0d974671e44fa78049217fcc68af3662a24f831525ed30e6c7",
+    "md5": "9c4b54860708b8b6e0331d9a1eb1f46d",
+    "sha256": "9402b03f1a1b4dc4c19845e5c749e3ab82d5078d16a2a4c2cd2df62d57bb0707"
+   },
+   "filename": "MarkupSafe-2.1.3-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 25427,
+   "upload_time_iso_8601": "2023-06-02T21:43:07.893414Z",
+   "url": "https://files.pythonhosted.org/packages/e5/dd/49576e803c0d974671e44fa78049217fcc68af3662a24f831525ed30e6c7/MarkupSafe-2.1.3-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "7d486ba4db436924698ca22109325969e00be459d417830dafec3c1001878b57",
+    "md5": "2ad5de6a86c9deffef66ab39ec5ca60c",
+    "sha256": "ca379055a47383d02a5400cb0d110cef0a776fc644cda797db0c5696cfd7e18e"
+   },
+   "filename": "MarkupSafe-2.1.3-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 25123,
+   "upload_time_iso_8601": "2023-06-02T21:43:09.636253Z",
+   "url": "https://files.pythonhosted.org/packages/7d/48/6ba4db436924698ca22109325969e00be459d417830dafec3c1001878b57/MarkupSafe-2.1.3-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "4de477bb622d6a37aeb51ee55857100986528b7f47d6dbddc35f9b404622ed50",
+    "md5": "7c2c6fc64937a1546f29a818a4b67123",
+    "sha256": "b7ff0f54cb4ff66dd38bebd335a38e2c22c41a8ee45aa608efc890ac3e3931bc"
+   },
+   "filename": "MarkupSafe-2.1.3-cp37-cp37m-musllinux_1_1_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 30890,
+   "upload_time_iso_8601": "2023-06-02T21:43:10.893079Z",
+   "url": "https://files.pythonhosted.org/packages/4d/e4/77bb622d6a37aeb51ee55857100986528b7f47d6dbddc35f9b404622ed50/MarkupSafe-2.1.3-cp37-cp37m-musllinux_1_1_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "d2a14ae49dd1520c7b891ea4963258aab08fb2554c564781ecb2a9c4afdf9cb1",
+    "md5": "22e2585abf02cefbe82fae11454d56d9",
+    "sha256": "c011a4149cfbcf9f03994ec2edffcb8b1dc2d2aede7ca243746df97a5d41ce48"
+   },
+   "filename": "MarkupSafe-2.1.3-cp37-cp37m-musllinux_1_1_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 30050,
+   "upload_time_iso_8601": "2023-06-02T21:43:12.193850Z",
+   "url": "https://files.pythonhosted.org/packages/d2/a1/4ae49dd1520c7b891ea4963258aab08fb2554c564781ecb2a9c4afdf9cb1/MarkupSafe-2.1.3-cp37-cp37m-musllinux_1_1_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "fabb12fb5964c4a766eb98155dd31ec070adc8a69a395564ffc1e7b34d91335a",
+    "md5": "79e8c5728975ea22feb05b3f098492d4",
+    "sha256": "56d9f2ecac662ca1611d183feb03a3fa4406469dafe241673d521dd5ae92a155"
+   },
+   "filename": "MarkupSafe-2.1.3-cp37-cp37m-musllinux_1_1_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 30304,
+   "upload_time_iso_8601": "2023-06-02T21:43:13.249959Z",
+   "url": "https://files.pythonhosted.org/packages/fa/bb/12fb5964c4a766eb98155dd31ec070adc8a69a395564ffc1e7b34d91335a/MarkupSafe-2.1.3-cp37-cp37m-musllinux_1_1_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "b20dcbaade3ee8efbd5ce2fb72b48cc51479ebf3d4ce2c54dcb6557d3ea6a950",
+    "md5": "39eb62ca2d21c535c9b233ac428c6a91",
+    "sha256": "8758846a7e80910096950b67071243da3e5a20ed2546e6392603c096778d48e0"
+   },
+   "filename": "MarkupSafe-2.1.3-cp37-cp37m-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 16494,
+   "upload_time_iso_8601": "2023-06-02T21:43:14.566629Z",
+   "url": "https://files.pythonhosted.org/packages/b2/0d/cbaade3ee8efbd5ce2fb72b48cc51479ebf3d4ce2c54dcb6557d3ea6a950/MarkupSafe-2.1.3-cp37-cp37m-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "9bc19f44da5ca74f95116c644892152ca6514ecdc34c8297a3f40d886147863d",
+    "md5": "905a2499d0e57479d3271249b4e42245",
+    "sha256": "787003c0ddb00500e49a10f2844fac87aa6ce977b90b0feaaf9de23c22508b24"
+   },
+   "filename": "MarkupSafe-2.1.3-cp37-cp37m-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17066,
+   "upload_time_iso_8601": "2023-06-02T21:43:16.246204Z",
+   "url": "https://files.pythonhosted.org/packages/9b/c1/9f44da5ca74f95116c644892152ca6514ecdc34c8297a3f40d886147863d/MarkupSafe-2.1.3-cp37-cp37m-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "0306e72e88f81f8c91d4f488d21712d2d403fd644e3172eaadc302094377bc22",
+    "md5": "50a3bbc62d6a510c98c43adf78f16aed",
+    "sha256": "2ef12179d3a291be237280175b542c07a36e7f60718296278d8593d21ca937d4"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-macosx_10_9_universal2.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17837,
+   "upload_time_iso_8601": "2023-06-02T21:43:17.510576Z",
+   "url": "https://files.pythonhosted.org/packages/03/06/e72e88f81f8c91d4f488d21712d2d403fd644e3172eaadc302094377bc22/MarkupSafe-2.1.3-cp38-cp38-macosx_10_9_universal2.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "f833e9e83b214b5f8d9a60b26e60051734e7657a416e5bce7d7f1c34e26badad",
+    "md5": "b959f537ef538aa42af443f79724f5b5",
+    "sha256": "2c1b19b3aaacc6e57b7e25710ff571c24d6c3613a45e905b1fde04d691b98ee0"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-macosx_10_9_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 13714,
+   "upload_time_iso_8601": "2023-06-02T21:43:18.509879Z",
+   "url": "https://files.pythonhosted.org/packages/f8/33/e9e83b214b5f8d9a60b26e60051734e7657a416e5bce7d7f1c34e26badad/MarkupSafe-2.1.3-cp38-cp38-macosx_10_9_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "8d664a46c7f1402e0377a8b220fd4b53cc4f1b2337ab0d97f06e23acd1f579d1",
+    "md5": "215867452d94b28e88f17403c853a304",
+    "sha256": "8afafd99945ead6e075b973fefa56379c5b5c53fd8937dad92c662da5d8fd5ee"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 26805,
+   "upload_time_iso_8601": "2023-06-02T21:43:20.193190Z",
+   "url": "https://files.pythonhosted.org/packages/8d/66/4a46c7f1402e0377a8b220fd4b53cc4f1b2337ab0d97f06e23acd1f579d1/MarkupSafe-2.1.3-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "dee232c14301bb023986dff527a49325b6259cab4ebb4633f69de54af312fc45",
+    "md5": "82cb78cbdfaaecc0b76b247dd3dcb97b",
+    "sha256": "8c41976a29d078bb235fea9b2ecd3da465df42a562910f9022f1a03107bd02be"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 25977,
+   "upload_time_iso_8601": "2023-06-02T21:43:21.540988Z",
+   "url": "https://files.pythonhosted.org/packages/de/e2/32c14301bb023986dff527a49325b6259cab4ebb4633f69de54af312fc45/MarkupSafe-2.1.3-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "e65c8ab8f67bbbbf90fe88f887f4fa68123435c5415531442e8aefef1e118d5c",
+    "md5": "448ddffa9f30eec8bcac1cbc354174ad",
+    "sha256": "d080e0a5eb2529460b30190fcfcc4199bd7f827663f858a226a81bc27beaa97e"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 25657,
+   "upload_time_iso_8601": "2023-06-02T21:43:23.208762Z",
+   "url": "https://files.pythonhosted.org/packages/e6/5c/8ab8f67bbbbf90fe88f887f4fa68123435c5415531442e8aefef1e118d5c/MarkupSafe-2.1.3-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "8bbb72ca339b012054a84753accabe3258e0baf6e34bd0ab6e3670b9a65f679d",
+    "md5": "4b8358ff19075338cd8b262330b347f1",
+    "sha256": "69c0f17e9f5a7afdf2cc9fb2d1ce6aabdb3bafb7f38017c0b77862bcec2bbad8"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-musllinux_1_1_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 30392,
+   "upload_time_iso_8601": "2023-06-02T21:43:24.525745Z",
+   "url": "https://files.pythonhosted.org/packages/8b/bb/72ca339b012054a84753accabe3258e0baf6e34bd0ab6e3670b9a65f679d/MarkupSafe-2.1.3-cp38-cp38-musllinux_1_1_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "b22707e5aa9f93314dc65ad2ad9b899656dee79b70a9425ee199dd5a4c4cf2cd",
+    "md5": "a8e0905c9c3c2cf40adfbf6c4d61eb78",
+    "sha256": "504b320cd4b7eff6f968eddf81127112db685e81f7e36e75f9f84f0df46041c3"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-musllinux_1_1_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 29542,
+   "upload_time_iso_8601": "2023-06-02T21:43:26.555309Z",
+   "url": "https://files.pythonhosted.org/packages/b2/27/07e5aa9f93314dc65ad2ad9b899656dee79b70a9425ee199dd5a4c4cf2cd/MarkupSafe-2.1.3-cp38-cp38-musllinux_1_1_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "c980f08e782943ee7ae6e9438851396d00a869f5b50ea8c6e1f40385f3e95771",
+    "md5": "2714c09a1593f052c37bd0bc8861e8ef",
+    "sha256": "42de32b22b6b804f42c5d98be4f7e5e977ecdd9ee9b660fda1a3edf03b11792d"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-musllinux_1_1_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 29803,
+   "upload_time_iso_8601": "2023-06-02T21:43:27.829185Z",
+   "url": "https://files.pythonhosted.org/packages/c9/80/f08e782943ee7ae6e9438851396d00a869f5b50ea8c6e1f40385f3e95771/MarkupSafe-2.1.3-cp38-cp38-musllinux_1_1_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "10b3c2b0a61cc0e1d50dd8a1b663ba4866c667cb58fb35f12475001705001680",
+    "md5": "f8aed8ebff43f55bbb315ec015cad01e",
+    "sha256": "ceb01949af7121f9fc39f7d27f91be8546f3fb112c608bc4029aef0bab86a2a5"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 16521,
+   "upload_time_iso_8601": "2023-06-02T21:43:29.256757Z",
+   "url": "https://files.pythonhosted.org/packages/10/b3/c2b0a61cc0e1d50dd8a1b663ba4866c667cb58fb35f12475001705001680/MarkupSafe-2.1.3-cp38-cp38-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "74a354fc60ee2da3ab6d68b1b2daf4897297c597840212ee126e68a4eb89fcd7",
+    "md5": "6f4e4e025a05a9efed667b4b1190872e",
+    "sha256": "1b40069d487e7edb2676d3fbdb2b0829ffa2cd63a2ec26c4938b2d34391b4ecc"
+   },
+   "filename": "MarkupSafe-2.1.3-cp38-cp38-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17071,
+   "upload_time_iso_8601": "2023-06-02T21:43:30.874136Z",
+   "url": "https://files.pythonhosted.org/packages/74/a3/54fc60ee2da3ab6d68b1b2daf4897297c597840212ee126e68a4eb89fcd7/MarkupSafe-2.1.3-cp38-cp38-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "6a86654dc431513cd4417dfcead8102f22bece2d6abf2f584f0e1cc1524f7b94",
+    "md5": "b0e9d07b7ab88e0bf3142227661f84f2",
+    "sha256": "8023faf4e01efadfa183e863fefde0046de576c6f14659e8782065bcece22198"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-macosx_10_9_universal2.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17855,
+   "upload_time_iso_8601": "2023-06-02T21:43:32.541266Z",
+   "url": "https://files.pythonhosted.org/packages/6a/86/654dc431513cd4417dfcead8102f22bece2d6abf2f584f0e1cc1524f7b94/MarkupSafe-2.1.3-cp39-cp39-macosx_10_9_universal2.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "629b4908a57acf39d8811836bc6776b309c2e07d63791485589acf0b6d7bc0c6",
+    "md5": "6cec44b922108b4223283c29c43ae39d",
+    "sha256": "6b2b56950d93e41f33b4223ead100ea0fe11f8e6ee5f641eb753ce4b77a7042b"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-macosx_10_9_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 13716,
+   "upload_time_iso_8601": "2023-06-02T21:43:33.771673Z",
+   "url": "https://files.pythonhosted.org/packages/62/9b/4908a57acf39d8811836bc6776b309c2e07d63791485589acf0b6d7bc0c6/MarkupSafe-2.1.3-cp39-cp39-macosx_10_9_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "688dc33c43c499c19f4b51181e196c9a497010908fc22c5de33551e298aa6a21",
+    "md5": "3b606e8ec905323974957d27fd48dc43",
+    "sha256": "9dcdfd0eaf283af041973bff14a2e143b8bd64e069f4c383416ecd79a81aab58"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 26361,
+   "upload_time_iso_8601": "2023-06-02T21:43:35.036804Z",
+   "url": "https://files.pythonhosted.org/packages/68/8d/c33c43c499c19f4b51181e196c9a497010908fc22c5de33551e298aa6a21/MarkupSafe-2.1.3-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "de63cb7e71984e9159ec5f45b5e81e896c8bdd0e45fe3fc6ce02ab497f0d790e",
+    "md5": "c2388278e7f7c4bb11ae830da5a071cc",
+    "sha256": "05fb21170423db021895e1ea1e1f3ab3adb85d1c2333cbc2310f2a26bc77272e"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 25563,
+   "upload_time_iso_8601": "2023-06-02T21:43:36.832972Z",
+   "url": "https://files.pythonhosted.org/packages/de/63/cb7e71984e9159ec5f45b5e81e896c8bdd0e45fe3fc6ce02ab497f0d790e/MarkupSafe-2.1.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "43ad7246ae594aac948b17408c0ff0f9ff0bc470bdbe9c672a754310db64b237",
+    "md5": "ddee7e3a02153c36e6d2d34c21cd0151",
+    "sha256": "282c2cb35b5b673bbcadb33a585408104df04f14b2d9b01d4c345a3b92861c2c"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 25215,
+   "upload_time_iso_8601": "2023-06-02T21:43:38.097068Z",
+   "url": "https://files.pythonhosted.org/packages/43/ad/7246ae594aac948b17408c0ff0f9ff0bc470bdbe9c672a754310db64b237/MarkupSafe-2.1.3-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "03653473d2cb84bb2cda08be95b97fc4f53e6bcd701a2d50ba7b7c905e1e9273",
+    "md5": "8b61dd85a3a61eb9cf1b56a585a02947",
+    "sha256": "ab4a0df41e7c16a1392727727e7998a467472d0ad65f3ad5e6e765015df08636"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-musllinux_1_1_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 30313,
+   "upload_time_iso_8601": "2023-06-02T21:43:39.440682Z",
+   "url": "https://files.pythonhosted.org/packages/03/65/3473d2cb84bb2cda08be95b97fc4f53e6bcd701a2d50ba7b7c905e1e9273/MarkupSafe-2.1.3-cp39-cp39-musllinux_1_1_aarch64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "2281b5659e2b6ae1516495a22f87370419c1d79c8d853315e6cbe5172fc01a06",
+    "md5": "2ac425e7f8935c51914cbbef24f447d4",
+    "sha256": "7ef3cb2ebbf91e330e3bb937efada0edd9003683db6b57bb108c4001f37a02ea"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-musllinux_1_1_i686.whl",
+   "packagetype": "bdist_wheel",
+   "size": 29410,
+   "upload_time_iso_8601": "2023-06-02T21:43:40.527306Z",
+   "url": "https://files.pythonhosted.org/packages/22/81/b5659e2b6ae1516495a22f87370419c1d79c8d853315e6cbe5172fc01a06/MarkupSafe-2.1.3-cp39-cp39-musllinux_1_1_i686.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "ab20f59423543a8422cb8c69a579ebd0ef2c9dafa70cc8142b7372b5b4073caa",
+    "md5": "77b8223a5b03ab609a9917ce72c8da06",
+    "sha256": "0a4e4a1aff6c7ac4cd55792abf96c915634c2b97e3cc1c7129578aa68ebd754e"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-musllinux_1_1_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 29697,
+   "upload_time_iso_8601": "2023-06-02T21:43:41.799475Z",
+   "url": "https://files.pythonhosted.org/packages/ab/20/f59423543a8422cb8c69a579ebd0ef2c9dafa70cc8142b7372b5b4073caa/MarkupSafe-2.1.3-cp39-cp39-musllinux_1_1_x86_64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "d5c11177f712d4ab91eb67f79d763a7b5f9c5851ee3077d6b4eee15e23b6b93e",
+    "md5": "cf387b8b69e871c38e148975395d3f83",
+    "sha256": "fec21693218efe39aa7f8599346e90c705afa52c5b31ae019b2e57e8f6542bb2"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 16520,
+   "upload_time_iso_8601": "2023-06-02T21:43:42.880236Z",
+   "url": "https://files.pythonhosted.org/packages/d5/c1/1177f712d4ab91eb67f79d763a7b5f9c5851ee3077d6b4eee15e23b6b93e/MarkupSafe-2.1.3-cp39-cp39-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "a2b2624042cb58cc6b3529a6c3a7b7d230766e3ecb768cba118ba7befd18ed6f",
+    "md5": "c3f92bf40d5db7b0e9a2f03f985d6482",
+    "sha256": "3fd4abcb888d15a94f32b75d8fd18ee162ca0c064f35b11134be77050296d6ba"
+   },
+   "filename": "MarkupSafe-2.1.3-cp39-cp39-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 17076,
+   "upload_time_iso_8601": "2023-06-02T21:43:44.268468Z",
+   "url": "https://files.pythonhosted.org/packages/a2/b2/624042cb58cc6b3529a6c3a7b7d230766e3ecb768cba118ba7befd18ed6f/MarkupSafe-2.1.3-cp39-cp39-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "6d7c59a3248f411813f8ccba92a55feaac4bf360d29e2ff05ee7d8e1ef2d7dbf",
+    "md5": "ca33f119bd0551ce15837f58bb180214",
+    "sha256": "af598ed32d6ae86f1b747b82783958b1a4ab8f617b06fe68795c7f026abbdcad"
+   },
+   "filename": "MarkupSafe-2.1.3.tar.gz",
+   "packagetype": "sdist",
+   "size": 19132,
+   "upload_time_iso_8601": "2023-06-02T21:43:45.578499Z",
+   "url": "https://files.pythonhosted.org/packages/6d/7c/59a3248f411813f8ccba92a55feaac4bf360d29e2ff05ee7d8e1ef2d7dbf/MarkupSafe-2.1.3.tar.gz",
+   "yanked": false
+  }
+ ]
+}

@@ -29,7 +29,9 @@ pošle, otevře PR/MR a mergne.
 ## Instalace
 
 repo-doctor je samostatná aplikace pro Linux (x86_64). Má v sobě všechno, co potřebuje, takže
-nemusíš řešit Python ani žádné další prostředí. Stačí mít **git**.
+nemusíš řešit Python ani žádné další prostředí. Stačí mít **git**. Ani opravy nic dalšího
+nevyžadují: i aktualizace zranitelných závislostí v `uv.lock` a `package-lock.json` dělá
+repo-doctor sám, bez `uv` a `npm`.
 
 ### Debian, Ubuntu, Linux Mint, Pop!_OS…
 
@@ -407,7 +409,7 @@ Dokumentace každé kontroly je v `docs/checks/<id>.md`, anglicky v
 | [`deps-install-scripts`](docs/checks/deps-install-scripts.md) | Bezpečnost | LOW |  |  |
 | [`deps-lock-drift`](docs/checks/deps-lock-drift.md) | Bezpečnost | MED |  |  |
 | [`deps-lockfile-missing`](docs/checks/deps-lockfile-missing.md) | Bezpečnost | MED |  |  |
-| [`deps-vulnerable`](docs/checks/deps-vulnerable.md) | Bezpečnost | HIGH |  | síť |
+| [`deps-vulnerable`](docs/checks/deps-vulnerable.md) | Bezpečnost | HIGH | ✓ | síť |
 | [`docker-hygiene`](docs/checks/docker-hygiene.md) | Bezpečnost | MED | ✓ |  |
 | [`email-exposure`](docs/checks/email-exposure.md) | Bezpečnost | MED | ✓ | síť |
 | [`env-committed`](docs/checks/env-committed.md) | Bezpečnost | HIGH | ✓ |  |
