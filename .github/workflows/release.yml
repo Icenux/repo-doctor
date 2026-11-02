@@ -1,7 +1,7 @@
 name: Release
 # Vydání se spouští tagem `X.Y.Z` bez `v` (musí přesně odpovídat verzi v pyproject.toml):
 #   sestavení → test instalace na distribucích → GitHub Release.
-# APT/RPM repozitář se tu nenasazuje: společný repozitář Icenux (github.com/Luquas95/icenux)
+# APT/RPM repozitář se tu nenasazuje: společný repozitář Icenux (github.com/Icenux/icenux)
 # si nejnovější vydání vezme sám.
 on:
   push:

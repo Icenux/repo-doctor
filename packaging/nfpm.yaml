@@ -8,13 +8,13 @@ version: ${VERSION}
 release: 1
 section: devel
 priority: optional
-maintainer: repo-doctor contributors <https://github.com/Luquas95/repo-doctor>
+maintainer: repo-doctor contributors <https://github.com/Icenux/repo-doctor>
 description: |-
   TUI pro audit a údržbu lokálních git repozitářů.
   Najde bezpečnostní a hygienické problémy (tajemství, zranitelné závislosti, stav gitu,
   git hostingy), vyrobí přehledný report a bezpečně připraví opravy.
 vendor: repo-doctor
-homepage: https://github.com/Luquas95/repo-doctor
+homepage: https://github.com/Icenux/repo-doctor
 license: MIT
 
 depends:

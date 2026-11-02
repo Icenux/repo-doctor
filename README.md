@@ -8,7 +8,7 @@ pošle, otevře PR/MR a mergne.
 
 ![Přehled / triáž](docs/screenshots/triaz.svg)
 
-📖 **[Uživatelská příručka (wiki)](https://github.com/Luquas95/repo-doctor/wiki)**: všechny obrazovky se screenshoty, kontroly, konfigurace a časté otázky.
+📖 **[Uživatelská příručka (wiki)](https://github.com/Icenux/repo-doctor/wiki)**: všechny obrazovky se screenshoty, kontroly, konfigurace a časté otázky.
 
 - **Triáž místo seznamu:** repozitáře roztříděné do pásem KRITICKÉ / SLEDOVAT / BEZ TEPU / ZDRAVÉ,
   skóre 0–100, tep (commity za 30 dní), stav gitu a viditelnost na hostingu.
@@ -36,26 +36,26 @@ repo-doctor sám, bez `uv` a `npm`.
 ### Debian, Ubuntu, Linux Mint, Pop!_OS…
 
 ```sh
-wget https://github.com/Luquas95/repo-doctor/releases/latest/download/repo-doctor_amd64.deb
+wget https://github.com/Icenux/repo-doctor/releases/latest/download/repo-doctor_amd64.deb
 sudo apt install ./repo-doctor_amd64.deb
 ```
 
 ### Fedora, RHEL, Rocky, Alma…
 
 ```sh
-sudo dnf install https://github.com/Luquas95/repo-doctor/releases/latest/download/repo-doctor.x86_64.rpm
+sudo dnf install https://github.com/Icenux/repo-doctor/releases/latest/download/repo-doctor.x86_64.rpm
 ```
 
 ### Arch Linux
 
 Balíček `repo-doctor-bin` z AUR (např. `yay -S repo-doctor-bin`). Bez AUR helperu stáhni
-`PKGBUILD` z [posledního vydání](https://github.com/Luquas95/repo-doctor/releases/latest)
+`PKGBUILD` z [posledního vydání](https://github.com/Icenux/repo-doctor/releases/latest)
 a v jeho složce spusť `makepkg -si`.
 
 ### Ostatní distribuce
 
 ```sh
-wget https://github.com/Luquas95/repo-doctor/releases/latest/download/repo-doctor-linux-x86_64.tar.gz
+wget https://github.com/Icenux/repo-doctor/releases/latest/download/repo-doctor-linux-x86_64.tar.gz
 tar xzf repo-doctor-linux-x86_64.tar.gz && ./repo-doctor/install.sh
 ```
 
@@ -99,7 +99,7 @@ Staženou binárku `u` (`--update`) aktualizuje na verzi připnutou v repo-docto
 ### Aktualizace
 
 - **.deb / .rpm:** balíček při instalaci přidá podepsaný repozitář
-  [Icenux](https://github.com/Luquas95/icenux) (společný pro mé aplikace), takže nové
+  [Icenux](https://github.com/Icenux/icenux) (společný pro mé aplikace), takže nové
   verze přijdou **s běžnou aktualizací systému** (`sudo apt update && sudo apt upgrade`,
   `sudo dnf upgrade` nebo grafické Aktualizace softwaru).
 - **AUR:** s aktualizací přes AUR helper (`yay -Syu`).
@@ -708,7 +708,7 @@ schéma (`schema_version`, [`docs/report-schema.json`](docs/report-schema.json))
 ```yaml
 - name: repo-doctor
   run: |
-    curl -fsSL https://github.com/Luquas95/repo-doctor/releases/latest/download/repo-doctor-linux-x86_64.tar.gz | tar xz
+    curl -fsSL https://github.com/Icenux/repo-doctor/releases/latest/download/repo-doctor-linux-x86_64.tar.gz | tar xz
     ./repo-doctor/repo-doctor scan . --offline --fail-on high
 ```
 
