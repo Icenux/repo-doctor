@@ -6,6 +6,7 @@ from urllib.parse import quote
 
 from repo_doctor.config import ForgeConfig
 from repo_doctor.forges.base import (
+    CICheck,
     CIState,
     CIStatus,
     ConnectionReport,
@@ -220,11 +221,31 @@ class GitLabForge(Forge):
         if not items:
             return CIStatus("none", pr.head_branch)
         p = items[0]
+        checks: list[CICheck] = []
+        try:
+            jobs = await self.client.get_json(
+                f"/projects/{_pid(repo)}/pipelines/{p.get('id')}/jobs",
+                params={"per_page": 100},
+                ttl=0,
+            )
+        except (NotFoundError, ForbiddenError):
+            jobs = []
+        for job in jobs if isinstance(jobs, list) else []:
+            status = str(job.get("status", ""))
+            state = (
+                "success" if status in ("success", "skipped", "manual") else _pipeline_state(status)
+            )
+            if status == "canceled":
+                state = "failure"
+            checks.append(
+                CICheck(str(job.get("name") or "?"), state, str(job.get("web_url") or ""))
+            )
         return CIStatus(
             _pipeline_state(str(p.get("status", ""))),
             pr.head_branch,
             str(p.get("iid") or p.get("id") or ""),
             str(p.get("web_url") or ""),
+            checks,
         )
 
     async def merge_pr(self, repo: ForgeRepo, pr: PullRequestInfo, method: str | None) -> None:

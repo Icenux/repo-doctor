@@ -621,11 +621,23 @@ async def test_gitlab_create_and_merge(tmp_path: Path, monkeypatch: pytest.Monke
         )
         respx.get(f"{api}/projects/42/merge_requests/5").respond(json=mr)
         respx.get(f"{api}/projects/42/pipelines").respond(json=[{"id": 9, "status": "success"}])
+        respx.get(f"{api}/projects/42/pipelines/9/jobs").respond(
+            json=[
+                {"name": "test", "status": "success", "web_url": "https://gitlab.com/j/1"},
+                {"name": "lint", "status": "failed", "web_url": "https://gitlab.com/j/2"},
+                {"name": "deploy", "status": "running", "web_url": ""},
+            ]
+        )
         merged = respx.put(f"{api}/projects/42/merge_requests/5/merge").respond(200, json=mr)
         merge = await publish.plan_merge(
             Git(rb.path), hosting, Config(publish=PublishConfig(merge_method="squash"))
         )
         assert merge.ready
+        assert [(c.name, c.state) for c in merge.ci.checks] == [
+            ("test", "success"),
+            ("lint", "failure"),
+            ("deploy", "pending"),
+        ]
         await publish.apply_merge(
             Git(rb.path), hosting, Config(publish=PublishConfig(merge_method="squash")), merge
         )
@@ -670,3 +682,79 @@ def test_cli_pr_without_matching_forge(tmp_path: Path, capsys: pytest.CaptureFix
     rb, _ = fix_repo(tmp_path)
     assert cli.main(["publish", "pr", str(rb.path)]) == 1
     assert "nepatří žádnému nastavenému hostingu" in capsys.readouterr().err
+
+
+# ----------------------------------------------------------------------------- stav (stránka Odeslání)
+def test_local_status_follows_the_fix_branch(tmp_path: Path) -> None:
+    rb, _ = fix_repo(tmp_path)
+    st = publish.local_status(Git(rb.path), Config())
+    assert st.branch == BRANCH and st.default == "main" and st.remote == "origin"
+    assert [c.subject for c in st.commits] == [SUBJECT]
+    assert st.pushed is False and st.can_merge_local and st.default_ahead == 0
+    assert st.pr is None and not st.can_merge
+    publish.apply_push(Git(rb.path), publish.plan_push(Git(rb.path), Config()), Config())
+    assert publish.local_status(Git(rb.path), Config()).pushed is True
+
+
+def test_local_status_without_fix_branch_or_remote(tmp_path: Path) -> None:
+    rb, _ = with_remote(tmp_path)
+    st = publish.local_status(Git(rb.path), Config())
+    assert st.branch is None and "nemá žádnou opravnou větev" in st.local_note
+    rb.git("remote", "remove", "origin")
+    st = publish.local_status(Git(rb.path), Config())
+    assert st.remote is None and "žádný remote" in st.hosting_note
+
+
+def test_local_status_counts_unpushed_default_branch(tmp_path: Path) -> None:
+    rb, _ = fix_repo(tmp_path)
+    rb.git("merge", "--ff-only", "-q", BRANCH)
+    st = publish.local_status(Git(rb.path), Config())
+    assert st.default_ahead == 1 and not st.can_merge_local  # fix už je ve výchozí větvi
+
+
+@respx.mock
+async def test_publish_status_shows_pr_and_every_ci_check(hosted: tuple[RepoBuilder, str]) -> None:
+    rb, sha = hosted
+    respx.get(REPO_API).respond(json=repo_json())
+    mock_pr_state(
+        sha,
+        checks=[
+            {"name": "test", "status": "completed", "conclusion": "success", "html_url": "u1"},
+            {"name": "lint", "status": "in_progress", "conclusion": None, "html_url": "u2"},
+        ],
+    )
+    st = await publish.publish_status(Git(rb.path), github_config())
+    assert st.pr is not None and st.pr.number == 7 and st.pushed
+    assert st.ci is not None and st.ci.state == "pending"
+    assert [(c.name, c.state, c.url) for c in st.ci.checks] == [
+        ("test", "success", "u1"),
+        ("lint", "pending", "u2"),
+    ]
+    assert not st.can_merge and any("CI ještě běží" in b for b in st.blockers)
+
+
+@respx.mock
+async def test_publish_status_ready_when_ci_green(hosted: tuple[RepoBuilder, str]) -> None:
+    rb, sha = hosted
+    respx.get(REPO_API).respond(json=repo_json())
+    mock_pr_state(sha, checks=GREEN)
+    st = await publish.publish_status(Git(rb.path), github_config())
+    assert st.can_merge and st.ci is not None and st.ci.state == "success"
+
+
+@respx.mock
+async def test_publish_status_without_pr_or_offline(hosted: tuple[RepoBuilder, str]) -> None:
+    rb, _ = hosted
+    respx.get(REPO_API).respond(json=repo_json())
+    respx.get(f"{REPO_API}/pulls").respond(json=[])
+    st = await publish.publish_status(Git(rb.path), github_config())
+    assert st.pr is None and st.ci is None and st.branch == BRANCH
+    off = await publish.publish_status(Git(rb.path), github_config(), online=False)
+    assert off.pr is None and "Offline" in off.hosting_note
+
+
+@respx.mock
+async def test_publish_status_explains_missing_hosting(hosted: tuple[RepoBuilder, str]) -> None:
+    rb, _ = hosted
+    st = await publish.publish_status(Git(rb.path), Config())
+    assert st.branch == BRANCH and "nepatří žádnému nastavenému hostingu" in st.hosting_note

@@ -433,25 +433,30 @@ async def plan_merge(
         raise PublishRefused(
             _("PR #{number} je zavřený: {url}").format(number=pr.number, url=pr.url)
         )
-    plan = MergePlan(pr, ci, pick_merge_method(repo, config.publish.merge_method))
-    local = git.rev_parse(f"refs/heads/{name}")
-    if local and pr.head_sha and local != pr.head_sha:
-        plan.blockers.append(
+    return MergePlan(
+        pr,
+        ci,
+        pick_merge_method(repo, config.publish.merge_method),
+        _merge_blockers(pr, ci, git.rev_parse(f"refs/heads/{name}")),
+    )
+
+
+def _merge_blockers(pr: PullRequestInfo, ci: CIStatus, local_sha: str | None) -> list[str]:
+    """Co brání mergi PR (prázdné = jde mergnout)."""
+    blockers: list[str] = []
+    if local_sha and pr.head_sha and local_sha != pr.head_sha:
+        blockers.append(
             _(
                 "Větev na hostingu se liší od lokální – srovnej je (push nebo fetch) a zkus to znovu."
             )
         )
     if pr.mergeable is False:
-        plan.blockers.append(
-            _("PR nejde mergnout (konflikt, ochrana větve nebo chybějící schválení).")
-        )
+        blockers.append(_("PR nejde mergnout (konflikt, ochrana větve nebo chybějící schválení)."))
     elif pr.mergeable is None:
-        plan.blockers.append(
-            _("Hosting ještě zjišťuje, jestli jde PR mergnout – zkus to za chvíli.")
-        )
+        blockers.append(_("Hosting ještě zjišťuje, jestli jde PR mergnout – zkus to za chvíli."))
     if blocker := _ci_blocker(ci):
-        plan.blockers.append(blocker)
-    return plan
+        blockers.append(blocker)
+    return blockers
 
 
 async def apply_merge(
@@ -468,6 +473,117 @@ async def apply_merge(
         return await hosting.forge.get_pr(hosting.repo, fresh.pr.number)
     except HttpError as err:
         raise PublishRefused(describe_http_error(err, _("merge PR"))) from err
+
+
+# ---------------------------------------------------------------------------- stav (stránka Odeslání)
+
+
+@dataclass
+class PublishStatus:
+    """Kde je oprava na cestě ven – pro stránku Odeslání. Nic nemění a nic nevyžaduje.
+
+    Místní část (`branch`…`default_ahead`) se zjistí vždy; část z hostingu (`pr`, `ci`,
+    `blockers`) jen když se k němu jde připojit – jinak je v `hosting_note` proč ne.
+    """
+
+    branch: str | None = None
+    default: str | None = None
+    remote: str | None = None
+    commits: list[CommitInfo] = field(default_factory=list)  # opravná větev oproti výchozí
+    pushed: bool | None = None  # opravná větev je na remote ve stejné podobě
+    can_merge_local: bool = False
+    default_ahead: int = 0  # commity výchozí větev, které nejsou na žádném remote
+    pr: PullRequestInfo | None = None
+    ci: CIStatus | None = None
+    blockers: list[str] = field(default_factory=list)
+    hosting_note: str = ""
+    local_note: str = ""  # proč chybí místní část (např. žádná opravná větev)
+
+    @property
+    def can_merge(self) -> bool:
+        return self.pr is not None and self.pr.state == "open" and not self.blockers
+
+
+def local_status(git: Git, config: Config) -> PublishStatus:
+    """Místní část stavu: opravná větev, jestli je na remote, a co jde mergnout/poslat."""
+    st = PublishStatus()
+    try:
+        _check_repo(git)
+        st.default = default_branch(git)
+    except PublishRefused as err:
+        st.local_note = str(err)
+        return st
+    try:
+        st.remote = pick_remote(git, config)
+    except PublishRefused as err:
+        st.hosting_note = str(err)
+    try:
+        st.default_ahead = len(git.commits_not_on_remotes(f"refs/heads/{st.default}"))
+    except GitError:  # pragma: no cover - repo, které git nepřečte
+        st.default_ahead = 0
+    found = fix_branches(git)
+    if not found:
+        st.local_note = _(
+            "Repo nemá žádnou opravnou větev {prefix}* – nejdřív proveď léčbu (f)."
+        ).format(prefix=BRANCH_PREFIX)
+        return st
+    st.branch = found[0]
+    sha = git.rev_parse(f"refs/heads/{st.branch}")
+    base = f"refs/remotes/{st.remote}/{st.default}" if st.remote else ""
+    st.commits = _new_commits(git, base, st.branch) if base else _new_commits(git, "", st.branch)
+    if st.remote:
+        st.pushed = git.rev_parse(f"refs/remotes/{st.remote}/{st.branch}") == sha
+    try:
+        plan_merge_local(git, config, st.branch)
+        st.can_merge_local = True
+    except PublishRefused:
+        st.can_merge_local = False
+    return st
+
+
+async def hosting_status(git: Git, hosting: Hosting, status: PublishStatus) -> None:
+    """Doplní do `status` PR, CI (i po jednotlivých kontrolách) a překážky mergi z hostingu."""
+    if status.branch is None:
+        return
+    forge, repo = hosting.forge, hosting.repo
+    try:
+        found = await forge.find_pr(repo, status.branch)
+        if found is None:
+            return
+        pr = await forge.get_pr(repo, found.number)
+        ci = await forge.pr_ci(repo, pr)
+    except HttpError as err:
+        status.hosting_note = describe_http_error(err, _("načtení PR"))
+        return
+    status.pr, status.ci = pr, ci
+    if pr.state == "open":
+        status.blockers = _merge_blockers(pr, ci, git.rev_parse(f"refs/heads/{status.branch}"))
+
+
+async def publish_status(
+    git: Git,
+    config: Config,
+    *,
+    online: bool = True,
+    transport: httpx.AsyncBaseTransport | None = None,
+) -> PublishStatus:
+    """Celý stav; hosting se čte jen s `online` a když má repo token – jinak je to v poznámce."""
+    status = local_status(git, config)
+    if status.branch is None or status.remote is None:
+        return status
+    if not online:
+        status.hosting_note = _("Offline režim – PR a CI se nenačítají.")
+        return status
+    try:
+        hosting = await connect(git, config, status.remote, transport=transport)
+    except PublishRefused as err:
+        status.hosting_note = str(err)
+        return status
+    try:
+        await hosting_status(git, hosting, status)
+    finally:
+        await hosting.aclose()
+    return status
 
 
 # ---------------------------------------------------------------------------- lokální merge

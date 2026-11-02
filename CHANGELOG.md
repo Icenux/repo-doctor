@@ -4,6 +4,14 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Přidáno
+- **Stránka Odeslání oprav (#69):** push, PR/MR, merge a lokální merge mají vlastní stránku
+  (`p` na kartě repa; klávesy `P`, `C`, `M`, `L`, `U` se přesunuly z karty na ni). Ukazuje celou cestu
+  opravné větve – push → PR/MR → CI → merge – a u každého kroku další klávesu. U PR vypíše
+  **jednotlivé kontroly CI** (GitHub check runs a statusy, GitLab joby pipeline, statusy
+  Gitea/Forgejo) a důvod, proč merge zatím nejde. Dokud CI běží, stránka se každých 20 s sama
+  obnovuje, `ctrl+r` ji načte hned, `w` otevře PR/MR na webu a `⏎` na řádku CI detail kontroly.
+
 ### Opraveno
 - Falešné nálezy tajemství (#74): zjevně vymyšlené hodnoty z dokumentace a testů (`sk-abc...xyz`,
   `123...`, `1234567890abcdef`, `abcdefgh…`, `zyxwvut…`, `zxyxzxyx…`) se už nehlásí. Skener je pozná

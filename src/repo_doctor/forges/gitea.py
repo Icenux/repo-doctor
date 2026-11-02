@@ -6,6 +6,7 @@ from urllib.parse import quote
 
 from repo_doctor.config import ForgeConfig
 from repo_doctor.forges.base import (
+    CICheck,
     CIStatus,
     ConnectionReport,
     Forge,
@@ -111,7 +112,13 @@ class GiteaForge(Forge):
         ) if protected is not None else None
 
     async def latest_ci_status(
-        self, repo: ForgeRepo, branch: str, sha: str | None, *, ttl: float | None = None
+        self,
+        repo: ForgeRepo,
+        branch: str,
+        sha: str | None,
+        *,
+        ttl: float | None = None,
+        with_checks: bool = False,
     ) -> CIStatus:
         """Gitea/Forgejo Actions hlásí výsledek jako commit status výchozí branche."""
         if not sha:
@@ -136,7 +143,19 @@ class GiteaForge(Forge):
         url = str(statuses[0].get("target_url") or "")
         tail = url.rstrip("/").rsplit("/", 1)[-1]
         number = tail if "/runs/" in url and tail.isdigit() else ""
-        return CIStatus(mapped.get(state, "none"), branch, number, url)  # type: ignore[arg-type]
+        checks = (
+            [
+                CICheck(
+                    str(st.get("context") or "?"),
+                    mapped.get(str(st.get("status") or st.get("state")), "pending"),  # type: ignore[arg-type]
+                    str(st.get("target_url") or ""),
+                )
+                for st in data.get("statuses") or []
+            ]
+            if with_checks
+            else []
+        )
+        return CIStatus(mapped.get(state, "none"), branch, number, url, checks)  # type: ignore[arg-type]
 
     async def open_prs(self, repo: ForgeRepo) -> list[PullRequest]:
         items = await self.client.paginate(
@@ -179,7 +198,9 @@ class GiteaForge(Forge):
         return _pr(data)
 
     async def pr_ci(self, repo: ForgeRepo, pr: PullRequestInfo) -> CIStatus:
-        return await self.latest_ci_status(repo, pr.head_branch, pr.head_sha or None, ttl=0)
+        return await self.latest_ci_status(
+            repo, pr.head_branch, pr.head_sha or None, ttl=0, with_checks=True
+        )
 
     async def merge_pr(self, repo: ForgeRepo, pr: PullRequestInfo, method: str | None) -> None:
         await self.client.request_json(

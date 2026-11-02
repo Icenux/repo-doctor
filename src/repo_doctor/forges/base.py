@@ -49,11 +49,21 @@ class ForgeRepo:
 
 
 @dataclass
+class CICheck:
+    """Jedna kontrola CI (job, check run nebo commit status) – jen pro zobrazení."""
+
+    name: str
+    state: CIState
+    url: str = ""
+
+
+@dataclass
 class CIStatus:
     state: CIState
     ref: str = ""
     number: str = ""
     url: str = ""
+    checks: list[CICheck] = field(default_factory=list)  # vyplňuje jen `pr_ci`
 
 
 @dataclass

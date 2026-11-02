@@ -564,3 +564,22 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   takže kontrola Dockerfile ENV se nezměnila.
 - **Mimo rozsah:** klíče ve tvaru `wJalrXUt…` s opakovaným koncem a podobné hybridy se dál hlásí;
   ostatní případy řeší `repo-doctor:allow` a allowlist.
+
+
+## Stránka Odeslání oprav a stav CI (#69)
+
+- **Vlastní obrazovka `PublishScreen`** místo pěti kláves na kartě repa. Karta má jen `p`; klávesy
+  `P`/`C`/`M`/`L`/`U` jsou nový kontext `publish` (přemapování v `[keys]` dál funguje, ID akcí zůstala).
+- **Stav je čtecí:** `publish.publish_status()` složí místní část (opravná větev, je na remote?, jde
+  lokální merge?, kolik commitů výchozí větve není na remote) a z hostingu PR, CI a překážky mergi.
+  Překážky počítá společná `_merge_blockers`, kterou používá i `plan_merge`, takže stránka a merge
+  nemohou říkat něco jiného.
+- **Merge dál rozhoduje jen `apply_merge`**, který si stav i CI načte znovu těsně před zápisem;
+  stránka merge nepovoluje, jen vysvětluje.
+- **CI po jednotlivých kontrolách:** `CIStatus.checks` (`CICheck`: název, stav, odkaz) plní jen
+  `Forge.pr_ci`; sken výchozí větve (`latest_ci_status`) zůstal u jediného souhrnného stavu, takže
+  se v něm nic nezměnilo. GitLab kvůli tomu dělá jeden dotaz navíc (joby pipeline).
+- **Automatické obnovování** jen dokud je CI `pending` (20 s, `REFRESH_SECONDS`); v offline režimu
+  se hosting nevolá vůbec a stránka to řekne. Akce (push, PR, merge) offline fungují, jako dřív.
+- **Mimo rozsah:** `repo-doctor publish status` v CLI a stav v MCP serveru (zatím jen TUI).
+

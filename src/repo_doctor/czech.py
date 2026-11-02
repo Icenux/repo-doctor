@@ -39,6 +39,10 @@ def commits(n: int) -> str:
     return count(n, _("commit"), _("commity"), _("commitů"))
 
 
+def checks(n: int) -> str:
+    return count(n, _("kontrola"), _("kontroly"), _("kontrol"))
+
+
 def files(n: int) -> str:
     return count(n, _("soubor"), _("soubory"), _("souborů"))
 

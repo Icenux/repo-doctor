@@ -14,9 +14,9 @@ pošle, otevře PR/MR a mergne.
   skóre 0–100, tep (commity za 30 dní), stav gitu a viditelnost na hostingu.
 - **Karta repa** s diagnózou každého nálezu, vysvětlením a ručním postupem opravy.
 - **Léčba:** barevný diff navrhovaných oprav, výběr zaškrtávátky a potvrzení dialogem.
-- **Odeslání oprav:** z karty repa push opravné větve, PR/MR na GitHubu, GitLabu, Gitea i
-  Forgejo, merge na hostingu (jen po zelené CI) a lokální merge. Každý krok zvlášť, s náhledem
-  a potvrzením – viz [Odeslání oprav](#odeslání-oprav-push-pr-merge).
+- **Odeslání oprav:** vlastní stránka (`p` na kartě repa) s push opravné větve, PR/MR na GitHubu,
+  GitLabu, Gitea i Forgejo, merge na hostingu (jen po zelené CI) a lokálním merge. Je na ní vidět
+  PR i stav CI po jednotlivých kontrolách. Každý krok zvlášť, s náhledem a potvrzením – viz [Odeslání oprav](#odeslání-oprav-push-pr-merge).
 - **Funguje úplně offline** a bez hostingů; síťové kontroly (OSV.dev, PyPI, npm, API hostingů) jsou nadstavba.
 - **Minimální CLI** pro CI (`repo-doctor scan --report md|json|html`).
 - **Novinky 0.3:** samostatná aplikace bez Pythonu a dalších prostředí – balíčky `.deb`, `.rpm`,
@@ -294,11 +294,19 @@ Neplatné nebo kolidující mapování se při startu nahlásí srozumitelnou ch
 | `w` | otevřít na webu |
 | `y` | kopírovat cestu |
 | `b` | export SBOM (CycloneDX) |
+| `p` | odeslání oprav: push, PR, merge a stav CI |
+
+**Odeslání oprav**
+
+| Klávesa | Akce |
+|---|---|
 | `P` | poslat opravnou větev (push) |
 | `C` | vytvořit PR/MR z opravné větve |
 | `M` | mergnout PR na hostingu (po zelené CI) |
 | `L` | lokální merge opravy (fast-forward) |
 | `U` | poslat výchozí větev (po lokálním merge) |
+| `ctrl+r` | načíst stav znovu (PR, CI) |
+| `w` | otevřít PR/MR na webu |
 
 **Léčba**
 
@@ -536,9 +544,15 @@ editor = "nvim"            # klávesa o v kartě repa; bez hodnoty $VISUAL / $ED
 
 ## Odeslání oprav (push, PR, merge)
 
-Léčba (`f`) vytvoří větev `repo-doctor/fixes-<datum>`. Dál ji do světa dostaneš v kartě
-repa, každý krok zvlášť (stejně `repo-doctor publish push|pr|merge|merge-local`, kde je
-výchozí náhled a zápis až s `--apply`):
+Léčba (`f`) vytvoří větev `repo-doctor/fixes-<datum>`. Dál ji do světa dostaneš na stránce
+**Odeslání oprav** (`p` v kartě repa), každý krok zvlášť (stejně `repo-doctor publish
+push|pr|merge|merge-local`, kde je výchozí náhled a zápis až s `--apply`).
+
+Stránka ukazuje celou cestu větve – push → PR/MR → CI → merge – a u každého kroku, co dál
+a kterou klávesou. U pull requestu vypíše **jednotlivé kontroly CI** (název, výsledek, odkaz;
+`⏎` otevře detail kontroly) a u merge důvod, proč zatím nejde. Dokud CI běží, stránka se sama
+obnovuje (každých 20 s), `ctrl+r` načte stav hned; v offline režimu se PR a CI nenačítají.
+Bez doběhlé zelené CI merge nenabídne:
 
 | krok | klávesa | co se stane |
 |---|---|---|
@@ -585,7 +599,7 @@ klávesou `o`.
 - **Synchronizace** (`0`, `repo-doctor sync --apply`) – jediná funkce, která mění pracovní
   strom, a **jen fast-forwardem** (`git merge --ff-only`) u čistých rep na sledované větvi;
   stav se těsně předtím ověří znovu. Nikdy merge commit, rebase ani reset.
-- **Odeslání oprav** (`P`, `C`, `M`, `L`, `U`, `repo-doctor publish … --apply`) – jediné, co
+- **Odeslání oprav** (stránka `p`: `P`, `C`, `M`, `L`, `U`, `repo-doctor publish … --apply`) – jediné, co
   zapisuje na remote a hosting: push jedné opravné větve (bez force a tagů, po kontrole tajemství),
   PR/MR, merge PR po zelené CI a lokální fast-forward. Každý krok je samostatný, s náhledem
   a potvrzením; těsně před zápisem se stav ověří znovu.
