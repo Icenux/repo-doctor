@@ -203,6 +203,60 @@ def is_excluded_path(path: str) -> bool:
     return any(part in FIXTURE_DIRS for part in p.parts[:-1])
 
 
+SEQUENCE_RUN = 6  # tolik po sobě jdoucích znaků (123456, abcdef, zyxwvu) už není náhoda
+SEQUENCE_SHARE = 0.8  # řady musí tvořit aspoň tento podíl hodnoty (Company123456 zůstává nález)
+MAX_PERIOD = 4  # opakující se vzor typu zxyxzxyx…
+TRUNCATED_EXAMPLE = re.compile(r"[A-Za-z0-9_-]{0,12}(?:\.\.\.|…)[A-Za-z0-9_-]{0,12}")
+
+
+def _sequence_share(value: str) -> float:
+    """Podíl znaků, které leží v souvislé vzestupné či sestupné řadě písmen nebo číslic (≥ SEQUENCE_RUN)."""
+    lowered = value.lower()
+    n = len(lowered)
+    if n < SEQUENCE_RUN:
+        return 0.0
+    covered = [False] * n
+    start = 0
+    step = 0
+    for i in range(1, n + 1):
+        diff = 0
+        if i < n:
+            prev, cur = lowered[i - 1], lowered[i]
+            same_class = prev.isalnum() and cur.isalnum() and prev.isdigit() == cur.isdigit()
+            if same_class and ord(cur) - ord(prev) in (1, -1):
+                diff = ord(cur) - ord(prev)
+        if diff and (step in (0, diff)):
+            step = diff
+            continue
+        if i - start >= SEQUENCE_RUN and step:
+            covered[start:i] = [True] * (i - start)
+        start = i - 1 if diff else i
+        step = diff
+    return sum(covered) / n
+
+
+def _is_periodic(value: str) -> bool:
+    n = len(value)
+    if n < 2 * MAX_PERIOD:
+        return False
+    for period in range(1, MAX_PERIOD + 1):
+        if all(value[i] == value[i - period] for i in range(period, n)):
+            return True
+    return False
+
+
+def _is_obvious_fake(value: str) -> bool:
+    """Celá hodnota je zjevně vymyšlená: `sk-abc...xyz`, `1234567890`, `abcdefgh`, `zxyxzxyx`.
+
+    Posuzuje se hodnota jako celek, ne podřetězec: reálné heslo `Company123456` se dál hlásí.
+    """
+    return (
+        TRUNCATED_EXAMPLE.fullmatch(value) is not None
+        or _sequence_share(value) >= SEQUENCE_SHARE
+        or _is_periodic(value)
+    )
+
+
 def _looks_placeholder(value: str) -> bool:
     if PLACEHOLDER.search(value):
         return True
@@ -234,6 +288,8 @@ PLACEHOLDER_RULES = {
     "aws-secret-key",
     "openai-key",
 }
+# Hlavička privátního klíče je pevný text, ne hodnota k posouzení.
+NO_FAKE_FILTER = {"private-key"}
 DEFAULT_DB_PASSWORDS = {
     "postgres",
     "password",
@@ -251,6 +307,8 @@ def _first_match(rule: Rule, line: str) -> str | None:
     for m in rule.pattern.finditer(line):
         value = m.group(rule.group)
         if rule.id in PLACEHOLDER_RULES and _looks_placeholder(value):
+            continue
+        if rule.id not in NO_FAKE_FILTER and _is_obvious_fake(value):
             continue
         if rule.id == "connection-string" and value.lower() in DEFAULT_DB_PASSWORDS:
             continue
