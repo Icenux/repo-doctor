@@ -25,7 +25,6 @@ from repo_doctor.scoring import gauge, score_label, sparkline
 from repo_doctor.tui.bindings import bindings
 from repo_doctor.tui.screens.base import BaseScreen
 from repo_doctor.tui.screens.dialogs import InputDialog
-from repo_doctor.tui.screens.publish import PublishFlow
 from repo_doctor.tui.util import (
     editor_command,
     git_state,
@@ -313,7 +312,6 @@ class DetailScreen(BaseScreen):
         super().__init__()
         self.path = path
         self.current: Finding | None = None
-        self.publishing = PublishFlow(self, path)
 
     @property
     def rd(self) -> RepoDoctorApp:
@@ -339,7 +337,7 @@ class DetailScreen(BaseScreen):
                 ("esc", _("zpět")),
                 ("j/k", _("nález")),
                 "open_fix",
-                ("P/C/M/L", _("push · PR · merge · lokální merge")),
+                "publish_open",
                 "allowlist",
                 "open_editor",
                 "open_web",
@@ -421,20 +419,8 @@ class DetailScreen(BaseScreen):
             repo.path, self.current.check_id if self.current and self.current.fixable else None
         )
 
-    def action_publish_push(self) -> None:
-        self.publishing.start("push")
-
-    def action_publish_push_default(self) -> None:
-        self.publishing.start("push_default")
-
-    def action_publish_pr(self) -> None:
-        self.publishing.start("pr")
-
-    def action_publish_merge(self) -> None:
-        self.publishing.start("merge")
-
-    def action_publish_merge_local(self) -> None:
-        self.publishing.start("merge_local")
+    def action_publish_open(self) -> None:
+        self.rd.open_publish(self.path)
 
     def action_allowlist(self) -> None:
         repo, finding = self.repo, self.current

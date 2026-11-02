@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import re
+from typing import Any
 from urllib.parse import quote, urlsplit
 
 from repo_doctor.config import ForgeConfig
 from repo_doctor.forges.base import (
+    CICheck,
     CIState,
     CIStatus,
     ConnectionReport,
@@ -62,6 +64,31 @@ def _merge_methods(d: dict[str, object]) -> tuple[str, ...]:
         ("rebase", "allow_rebase_merge"),
     )
     return tuple(method for method, key in flags if d.get(key))
+
+
+def _run_check(run: dict[str, Any]) -> CICheck:
+    """Check run (Actions) → řádek CI: dokud neskončil, běží; neutral a skipped se berou jako prošlé."""
+    state: CIState
+    if run.get("status") != "completed":
+        state = "pending"
+    elif run.get("conclusion") in ("success", "neutral", "skipped"):
+        state = "success"
+    else:
+        state = "failure"
+    return CICheck(str(run.get("name") or "?"), state, str(run.get("html_url") or ""))
+
+
+def _status_checks(statuses: dict[str, Any]) -> list[CICheck]:
+    """Klasické commit statusy (třetí strany) jako řádky CI."""
+    mapped: dict[str, CIState] = {"success": "success", "failure": "failure", "error": "failure"}
+    return [
+        CICheck(
+            str(s.get("context") or "?"),
+            mapped.get(str(s.get("state")), "pending"),
+            str(s.get("target_url") or ""),
+        )
+        for s in statuses.get("statuses") or []
+    ]
 
 
 def _pr(d: dict[str, object]) -> PullRequestInfo:
@@ -222,7 +249,9 @@ class GitHubForge(Forge):
             state = "none"
         else:
             state = "unknown"
-        return CIStatus(state, pr.head_branch, "", pr.url)
+        return CIStatus(
+            state, pr.head_branch, "", pr.url, [*map(_run_check, items), *_status_checks(statuses)]
+        )
 
     async def merge_pr(self, repo: ForgeRepo, pr: PullRequestInfo, method: str | None) -> None:
         payload: dict[str, str] = {"sha": pr.head_sha}

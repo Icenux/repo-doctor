@@ -512,6 +512,12 @@ class RepoDoctorApp(App[int]):
         if self.go_home():
             self.push_screen(DetailScreen(path))
 
+    def open_publish(self, path: str) -> None:
+        from repo_doctor.tui.screens.publish import PublishScreen
+
+        self.selected_path = path
+        self.push_screen(PublishScreen(path))
+
     def open_fix(self, path: str, focus_check: str | None = None) -> None:
         from repo_doctor.tui.screens.fix import FixScreen
 

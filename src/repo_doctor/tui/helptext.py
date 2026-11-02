@@ -123,10 +123,22 @@ PAGES: dict[str, Page] = {
             N_(
                 "a skryje nález do allowlistu, o otevře soubor v editoru, w repo na webu, y zkopíruje cestu."
             ),
+            N_("p otevře stránku Odeslání oprav: push, PR/MR, merge a stav CI opravné větve."),
+        ),
+    ),
+    "publish": Page(
+        N_(
+            "Odeslání oprav: kde je opravná větev na cestě ven – push, PR/MR, CI a merge na jednom místě."
+        ),
+        (
             N_(
-                "Opravnou větev odešleš zkratkami P (push), C (PR/MR) a M (merge po zelené CI), "
-                "lokálně L; každý krok je zvlášť a s potvrzením."
+                "P pošle větev, C vytvoří PR/MR, M ho mergne – každý krok zvlášť a s potvrzením (výchozí Zrušit)."
             ),
+            N_(
+                "Merge jde jen po doběhnuté zelené CI; dokud běží, stránka se sama obnovuje, ctrl+r načte stav hned."
+            ),
+            N_("L posune výchozí větev lokálně (jen fast-forward), U ji pak pošle na remote."),
+            N_("w otevře PR/MR na webu, ⏎ na řádku CI otevře detail té kontroly."),
         ),
     ),
     "fix": Page(
