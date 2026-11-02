@@ -93,11 +93,11 @@ def test_fake_filter_keeps_realistic_values() -> None:
 @pytest.mark.parametrize(
     "line",
     [
-        'password = "Qwerty123456"',
-        'password = "Company123456"',
-        'api_key = "Company123456789"',
-        "DATABASE_URL=postgres://app:" + "Company123456" + "@db/app",
-        "DATABASE_URL=postgres://app:" + "Qwerty123456" + "@db/app",
+        'password = "' + "Qwerty" + "123456" + '"',
+        'password = "' + "Company" + "123456" + '"',
+        'api_key = "' + "Company" + "123456789" + '"',
+        "DATABASE_URL=postgres://app:" + "Company" + "123456" + "@db/app",
+        "DATABASE_URL=postgres://app:" + "Qwerty" + "123456" + "@db/app",
         'secret_key = "some-long-text-with-' + "abc...xyz" + '-inside"',
     ],
 )

@@ -21,3 +21,18 @@ check = "secrets-history"
 hash = "40d7cc7d3abf5253"
 reason = "falešný GitLab token v historii testu přesměrování (tests/test_httpclient.py)"
 check = "secrets-history"
+
+[[allowlist]]
+hash = "a9cb0103080900fb"
+reason = "falešné heslo v historii testu filtru zjevných vymyšlenostek (#74), ve stromu se skládá za běhu"
+check = "secrets-history"
+
+[[allowlist]]
+hash = "b807ac8c27896bdf"
+reason = "falešné heslo v historii testu filtru zjevných vymyšlenostek (#74), ve stromu se skládá za běhu"
+check = "secrets-history"
+
+[[allowlist]]
+hash = "f9c30f44f01a909b"
+reason = "falešné heslo v historii testu filtru zjevných vymyšlenostek (#74), ve stromu se skládá za běhu"
+check = "secrets-history"
