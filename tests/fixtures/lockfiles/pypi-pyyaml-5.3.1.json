@@ -1,0 +1,177 @@
+{
+ "info": {
+  "requires_dist": null,
+  "version": "5.3.1"
+ },
+ "urls": [
+  {
+   "digests": {
+    "blake2b_256": "c8af64e32cb1c31dee44235ef39ea5ecbcde5d85f8f1d3b894b9788f53d82cf7",
+    "md5": "a2675c04e39f87dbf299feef41775dee",
+    "sha256": "74809a57b329d6cc0fdccee6318f44b9b8649961fa73144a98735b0aaf029f1f"
+   },
+   "filename": "PyYAML-5.3.1-cp27-cp27m-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 195419,
+   "upload_time_iso_8601": "2020-03-18T21:41:00.814795Z",
+   "url": "https://files.pythonhosted.org/packages/c8/af/64e32cb1c31dee44235ef39ea5ecbcde5d85f8f1d3b894b9788f53d82cf7/PyYAML-5.3.1-cp27-cp27m-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "64fef317d7e063051f76694d02462db3b48056e893bfb303b0eacc62310dbcdf",
+    "md5": "ca9f12a47ffd735c0803398edb55dafd",
+    "sha256": "240097ff019d7c70a4922b6869d8a86407758333f02203e0fc6ff79c5dcede76"
+   },
+   "filename": "PyYAML-5.3.1-cp27-cp27m-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 212008,
+   "upload_time_iso_8601": "2020-03-18T21:41:03.022784Z",
+   "url": "https://files.pythonhosted.org/packages/64/fe/f317d7e063051f76694d02462db3b48056e893bfb303b0eacc62310dbcdf/PyYAML-5.3.1-cp27-cp27m-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "c601761c52e9cb710475c610d9ecb745ca506ca822d327d6c7449ddb341ba4e8",
+    "md5": "565423dd4c1ee3f3d72bacc9e79f7b1d",
+    "sha256": "4f4b913ca1a7319b33cfb1369e91e50354d6f07a135f3b901aca02aa95940bd2"
+   },
+   "filename": "PyYAML-5.3.1-cp35-cp35m-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 191154,
+   "upload_time_iso_8601": "2020-03-18T21:41:05.261237Z",
+   "url": "https://files.pythonhosted.org/packages/c6/01/761c52e9cb710475c610d9ecb745ca506ca822d327d6c7449ddb341ba4e8/PyYAML-5.3.1-cp35-cp35m-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "4c8e89baf0c276d9c3a9e310cd6a32b1d9d24649ee9b89ea3ad0fb3ce86ee560",
+    "md5": "a956742c4efe68bc387dc46bf34d91a0",
+    "sha256": "cc8955cfbfc7a115fa81d85284ee61147059a753344bc51098f3ccd69b0d7e0c"
+   },
+   "filename": "PyYAML-5.3.1-cp35-cp35m-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 209287,
+   "upload_time_iso_8601": "2020-03-18T21:41:07.469994Z",
+   "url": "https://files.pythonhosted.org/packages/4c/8e/89baf0c276d9c3a9e310cd6a32b1d9d24649ee9b89ea3ad0fb3ce86ee560/PyYAML-5.3.1-cp35-cp35m-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "ba79956a6b6f0d5549476aca5dd1275f2ad164f0a865b066b730d0fb78d72d8f",
+    "md5": "a8fd3c805e80b397d1c440437daad21c",
+    "sha256": "7739fc0fa8205b3ee8808aea45e968bc90082c10aef6ea95e855e10abf4a37b2"
+   },
+   "filename": "PyYAML-5.3.1-cp36-cp36m-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 196128,
+   "upload_time_iso_8601": "2020-03-18T21:41:09.670329Z",
+   "url": "https://files.pythonhosted.org/packages/ba/79/956a6b6f0d5549476aca5dd1275f2ad164f0a865b066b730d0fb78d72d8f/PyYAML-5.3.1-cp36-cp36m-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "615e0386f8d74ce6e0a183b93a7e02d32b2629c0a2c8e9db806a3f5eebbfa221",
+    "md5": "1d6e195f715fb6eaaa653760bd277701",
+    "sha256": "69f00dca373f240f842b2931fb2c7e14ddbacd1397d57157a9b005a6a9942648"
+   },
+   "filename": "PyYAML-5.3.1-cp36-cp36m-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 215894,
+   "upload_time_iso_8601": "2020-03-18T21:41:11.627572Z",
+   "url": "https://files.pythonhosted.org/packages/61/5e/0386f8d74ce6e0a183b93a7e02d32b2629c0a2c8e9db806a3f5eebbfa221/PyYAML-5.3.1-cp36-cp36m-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "e261052d3c26d38aeb663e4f080e04c6a7fa67a55c3ed9b4bda051b70ef06867",
+    "md5": "b179aa821c7313337a7b6330b5b404f0",
+    "sha256": "d13155f591e6fcc1ec3b30685d50bf0711574e2c0dfffd7644babf8b5102ca1a"
+   },
+   "filename": "PyYAML-5.3.1-cp37-cp37m-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 196328,
+   "upload_time_iso_8601": "2020-03-18T21:41:13.828450Z",
+   "url": "https://files.pythonhosted.org/packages/e2/61/052d3c26d38aeb663e4f080e04c6a7fa67a55c3ed9b4bda051b70ef06867/PyYAML-5.3.1-cp37-cp37m-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "fbaa1a7ac452c52b93ab759d0b5b81c901ea122d95a5abf429decc660a44a2f1",
+    "md5": "929c39b88332200798cbb5c0b4069cc3",
+    "sha256": "73f099454b799e05e5ab51423c7bcf361c58d3206fa7b0d555426b1f4d9a3eaf"
+   },
+   "filename": "PyYAML-5.3.1-cp37-cp37m-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 216306,
+   "upload_time_iso_8601": "2020-03-18T21:41:15.949095Z",
+   "url": "https://files.pythonhosted.org/packages/fb/aa/1a7ac452c52b93ab759d0b5b81c901ea122d95a5abf429decc660a44a2f1/PyYAML-5.3.1-cp37-cp37m-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "0cf4fcdef9ab4e9044edce9c1e50adf175e6e6d9b39276caf0df1eeb9b125260",
+    "md5": "9afe794b9b0d40f4410c5c433d5c837b",
+    "sha256": "06a0d7ba600ce0b2d2fe2e78453a470b5a6e000a985dd4a4e54e436cc36b0e97"
+   },
+   "filename": "PyYAML-5.3.1-cp38-cp38-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 199035,
+   "upload_time_iso_8601": "2020-03-18T21:41:17.731320Z",
+   "url": "https://files.pythonhosted.org/packages/0c/f4/fcdef9ab4e9044edce9c1e50adf175e6e6d9b39276caf0df1eeb9b125260/PyYAML-5.3.1-cp38-cp38-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "7b1d3cf27312e162ff8bf3a9ae8c7472bb28ca6ae7f86e7130c23b798ec4c12a",
+    "md5": "425149f16db853985d660c42bf5ea017",
+    "sha256": "95f71d2af0ff4227885f7a6605c37fd53d3a106fcab511b8860ecca9fcf400ee"
+   },
+   "filename": "PyYAML-5.3.1-cp38-cp38-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 219601,
+   "upload_time_iso_8601": "2020-03-18T21:41:19.920152Z",
+   "url": "https://files.pythonhosted.org/packages/7b/1d/3cf27312e162ff8bf3a9ae8c7472bb28ca6ae7f86e7130c23b798ec4c12a/PyYAML-5.3.1-cp38-cp38-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "5ba5519cd8848ffe3b97a15bea04a5fd38aedec3a0507940b057d7a2d8ef8aa4",
+    "md5": "bd6df3dad690868b26fbdf613450551a",
+    "sha256": "ad9c67312c84def58f3c04504727ca879cb0013b2517c85a9a253f0cb6380c0a"
+   },
+   "filename": "PyYAML-5.3.1-cp39-cp39-win32.whl",
+   "packagetype": "bdist_wheel",
+   "size": 194883,
+   "upload_time_iso_8601": "2020-11-19T02:38:37.765224Z",
+   "url": "https://files.pythonhosted.org/packages/5b/a5/519cd8848ffe3b97a15bea04a5fd38aedec3a0507940b057d7a2d8ef8aa4/PyYAML-5.3.1-cp39-cp39-win32.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "8f26e6a31906395fb4a83d65188af37cce3166bf4b4609c07702bb65eb2974cc",
+    "md5": "7a5d2419898a6d4783b9694da7757670",
+    "sha256": "6034f55dab5fea9e53f436aa68fa3ace2634918e8b5994d82f3621c04ff5ed2e"
+   },
+   "filename": "PyYAML-5.3.1-cp39-cp39-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "size": 212015,
+   "upload_time_iso_8601": "2020-11-19T02:38:39.212893Z",
+   "url": "https://files.pythonhosted.org/packages/8f/26/e6a31906395fb4a83d65188af37cce3166bf4b4609c07702bb65eb2974cc/PyYAML-5.3.1-cp39-cp39-win_amd64.whl",
+   "yanked": false
+  },
+  {
+   "digests": {
+    "blake2b_256": "64c2b80047c7ac2478f9501676c988a5411ed5572f35d1beff9cae07d321512c",
+    "md5": "d3590b85917362e837298e733321962b",
+    "sha256": "b8eac752c5e14d3eca0e6dd9199cd627518cb5ec06add0de9d32baeee6fe645d"
+   },
+   "filename": "PyYAML-5.3.1.tar.gz",
+   "packagetype": "sdist",
+   "size": 269377,
+   "upload_time_iso_8601": "2020-03-18T21:41:21.618778Z",
+   "url": "https://files.pythonhosted.org/packages/64/c2/b80047c7ac2478f9501676c988a5411ed5572f35d1beff9cae07d321512c/PyYAML-5.3.1.tar.gz",
+   "yanked": false
+  }
+ ]
+}

@@ -157,6 +157,7 @@ def sample_result() -> ScanResult:
                     "jsonwebtoken 8.5.1 (npm): GHSA-8cf7-32gw-wr33",
                     H,
                     path="package-lock.json",
+                    fixable=False,  # bez opravené verze v OSV není co aktualizovat
                 ),
                 F("forge-no-branch-protection", "výchozí branche main nemá ochranu"),
                 F(

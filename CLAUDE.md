@@ -25,11 +25,21 @@ Testovací „tajemství“ se skládají až za běhu (`tests/factory.py`), do 
 skutečné ani regexům odpovídající hodnoty. Testy TUI používají `tests/tui_helpers.py`
 (`make_app`, `FakeScanner`), ukázková data jsou v `tests/sample.py`.
 
+## Zásada: funguje hned po instalaci
+
+repo-doctor se nainstaluje z balíčku a musí fungovat bez dalších programů – **stačí `git`**.
+Nic, co by uživatel musel doinstalovat (`uv`, `npm`, `pip`, `cargo`, `go`…), nesmí být podmínkou
+funkce a repo-doctor je nespouští. Opravy píšeme v Pythonu (např. `lockfiles/` přepisuje lockfily
+z metadat registrů). Volitelné programy (`gitleaks`, `notify-send`…) mají záložní chování a jsou
+vyjmenované v `tests/test_no_external_tools.py`, který tuhle zásadu hlídá. `uv` je jen vývojový
+nástroj. Nejde-li něco bezpečně udělat bez cizího nástroje, oprava se nenabídne a zůstane
+ruční postup v dokumentaci kontroly – nikdy „spusť si X“ jako náhrada léčby.
+
 ## Architektura
 
 - Jádro je oddělené od UI: `discovery`, `gitwrap`, `checks/`, `scanner`, `fixes`, `reports/`,
   `forges/`, `config`, `netpolicy` (http jen pro `allow_http_hosts`), `cleanup` (koš),
-  `sync` (jen ff), `publish` (push, PR/MR, merge), `guard`, `sbom`, `notify`, `schedule`, `mcpserver`. TUI (`tui/`), CLI
+  `sync` (jen ff), `lockfiles` (přepis `uv.lock` / `package-lock.json` čistě v Pythonu), `publish` (push, PR/MR, merge), `guard`, `sbom`, `notify`, `schedule`, `mcpserver`. TUI (`tui/`), CLI
   (`cli.py`) i MCP server jsou tenké vrstvy nad ním.
 - Co mění soubory, repa nebo hosting, je volitelné, s náhledem a potvrzením (výchozí „Zrušit“).
   Léčba jen vytváří větev; push, PR, merge a lokální merge jsou samostatné kroky v `publish`

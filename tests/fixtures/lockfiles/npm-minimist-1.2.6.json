@@ -1,0 +1,24 @@
+{
+ "bin": null,
+ "dependencies": null,
+ "deprecated": null,
+ "dist": {
+  "fileCount": 21,
+  "integrity": "sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==",
+  "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v4.10.10\r\nComment: https://openpgpjs.org\r\n\r\nwsFzBAEBCAAGBQJiOTl2ACEJED1NWxICdlZqFiEECWMYAoorWMhJKdjhPU1b\r\nEgJ2VmrHWQ/+M1DlrfJO6t4u34gsO6W25Ya5eyBICPBYhHGX7XHY6WAfMK54\r\nmXp06/beXLmXEExDbyYsJVeC5TX5pLQyOpi0sAJq377SR8DR2V2biVOLDiFD\r\n5lcbE04h3ccz0/J5m3dLuEzbVwi0sTJeDTAVYkBheCWhotA2RKK/4x/3Cm2v\r\n8fLvX9i9l/mAlJl2V2E9u+0oQnUBqWOtP0zbUBNe2rR/cGld6OkxxETBbsti\r\nmSEJXI36XBQ1rRQaJ5AKlnCs2ooCf8nSDWWcV4QiH0GukQRC1d7QwzCUPAFI\r\nEjMGqbIxYQbks1t9KLLheGKLXJM763NWPNU8456WJjmAbogMK75mlyC8CMSn\r\nW2EPNhEhWbfhJ7G2Kz1J0i5HPUD1REX5mean3hm6w1CJFi30lmAya9JAMvvv\r\n0ce+Xzk3CUzXn/knh+faKGIrAZELT8CnnGo0bvvSNv/UL9Z+MrtigEX1AJRS\r\nBavdDxjttMcGgdYcsCpchbcgp5sVXxT20tzakGJphkdDypQJ0QiueZKUVkIs\r\njOCfeHBIUV8Pft0LiJv5r2Xa4KbGgRcd8eUdGAAXBT++6o5cUtnnjbAlqPNP\r\nuf8DyBD/NJFd/C2Wk7m5PJkG5IjP7zErmJLbBaifeYcXTQsH2NNf+AzJh6Lx\r\n12omUQn4FF6Wk8D6cdBbhK2iPyobfxWy80o=\r\n=hKft\r\n-----END PGP SIGNATURE-----\r\n",
+  "shasum": "8637a5b759ea0d6e98702cfb3a9283323c93af44",
+  "signatures": [
+   {
+    "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+    "sig": "MEUCIQC41Vp3EYBOR5hTVEP3OyA25LtgG+XqzaT1qv9TEC4BrQIgejxoLAjHu8BP1g3bwVpoFNw1lrht20mygUgDWMHpr04="
+   }
+  ],
+  "tarball": "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz",
+  "unpackedSize": 33202
+ },
+ "hasInstallScript": null,
+ "name": "minimist",
+ "optionalDependencies": null,
+ "peerDependencies": null,
+ "version": "1.2.6"
+}

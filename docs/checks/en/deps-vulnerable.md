@@ -8,7 +8,9 @@ Parses lockfiles (`uv.lock`, `poetry.lock`, `requirements*.txt` with `==`, `pypr
 
 ## Automatic fix
 
-In the fix screen (`f`) repo-doctor updates vulnerable dependencies to the **lowest fixed version** (per OSV) and stores the resulting lockfile on a new branch – no other CLI to run. The package manager (`uv lock --upgrade-package`, `npm update --package-lock-only --ignore-scripts`) runs in a temporary directory containing only the manifest and lockfile from HEAD, so neither the repo nor the working tree is touched and nothing from the repo is executed. It is offered only when `uv` / `npm` is in `PATH` and OSV knows the fixed version. Anything a manifest constraint blocks (e.g. `requests<2.20`) stays as is and the fix says so. `Cargo.lock`, `go.sum`, `yarn.lock` and `pnpm-lock.yaml` are still manual. Run the project's tests after merging.
+In the fix screen (`f`) repo-doctor rewrites a vulnerable dependency in the lockfile to the **lowest fixed version** (per OSV) and stores the result on a new branch. You need neither `uv`, `npm` nor any other program: it takes the version, link and checksum from the PyPI and npm registries itself and edits the lockfile in pure Python. Supported: `uv.lock` and `package-lock.json` (lockfileVersion 3).
+
+The rewrite is deliberately careful and changes only the version of one package. The offer **does not appear** (the manual steps below remain) when the dependency tree would have to be resolved again: the new version has different dependencies, another package forbids it (e.g. `idna<3.5`), the package is not from a public registry, the lockfile has unusual formatting or environment restrictions, or the fixed version changes install scripts. For `uv.lock` the output is also checked against the old version of the same package, so nothing is written that cannot be reproduced exactly. Run the project's tests after merging. `Cargo.lock`, `go.sum`, `yarn.lock`, `pnpm-lock.yaml` and `poetry.lock` are still manual.
 
 ## Why it matters
 
@@ -17,5 +19,5 @@ Known vulnerabilities have public exploits; updating is usually the cheapest def
 ## Steps
 
 1. Look up the vulnerability ID (GHSA/CVE/PYSEC) and find the fixed version.
-2. Update the dependency – in repo-doctor via the fix screen (`f`), elsewhere manually (`uv lock --upgrade-package X`, `npm update X`, `cargo update -p X`, `go get X@latest`).
+2. Update the dependency. For `uv.lock` and `package-lock.json` the fix screen (`f`) does it; for the others, and where the fix does not help, do it manually (`uv lock --upgrade-package X`, `npm update X`, `cargo update -p X`, `go get X@latest`).
 3. If you cannot update, assess the impact and add the finding to the allowlist with a reason.

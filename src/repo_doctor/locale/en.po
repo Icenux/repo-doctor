@@ -537,7 +537,7 @@ msgstr " Edit folder "
 msgid " a "
 msgstr " and "
 
-#: repo_doctor/checks/deps.py:139
+#: repo_doctor/checks/deps.py:140
 msgid " a {count} další"
 msgstr " and {count} more"
 
@@ -959,7 +959,7 @@ msgstr "Update"
 msgid "Aktualizovat nástroje"
 msgstr "Update tools"
 
-#: repo_doctor/checks/deps.py:112
+#: repo_doctor/checks/deps.py:113
 msgid "Aktualizovat zranitelné závislosti"
 msgstr "Update vulnerable dependencies"
 
@@ -1135,7 +1135,7 @@ msgstr "Linter or formatter configuration missing"
 msgid "Chybí licence"
 msgstr "No license"
 
-#: repo_doctor/checks/deps.py:155
+#: repo_doctor/checks/deps.py:156
 msgid "Chybí lockfile"
 msgstr "No lockfile"
 
@@ -2349,7 +2349,7 @@ msgstr "Scheduled scan: {v} · {describe}"
 msgid "Po checkoutu větve spusť `pre-commit install`."
 msgstr "After checking out the branch, run `pre-commit install`."
 
-#: repo_doctor/checks/deps.py:109
+#: repo_doctor/checks/deps.py:110
 msgid "Po mergi spusť testy projektu – aktualizace mohou změnit chování."
 msgstr "Run the project's tests after merging – updates can change behaviour."
 
@@ -3533,11 +3533,11 @@ msgstr "A forgotten debugger statement."
 msgid "Zastaralé lokální branche"
 msgstr "Stale local branches"
 
-#: repo_doctor/checks/deps.py:122
+#: repo_doctor/checks/deps.py:123
 msgid "Zastaralé závislosti"
 msgstr "Outdated dependencies"
 
-#: repo_doctor/checks/deps.py:143
+#: repo_doctor/checks/deps.py:144
 msgid "Zastaralé závislosti ({level})"
 msgstr "Outdated dependencies ({level})"
 
@@ -3731,9 +3731,25 @@ msgstr "automatic (system language)"
 msgid "autoři {authors}"
 msgstr "authors {authors}"
 
+#: repo_doctor/lockfiles/npm.py:90
+msgid "balíček je alias nebo odkaz (workspace)"
+msgstr "the package is an alias or a link (workspace)"
+
 #: repo_doctor/checks/deps_deep.py:382
 msgid "balíček je označený jako deprecated: {note}"
 msgstr "the package is marked as deprecated: {note}"
+
+#: repo_doctor/lockfiles/pypi.py:152
+msgid "balíček nepochází z PyPI (jiný index, git, soubor)"
+msgstr "the package is not from PyPI (other index, git, file)"
+
+#: repo_doctor/lockfiles/npm.py:92
+msgid "balíček nepochází z registru npmjs.org (git, soukromý registr, soubor)"
+msgstr "the package is not from the npmjs.org registry (git, private registry, file)"
+
+#: repo_doctor/lockfiles/pypi.py:119
+msgid "balíček v lockfilu nelze najít"
+msgstr "the package cannot be found in the lockfile"
 
 #: repo_doctor/tui/screens/publish.py:482
 msgid "bez PR/MR není co sledovat"
@@ -4383,9 +4399,29 @@ msgstr "history scan limit (s)"
 msgid "lint + testy ({key})"
 msgstr "lint + tests ({key})"
 
-#: repo_doctor/depupdate.py:146
+#: repo_doctor/lockfiles/npm.py:46
+msgid "lockfile má neobvyklé formátování – přepsal by se celý"
+msgstr "the lockfile has unusual formatting – the whole file would be rewritten"
+
+#: repo_doctor/lockfiles/__init__.py:118
 msgid "lockfile nejde zpracovat"
 msgstr "the lockfile cannot be processed"
+
+#: repo_doctor/lockfiles/npm.py:44
+msgid "lockfile není platný JSON"
+msgstr "the lockfile is not valid JSON"
+
+#: repo_doctor/lockfiles/pypi.py:126
+msgid "lockfile není platný TOML"
+msgstr "the lockfile is not valid TOML"
+
+#: repo_doctor/lockfiles/pypi.py:130
+msgid "lockfile omezuje prostředí nebo má větve řešení – bezpečně ho přepsat nelze"
+msgstr "the lockfile restricts environments or has resolution forks – it cannot be rewritten safely"
+
+#: repo_doctor/lockfiles/pypi.py:132
+msgid "lockfile používá exclude-newer – nová verze by ho mohla porušit"
+msgstr "the lockfile uses exclude-newer – the new version could violate it"
 
 #: repo_doctor/tui/screens/publish.py:323
 msgid "lokální merge"
@@ -4442,6 +4478,10 @@ msgstr "merged into {default}"
 #: repo_doctor/tui/screens/publish.py:473
 msgid "mergnutý"
 msgstr "merged"
+
+#: repo_doctor/lockfiles/pypi.py:102
+msgid "metadata balíčku nejdou přečíst"
+msgstr "the package metadata cannot be read"
 
 #: repo_doctor/cleanup.py:348
 msgid "mimo repozitář"
@@ -4609,6 +4649,14 @@ msgstr "first a PR/MR and green CI"
 msgid "nejdřív pošli větev (push)"
 msgstr "push the branch first"
 
+#: repo_doctor/lockfiles/pypi.py:242
+msgid "nelze ověřit omezení z {who} (zdroj není registr)"
+msgstr "cannot verify the constraint from {who} (source is not a registry)"
+
+#: repo_doctor/lockfiles/npm.py:121
+msgid "nelze ověřit omezení „{spec}“ z {who}"
+msgstr "cannot verify the constraint “{spec}” from {who}"
+
 #: repo_doctor/httpclient.py:294
 msgid "nenalezeno (404) – {short}"
 msgstr "not found (404) – {short}"
@@ -4620,6 +4668,10 @@ msgstr "not on a branch (detached HEAD)"
 #: repo_doctor/tui/screens/forges.py:130
 msgid "neotestováno (T)"
 msgstr "not tested (T)"
+
+#: repo_doctor/lockfiles/__init__.py:65
+msgid "neočekávaná odpověď registru"
+msgstr "unexpected registry response"
 
 #: repo_doctor/httpclient.py:343
 msgid "neplatná JSON odpověď – {url}"
@@ -4644,6 +4696,10 @@ msgstr "invalid or expired token (401)"
 #: repo_doctor/gitwrap.py:1007 repo_doctor/gitwrap.py:1066 repo_doctor/gitwrap.py:1087
 msgid "neplatný název branche"
 msgstr "invalid branch name"
+
+#: repo_doctor/lockfiles/__init__.py:125
+msgid "neplatný název nebo verze"
+msgstr "invalid name or version"
 
 #: repo_doctor/config.py:176
 msgid "neplatný název remotu"
@@ -4692,6 +4748,34 @@ msgstr "notify-send or a graphical session is not available"
 #: repo_doctor/config.py:301
 msgid "notify.ntfy_url přes http:// je povolená jen pro host z allow_http_hosts"
 msgstr "notify.ntfy_url over http:// is only allowed for a host from allow_http_hosts"
+
+#: repo_doctor/lockfiles/pypi.py:197
+msgid "nová verze má jinou sadu souborů (sdist / wheely) – nelze přepsat"
+msgstr "the new version has a different set of files (sdist / wheels) – cannot be rewritten"
+
+#: repo_doctor/lockfiles/npm.py:96
+msgid "nová verze má jiné závislosti ({key}) – strom by bylo nutné přepočítat"
+msgstr "the new version has different dependencies ({key}) – the tree would have to be resolved again"
+
+#: repo_doctor/lockfiles/pypi.py:178
+msgid "nová verze má jiné závislosti – strom by bylo nutné přepočítat"
+msgstr "the new version has different dependencies – the tree would have to be resolved again"
+
+#: repo_doctor/lockfiles/npm.py:101
+msgid "nová verze mění instalační skripty – zkontroluj ji ručně"
+msgstr "the new version changes install scripts – check it manually"
+
+#: repo_doctor/lockfiles/npm.py:104
+msgid "nová verze mění spustitelné soubory (bin)"
+msgstr "the new version changes executables (bin)"
+
+#: repo_doctor/lockfiles/pypi.py:189
+msgid "nová verze vyžaduje {req}, v lockfilu je jiná verze"
+msgstr "the new version requires {req}, the lockfile has a different version"
+
+#: repo_doctor/lockfiles/pypi.py:186
+msgid "nová verze závisí na přímém odkazu"
+msgstr "the new version depends on a direct URL"
 
 #: repo_doctor/notify.py:61
 msgid "nová zranitelná závislost"
@@ -4809,9 +4893,21 @@ msgstr "offline mode"
 msgid "offline režim (bez síťových kontrol)"
 msgstr "offline mode (no network checks)"
 
+#: repo_doctor/lockfiles/pypi.py:240
+msgid "omezení z {who} nejde přečíst"
+msgstr "the constraint from {who} cannot be read"
+
 #: repo_doctor/cli.py:872
 msgid "oprava"
 msgstr "fix"
+
+#: repo_doctor/lockfiles/npm.py:72
+msgid "opravená verze je v registru označená jako zastaralá"
+msgstr "the fixed version is marked as deprecated in the registry"
+
+#: repo_doctor/lockfiles/npm.py:53 repo_doctor/lockfiles/pypi.py:140
+msgid "opravená verze {version} není vyšší běžná verze"
+msgstr "the fixed version {version} is not a higher regular version"
 
 #: repo_doctor/tui/screens/fix.py:125
 msgid "opravitelné nálezy"
@@ -4908,6 +5004,14 @@ msgstr "pickle/marshal.load() on untrusted data runs code."
 #: repo_doctor/checks/duplicates.py:110
 msgid "po kontrole ho lze smazat (hlavní je {path})"
 msgstr "can be deleted after a check (the main one is {path})"
+
+#: repo_doctor/lockfiles/npm.py:49
+msgid "podporovaný je jen package-lock.json s lockfileVersion 3"
+msgstr "only package-lock.json with lockfileVersion 3 is supported"
+
+#: repo_doctor/lockfiles/pypi.py:128
+msgid "podporovaný je jen uv.lock ve formátu version = 1"
+msgstr "only uv.lock with version = 1 is supported"
 
 #: repo_doctor/tui/screens/fix.py:238 repo_doctor/tui/screens/fix.py:101
 msgid "pohyb"
@@ -5169,6 +5273,18 @@ msgstr "half page up"
 msgid "původ"
 msgstr "source"
 
+#: repo_doctor/lockfiles/__init__.py:132
+msgid "registr neodpověděl: {err}"
+msgstr "the registry did not respond: {err}"
+
+#: repo_doctor/lockfiles/npm.py:74
+msgid "registr neposkytl ověřitelný odkaz a kontrolní součet"
+msgstr "the registry did not provide a verifiable link and checksum"
+
+#: repo_doctor/lockfiles/npm.py:70
+msgid "registr vrátil jinou verzi, než je opravená"
+msgstr "the registry returned a different version than the fixed one"
+
 #: repo_doctor/checks/forge.py:17 repo_doctor/scanner.py:324
 msgid "remote nepatří k připojenému hostingu"
 msgstr "the remote does not belong to a connected hosting"
@@ -5376,6 +5492,10 @@ msgstr "file"
 #: repo_doctor/checks/tree.py:109 repo_doctor/checks/tree.py:265 repo_doctor/czech.py:47
 msgid "soubory"
 msgstr "files"
+
+#: repo_doctor/lockfiles/pypi.py:170
+msgid "soubory verze {version} neodpovídají lockfilu – formát nelze ověřit"
+msgstr "the files of version {version} do not match the lockfile – the format cannot be verified"
 
 #: repo_doctor/checks/tree.py:109 repo_doctor/checks/tree.py:265 repo_doctor/czech.py:47
 msgid "souborů"
@@ -5665,10 +5785,6 @@ msgstr "v switches the view “missing locally” ↔ “local only”."
 msgid "varování: {message}"
 msgstr "warning: {message}"
 
-#: repo_doctor/depupdate.py:155
-msgid "vedle lockfilu chybí {manifest}"
-msgstr "{manifest} is missing next to the lockfile"
-
 #: repo_doctor/tui/screens/cleanup.py:158
 msgid "velikost"
 msgstr "size"
@@ -5684,6 +5800,10 @@ msgstr "large file (MB)"
 #: repo_doctor/checks/static_code.py:95
 msgid "verify=False vypíná ověření TLS certifikátu."
 msgstr "verify=False disables TLS certificate verification."
+
+#: repo_doctor/lockfiles/pypi.py:137
+msgid "verze nebo requires-python nejdou přečíst"
+msgstr "the version or requires-python cannot be read"
 
 #: repo_doctor/checks/privacy.py:135
 msgid "veřejná historie obsahuje tvůj e-mail {masked} ({commits})"
@@ -6115,15 +6235,15 @@ msgstr "{len} local repos without a backup or with a remote the hosting does not
 msgid "{len} repozitářů bez lokálního klonu · c naklonuje vybrané · v přepne pohled"
 msgstr "{len} repositories without a local clone · c clones the selected one · v switches the view"
 
-#: repo_doctor/checks/deps.py:90
+#: repo_doctor/checks/deps.py:91
 msgid "{lock}: aktualizace se nepovedla ({error})"
 msgstr "{lock}: the update failed ({error})"
 
-#: repo_doctor/checks/deps.py:98
-msgid "{lock}: {dep} zůstává na zranitelné verzi (omezení v manifestu nebo jiné závislosti) – uprav ručně nebo přidej do allowlistu"
-msgstr "{lock}: {dep} stays on a vulnerable version (constraint in the manifest or another dependency) – update it manually or add it to the allowlist"
+#: repo_doctor/checks/deps.py:99
+msgid "{lock}: {dep} zůstává na zranitelné verzi ({reason}) – uprav ručně"
+msgstr "{lock}: {dep} stays on a vulnerable version ({reason}) – update it manually"
 
-#: repo_doctor/checks/deps.py:165
+#: repo_doctor/checks/deps.py:166
 msgid "{manifest} deklaruje závislosti, ale chybí {lock} – verze nejsou připnuté a zranitelnosti nejde ověřit"
 msgstr "{manifest} declares dependencies, but {lock} is missing – versions are not pinned and vulnerabilities cannot be checked"
 
@@ -6150,6 +6270,14 @@ msgstr "{name} is missing from the signed list of checksums."
 #: repo_doctor/tui/screens/tools.py:200
 msgid "{name} {version} nainstalován do {path}."
 msgstr "{name} {version} installed to {path}."
+
+#: repo_doctor/lockfiles/npm.py:64
+msgid "{name} {version} v lockfilu není"
+msgstr "{name} {version} is not in the lockfile"
+
+#: repo_doctor/lockfiles/pypi.py:147
+msgid "{name} {version} v lockfilu není (nebo je ve více verzích)"
+msgstr "{name} {version} is not in the lockfile (or it is present in several versions)"
 
 #: repo_doctor/tui/screens/forges.py:290
 msgid "{name}: připojeno jako {user}, vidí {repo_count} repozitářů."
@@ -6271,18 +6399,6 @@ msgstr "{text!r}: the wildcard can only be used as the prefix `*.`"
 msgid "{text!r}: zástupný znak pro všechny hosty není povolený"
 msgstr "{text!r}: a wildcard for all hosts is not allowed"
 
-#: repo_doctor/depupdate.py:150
-msgid "{tool} není v PATH"
-msgstr "{tool} is not in PATH"
-
-#: repo_doctor/depupdate.py:164
-msgid "{tool} selhal: {err}"
-msgstr "{tool} failed: {err}"
-
-#: repo_doctor/depupdate.py:168
-msgid "{tool} skončil chybou: {tail}"
-msgstr "{tool} exited with an error: {tail}"
-
 #: repo_doctor/checks/git_state.py:32
 msgid "{untracked} nesledovaných"
 msgstr "{untracked} untracked"
@@ -6306,6 +6422,14 @@ msgstr "{where}: license {state} – without a license you have no right to use 
 #: repo_doctor/tui/screens/cleanup.py:333
 msgid "{where}: {items}, uvolněno {human}."
 msgstr "{where}: {items}, freed {human}."
+
+#: repo_doctor/lockfiles/npm.py:125
+msgid "{who} vyžaduje {name} {spec}, opravená verze {version} to nesplňuje"
+msgstr "{who} requires {name} {spec}, the fixed version {version} does not satisfy it"
+
+#: repo_doctor/lockfiles/pypi.py:246
+msgid "{who} vyžaduje {name}{spec}, opravená verze {version} to nesplňuje"
+msgstr "{who} requires {name}{spec}, the fixed version {version} does not satisfy it"
 
 #: repo_doctor/reports/markdown.py:43
 msgid "| repozitáře | ▲ HIGH | ◆ MED | ● LOW | zdraví |"

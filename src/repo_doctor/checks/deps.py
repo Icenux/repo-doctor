@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from repo_doctor import depupdate
+from repo_doctor import lockfiles
 from repo_doctor.checks.base import Check, RepoContext, SkipCheck, register
 from repo_doctor.deps import fixed_in
 from repo_doctor.i18n import N_, _
@@ -29,6 +29,7 @@ class DepsVulnerable(Check):
     severity = Severity.HIGH
     category = Category.SECURITY
     network = True
+    fixable = True  # jen nálezy s opravenou verzí v podporovaném lockfilu (viz `can_fix`)
 
     def run(self, repo: RepoContext) -> list[Finding]:
         deps = _require_network(repo)
@@ -41,8 +42,8 @@ class DepsVulnerable(Check):
             fixed = fixed_in(dep, vulns)
             can_fix = (
                 fixed is not None
-                and depupdate.valid_target(dep.name, fixed)
-                and depupdate.tool_for(dep.source) is not None
+                and lockfiles.valid_target(dep.name, fixed)
+                and lockfiles.supported(dep.source)
             )
             findings.append(
                 self.finding(
@@ -60,11 +61,11 @@ class DepsVulnerable(Check):
         return findings
 
     def fix(self, repo: RepoContext, findings: list[Finding]) -> Patch | None:
-        """Aktualizuje zranitelné závislosti v lockfilech (správce balíčků v dočasné složce)."""
+        """Přepíše verze zranitelných závislostí v lockfilech (čistě v Pythonu, bez dalších nástrojů)."""
         head = repo.git.head_sha()
         if head is None:
             return None
-        grouped: dict[str, list[depupdate.Target]] = {}
+        grouped: dict[str, list[lockfiles.Target]] = {}
         for f in findings:
             lock, name, version, fixed = (
                 f.location.path,
@@ -79,12 +80,12 @@ class DepsVulnerable(Check):
                 and isinstance(fixed, str)
             ):
                 continue
-            grouped.setdefault(lock, []).append(depupdate.Target(name, version, fixed))
+            grouped.setdefault(lock, []).append(lockfiles.Target(name, version, fixed))
         changes: list[FileChange] = []
         notes: list[str] = []
         upgraded: list[str] = []
         for lock, targets in sorted(grouped.items()):
-            update = depupdate.update_lock(repo.git, head, lock, targets)
+            update = lockfiles.update_lock(repo.git, head, lock, targets)
             if update.error:
                 notes.append(
                     _("{lock}: aktualizace se nepovedla ({error})").format(
@@ -95,10 +96,10 @@ class DepsVulnerable(Check):
             for name, (old, new) in sorted(update.upgraded.items()):
                 upgraded.append(f"{name} {old}→{new}")
             notes.extend(
-                _(
-                    "{lock}: {dep} zůstává na zranitelné verzi (omezení v manifestu nebo jiné závislosti) – uprav ručně nebo přidej do allowlistu"
-                ).format(lock=lock, dep=dep)
-                for dep in update.unresolved
+                _("{lock}: {dep} zůstává na zranitelné verzi ({reason}) – uprav ručně").format(
+                    lock=lock, dep=dep, reason=reason
+                )
+                for dep, reason in update.unresolved
             )
             if update.content is not None:
                 changes.append(
