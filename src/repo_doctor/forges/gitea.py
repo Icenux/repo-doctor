@@ -7,10 +7,12 @@ from urllib.parse import quote
 from repo_doctor.config import ForgeConfig
 from repo_doctor.forges.base import (
     CICheck,
+    CIJob,
     CIStatus,
     ConnectionReport,
     Forge,
     ForgeRepo,
+    JobState,
     PullRequest,
     PullRequestInfo,
     int_field,
@@ -75,6 +77,14 @@ def _repo(d: dict[str, object]) -> ForgeRepo:
         created_at=parse_time(d.get("created_at")),
         merge_methods=_merge_methods(d),
     )
+
+
+_JOB_STATES: dict[str, JobState] = {
+    "success": "success",
+    "warning": "success",
+    "failure": "failure",
+    "error": "failure",
+}
 
 
 class GiteaForge(Forge):
@@ -143,19 +153,25 @@ class GiteaForge(Forge):
         url = str(statuses[0].get("target_url") or "")
         tail = url.rstrip("/").rsplit("/", 1)[-1]
         number = tail if "/runs/" in url and tail.isdigit() else ""
-        checks = (
-            [
-                CICheck(
-                    str(st.get("context") or "?"),
-                    mapped.get(str(st.get("status") or st.get("state")), "pending"),  # type: ignore[arg-type]
+        checks: list[CICheck] = []
+        jobs: list[CIJob] = []
+        for st in data.get("statuses") or [] if with_checks else []:
+            context = str(st.get("context") or "?")
+            raw = str(st.get("status") or st.get("state"))
+            checks.append(
+                CICheck(context, mapped.get(raw, "pending"), str(st.get("target_url") or ""))  # type: ignore[arg-type]
+            )
+            # Forgejo/Gitea Actions: „workflow / job (událost)“ – jen plochý seznam, API nic víc nedává
+            workflow, _sep, job = context.partition(" / ")
+            jobs.append(
+                CIJob(
+                    job or workflow,
+                    _JOB_STATES.get(raw, "running"),
                     str(st.get("target_url") or ""),
+                    workflow=workflow if job else "",
                 )
-                for st in data.get("statuses") or []
-            ]
-            if with_checks
-            else []
-        )
-        return CIStatus(mapped.get(state, "none"), branch, number, url, checks)  # type: ignore[arg-type]
+            )
+        return CIStatus(mapped.get(state, "none"), branch, number, url, checks, jobs)  # type: ignore[arg-type]
 
     async def open_prs(self, repo: ForgeRepo) -> list[PullRequest]:
         items = await self.client.paginate(

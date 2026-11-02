@@ -138,7 +138,15 @@ PAGES: dict[str, Page] = {
                 "Merge jde jen po doběhnuté zelené CI; dokud běží, stránka se sama obnovuje, ctrl+r načte stav hned."
             ),
             N_("L posune výchozí větev lokálně (jen fast-forward), U ji pak pošle na remote."),
-            N_("w otevře PR/MR na webu, ⏎ na řádku CI otevře detail té kontroly."),
+            N_(
+                "v přepne tabulku kontrol na průběh CI: graf jobů jako na GitHub Actions "
+                "(✓ prošel, ✗ selhal, točící se kolečko běží, ○ čeká, ⊘ přeskočen)."
+            ),
+            N_(
+                "V průběhu šipky nebo j/k vybírají job, ⏎ rozbalí jeho kroky, w otevře job na webu; "
+                "u tabulky ⏎ otevře kontrolu."
+            ),
+            N_("w mimo průběh otevře PR/MR na webu."),
         ),
     ),
     "fix": Page(

@@ -584,3 +584,137 @@ async def test_invalid_owner_path_not_queried() -> None:
     snap = await forge.snapshot("a/../user?x")
     assert snap.repo is None and "neplatná" in (snap.missing_reason or "")
     await forge.client.aclose()
+
+
+# ----------------------------------------------------------------------------- joby CI (graf průběhu)
+def pr_info(sha: str = "abc", branch: str = "fix") -> Any:
+    from repo_doctor.forges.base import PullRequestInfo
+
+    return PullRequestInfo(1, "u", "open", "t", branch, "main", sha)
+
+
+@respx.mock
+async def test_github_pr_ci_jobs_with_steps() -> None:
+    api = "https://api.github.com/repos/o/r"
+    respx.get(f"{api}/commits/abc/check-runs").respond(json={"check_runs": []})
+    respx.get(f"{api}/commits/abc/status").respond(json={"state": "pending", "total_count": 0})
+    respx.get(f"{api}/actions/runs").respond(
+        json={"workflow_runs": [{"id": 5, "name": "CI", "path": ".github/workflows/ci.yml@refs/x"}]}
+    )
+    respx.get(f"{api}/actions/runs/5/jobs").respond(
+        json={
+            "jobs": [
+                {
+                    "name": "test",
+                    "status": "in_progress",
+                    "conclusion": None,
+                    "html_url": "https://github.com/o/r/actions/runs/5/job/9",
+                    "started_at": "2026-11-02T10:00:00Z",
+                    "steps": [
+                        {
+                            "name": "Run tests",
+                            "number": 2,
+                            "status": "in_progress",
+                            "conclusion": None,
+                        },
+                        {
+                            "name": "Set up job",
+                            "number": 1,
+                            "status": "completed",
+                            "conclusion": "success",
+                            "started_at": "2026-11-02T10:00:00Z",
+                            "completed_at": "2026-11-02T10:00:03Z",
+                        },
+                    ],
+                },
+                {"name": "lint", "status": "completed", "conclusion": "failure"},
+                {"name": "docs", "status": "completed", "conclusion": "skipped"},
+                {"name": "later", "status": "queued", "conclusion": None},
+            ]
+        }
+    )
+    forge = build_forge(gh(), token="ghp_" + "x" * 20)
+    repo = ForgeRepo("o/r", "main", False, html_url="u")
+    ci = await forge.pr_ci(repo, pr_info())
+    states = {j.name: j.state for j in ci.jobs}
+    assert states == {"test": "running", "lint": "failure", "docs": "skipped", "later": "queued"}
+    test = ci.jobs[0]
+    assert test.workflow == "CI" and test.workflow_path == ".github/workflows/ci.yml"
+    assert [(s.name, s.state) for s in test.steps] == [
+        ("Set up job", "success"),
+        ("Run tests", "running"),
+    ]
+    assert test.started is not None and test.steps[0].completed is not None
+    await forge.client.aclose()
+
+
+@respx.mock
+async def test_github_jobs_unavailable_do_not_break_ci_summary() -> None:
+    api = "https://api.github.com/repos/o/r"
+    respx.get(f"{api}/commits/abc/check-runs").respond(
+        json={"check_runs": [{"name": "x", "status": "completed", "conclusion": "success"}]}
+    )
+    respx.get(f"{api}/commits/abc/status").respond(json={"state": "pending", "total_count": 0})
+    respx.get(f"{api}/actions/runs").respond(403, json={"message": "forbidden"})
+    forge = build_forge(gh(), token="ghp_" + "x" * 20)
+    ci = await forge.pr_ci(ForgeRepo("o/r", "main", False, html_url="u"), pr_info())
+    assert ci.state == "success" and ci.jobs == []
+    await forge.client.aclose()
+
+
+@respx.mock
+async def test_gitlab_pr_ci_jobs_by_stage() -> None:
+    api = "https://gitlab.com/api/v4"
+    respx.get(f"{api}/projects/7/pipelines").respond(
+        json=[{"id": 9, "iid": 3, "status": "running"}]
+    )
+    respx.get(f"{api}/projects/7/pipelines/9/jobs").respond(
+        json=[
+            {
+                "id": 3,
+                "name": "e2e",
+                "stage": "test",
+                "status": "running",
+                "started_at": "2026-11-02T10:00:00Z",
+            },
+            {"id": 1, "name": "lint", "stage": "check", "status": "success"},
+            {"id": 2, "name": "unit", "stage": "test", "status": "failed"},
+            {"id": 4, "name": "ship", "stage": "deploy", "status": "manual"},
+            {"id": 5, "name": "wait", "stage": "deploy", "status": "created"},
+        ]
+    )
+    forge = build_forge(gl(), token="glpat-" + "x" * 20)
+    ci = await forge.pr_ci(ForgeRepo("g/p", "main", False, html_url="u", id="7"), pr_info())
+    assert [(j.name, j.stage, j.state) for j in ci.jobs] == [
+        ("lint", "check", "success"),
+        ("unit", "test", "failure"),
+        ("e2e", "test", "running"),
+        ("ship", "deploy", "skipped"),
+        ("wait", "deploy", "queued"),
+    ]
+    assert ci.jobs[0].workflow == "Pipeline #3"
+    await forge.client.aclose()
+
+
+@respx.mock
+async def test_gitea_pr_ci_jobs_are_a_flat_list_per_workflow() -> None:
+    api = "https://git.home.ts.net:3000/api/v1"
+    respx.get(f"{api}/repos/o/r/commits/abc/status").respond(
+        json={
+            "state": "failure",
+            "total_count": 3,
+            "statuses": [
+                {"context": "CI / test (push)", "status": "success", "target_url": "u1"},
+                {"context": "CI / lint (push)", "status": "failure", "target_url": "u2"},
+                {"context": "externí", "status": "pending", "target_url": ""},
+            ],
+        }
+    )
+    forge = build_forge(fj(), token="tok-123456")
+    ci = await forge.pr_ci(ForgeRepo("o/r", "main", False, html_url="u"), pr_info())
+    assert [(j.workflow, j.name, j.state) for j in ci.jobs] == [
+        ("CI", "test (push)", "success"),
+        ("CI", "lint (push)", "failure"),
+        ("", "externí", "running"),
+    ]
+    await forge.client.aclose()

@@ -57,6 +57,35 @@ class CICheck:
     url: str = ""
 
 
+JobState = Literal["success", "failure", "running", "queued", "skipped", "cancelled"]
+
+
+@dataclass
+class CIStep:
+    """Krok jobu CI (jen GitHub Actions) – pro rozbalený job v pohledu Průběh."""
+
+    name: str
+    state: JobState
+    started: datetime | None = None
+    completed: datetime | None = None
+
+
+@dataclass
+class CIJob:
+    """Job CI pro graf průběhu: stav, čas, kroky a závislosti (`needs`, podle názvů jobů)."""
+
+    name: str
+    state: JobState
+    url: str = ""
+    workflow: str = ""  # skupina jobů: workflow (GitHub, Gitea), pipeline (GitLab)
+    workflow_path: str = ""  # GitHub: soubor workflow v repu, ze kterého se čtou `needs`
+    stage: str = ""  # GitLab: stage = sloupec grafu
+    needs: list[str] = field(default_factory=list)
+    steps: list[CIStep] = field(default_factory=list)
+    started: datetime | None = None
+    completed: datetime | None = None
+
+
 @dataclass
 class CIStatus:
     state: CIState
@@ -64,6 +93,7 @@ class CIStatus:
     number: str = ""
     url: str = ""
     checks: list[CICheck] = field(default_factory=list)  # vyplňuje jen `pr_ci`
+    jobs: list[CIJob] = field(default_factory=list)  # vyplňuje jen `pr_ci` (graf průběhu)
 
 
 @dataclass
