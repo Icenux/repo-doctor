@@ -554,11 +554,13 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
 
 ## Falešné nálezy tajemství: zjevné vymyšlenosti (#74)
 
-- **Filtr platí pro všechna pravidla kromě `private-key`:** i `ghp_1234567890…` nebo `AKIA1234567890…`
-  je ukázka z dokumentace, ne klíč. Skutečný náhodný klíč řadu 6 znaků prakticky neobsahuje
-  (u hex řetězce vychází pravděpodobnost řádově 1e-4), takže riziko přehlédnutého tajemství je malé.
-- **Co je „zjevně vymyšlené“:** výpustka `...`/`…`, souvislá vzestupná či sestupná řada písmen nebo
-  číslic (`SEQUENCE_RUN = 6`) a vzor s periodou do 4 znaků (`MAX_PERIOD`). Hodnoty typu
-  `abc123def456` se dál hlásí, protože vypadají jako skutečné.
+- **Posuzuje se celá hodnota, ne podřetězec:** heslo `Company123456` nebo `Qwerty123456` obsahuje
+  řadu `123456`, ale je to reálné heslo, které filtr nesmí schovat (revize bezpečnosti). Řady musí
+  tvořit aspoň 80 % hodnoty (`SEQUENCE_SHARE`).
+- **Co je „zjevně vymyšlené“:** celá hodnota je zkrácený příklad s výpustkou (`abc...xyz`, nejvýš
+  12 znaků na každé straně), z ≥ 80 % se skládá z řad písmen či číslic o délce ≥ 6
+  (`SEQUENCE_RUN`) nebo je vzor s periodou do 4 znaků (`MAX_PERIOD`).
+- **Filtr platí pro všechna pravidla kromě `private-key`.** `_looks_placeholder` zůstal beze změny,
+  takže kontrola Dockerfile ENV se nezměnila.
 - **Mimo rozsah:** klíče ve tvaru `wJalrXUt…` s opakovaným koncem a podobné hybridy se dál hlásí;
   ostatní případy řeší `repo-doctor:allow` a allowlist.

@@ -90,12 +90,29 @@ def test_fake_filter_keeps_realistic_values() -> None:
         assert scan_text(ALL_FAKES[rule](), "config/app.env"), rule
 
 
-def test_has_sequence_and_periodic() -> None:
-    assert secrets_scan._has_sequence("xx123456yy")
-    assert secrets_scan._has_sequence("QPONMLk")
-    assert not secrets_scan._has_sequence("12345")  # pět znaků ještě není řada
-    assert not secrets_scan._has_sequence("abc123def456")
-    assert not secrets_scan._has_sequence("9a" * 10)
+@pytest.mark.parametrize(
+    "line",
+    [
+        'password = "Qwerty123456"',
+        'password = "Company123456"',
+        'api_key = "Company123456789"',
+        "DATABASE_URL=postgres://app:" + "Company123456" + "@db/app",
+        "DATABASE_URL=postgres://app:" + "Qwerty123456" + "@db/app",
+        'secret_key = "some-long-text-with-' + "abc...xyz" + '-inside"',
+    ],
+)
+def test_partial_sequences_are_still_findings(line: str) -> None:
+    assert scan_text(line, "config/app.env"), line
+
+
+def test_sequence_share_and_periodic() -> None:
+    assert secrets_scan._sequence_share(SEQ_DIGITS) == 1.0
+    assert secrets_scan._sequence_share("QPONMLk") == 1.0
+    assert secrets_scan._sequence_share("9QPONMLK") == pytest.approx(7 / 8)
+    assert secrets_scan._sequence_share("12345") == 0.0  # pět znaků ještě není řada
+    assert secrets_scan._sequence_share("abc123def456") == 0.0
+    assert secrets_scan._sequence_share("Company123456") < secrets_scan.SEQUENCE_SHARE
+    assert secrets_scan._sequence_share("9a" * 10) == 0.0
     assert secrets_scan._is_periodic("zxyx" * 3)
     assert secrets_scan._is_periodic("ab" * 5 + "a")
     assert not secrets_scan._is_periodic("abcde")

@@ -15,7 +15,6 @@ from collections import Counter
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from functools import lru_cache
-from itertools import pairwise
 from pathlib import Path, PurePosixPath
 
 from repo_doctor.gitwrap import Git, git_env, run_process
@@ -205,25 +204,35 @@ def is_excluded_path(path: str) -> bool:
 
 
 SEQUENCE_RUN = 6  # tolik po sobě jdoucích znaků (123456, abcdef, zyxwvu) už není náhoda
+SEQUENCE_SHARE = 0.8  # řady musí tvořit aspoň tento podíl hodnoty (Company123456 zůstává nález)
 MAX_PERIOD = 4  # opakující se vzor typu zxyxzxyx…
+TRUNCATED_EXAMPLE = re.compile(r"[A-Za-z0-9_-]{0,12}(?:\.\.\.|…)[A-Za-z0-9_-]{0,12}")
 
 
-def _has_sequence(value: str) -> bool:
-    """Obsahuje souvislou vzestupnou či sestupnou řadu písmen nebo číslic (bez rozlišení velikosti)."""
+def _sequence_share(value: str) -> float:
+    """Podíl znaků, které leží v souvislé vzestupné či sestupné řadě písmen nebo číslic (≥ SEQUENCE_RUN)."""
     lowered = value.lower()
-    run = 1
+    n = len(lowered)
+    if n < SEQUENCE_RUN:
+        return 0.0
+    covered = [False] * n
+    start = 0
     step = 0
-    for prev, cur in pairwise(lowered):
-        diff = ord(cur) - ord(prev)
-        same_class = prev.isalnum() and cur.isalnum() and prev.isdigit() == cur.isdigit()
-        if diff in (1, -1) and same_class:
-            run = run + 1 if diff == step else 2
+    for i in range(1, n + 1):
+        diff = 0
+        if i < n:
+            prev, cur = lowered[i - 1], lowered[i]
+            same_class = prev.isalnum() and cur.isalnum() and prev.isdigit() == cur.isdigit()
+            if same_class and ord(cur) - ord(prev) in (1, -1):
+                diff = ord(cur) - ord(prev)
+        if diff and (step in (0, diff)):
             step = diff
-        else:
-            run, step = 1, 0
-        if run >= SEQUENCE_RUN:
-            return True
-    return False
+            continue
+        if i - start >= SEQUENCE_RUN and step:
+            covered[start:i] = [True] * (i - start)
+        start = i - 1 if diff else i
+        step = diff
+    return sum(covered) / n
 
 
 def _is_periodic(value: str) -> bool:
@@ -237,14 +246,21 @@ def _is_periodic(value: str) -> bool:
 
 
 def _is_obvious_fake(value: str) -> bool:
-    """Zjevně vymyšlená hodnota z dokumentace a testů: `sk-abc...xyz`, `1234567890`, `abcdefgh`, `zxyxzxyx`."""
-    return "..." in value or "…" in value or _has_sequence(value) or _is_periodic(value)
+    """Celá hodnota je zjevně vymyšlená: `sk-abc...xyz`, `1234567890`, `abcdefgh`, `zxyxzxyx`.
+
+    Posuzuje se hodnota jako celek, ne podřetězec: reálné heslo `Company123456` se dál hlásí.
+    """
+    return (
+        TRUNCATED_EXAMPLE.fullmatch(value) is not None
+        or _sequence_share(value) >= SEQUENCE_SHARE
+        or _is_periodic(value)
+    )
 
 
 def _looks_placeholder(value: str) -> bool:
     if PLACEHOLDER.search(value):
         return True
-    return len(set(value)) <= 3 or _is_obvious_fake(value)
+    return len(set(value)) <= 3
 
 
 FINGERPRINT_SALT = b"repo-doctor/secret-fingerprint/v2"
