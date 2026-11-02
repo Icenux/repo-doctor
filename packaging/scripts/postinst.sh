@@ -12,6 +12,8 @@ if [ -d /etc/apt/sources.list.d ] && [ -f "$lib/icenux.asc" ]; then
     install -m 644 "$lib/icenux.asc" /usr/share/keyrings/icenux.asc
     [ -e /etc/apt/sources.list.d/icenux.list ] ||
         install -m 644 "$lib/icenux.list" /etc/apt/sources.list.d/icenux.list
+    # A source written before the move to the Icenux organization still points at the old address.
+    sed -i 's#luquas95\.github\.io/icenux/#icenux.github.io/icenux/#g' /etc/apt/sources.list.d/icenux.list
     old=/etc/apt/sources.list.d/repo-doctor.list
     if [ -f "$old" ] && grep -q 'luquas95\.github\.io/repo-doctor/' "$old"; then
         rm -f "$old"
@@ -23,6 +25,8 @@ if [ -d /etc/yum.repos.d ] && [ -f "$lib/icenux-rpm.asc" ]; then
     install -m 644 "$lib/icenux-rpm.asc" /etc/pki/rpm-gpg/RPM-GPG-KEY-icenux
     [ -e /etc/yum.repos.d/icenux.repo ] ||
         install -m 644 "$lib/icenux.repo" /etc/yum.repos.d/icenux.repo
+    # Same for a repo file written before the move to the Icenux organization.
+    sed -i 's#luquas95\.github\.io/icenux/#icenux.github.io/icenux/#g' /etc/yum.repos.d/icenux.repo
     old=/etc/yum.repos.d/repo-doctor.repo
     if [ -f "$old" ] && grep -q 'luquas95\.github\.io/repo-doctor/' "$old"; then
         rm -f "$old"

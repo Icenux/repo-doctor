@@ -1,7 +1,7 @@
 # Repozitář Icenux (přidal ho balíček repo-doctor) – nové verze přijdou s aktualizací systému.
 [icenux]
 name=Icenux
-baseurl=https://luquas95.github.io/icenux/rpm
+baseurl=https://icenux.github.io/icenux/rpm
 enabled=1
 gpgcheck=1
 repo_gpgcheck=1

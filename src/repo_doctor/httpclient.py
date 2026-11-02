@@ -27,7 +27,7 @@ from repo_doctor.paths import ensure_private_dir
 
 log = logging.getLogger(__name__)
 
-USER_AGENT = f"repo-doctor/{__version__} (+https://github.com/Luquas95/repo-doctor)"
+USER_AGENT = f"repo-doctor/{__version__} (+https://github.com/Icenux/repo-doctor)"
 
 
 class HttpError(Exception):

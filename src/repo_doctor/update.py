@@ -33,7 +33,7 @@ from repo_doctor.i18n import _
 
 log = logging.getLogger(__name__)
 
-GITHUB_REPO = "Luquas95/repo-doctor"
+GITHUB_REPO = "Icenux/repo-doctor"
 LATEST_API = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
 DOWNLOAD_BASE = f"https://github.com/{GITHUB_REPO}/releases/download"
 TARBALL = "repo-doctor-linux-x86_64.tar.gz"
