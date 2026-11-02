@@ -114,3 +114,10 @@ def test_layout_groups_by_workflow() -> None:
         ("CI", ["a", "c"]),
         ("Docs", ["b"]),
     ]
+
+
+def test_parse_needs_survives_hostile_yaml() -> None:
+    assert parse_needs("a: &a [*a]\n") == {}  # odkaz sám na sebe
+    assert parse_needs("jobs:\n  x:\n    needs: {1: 2}\n") == {"x": ("x", [])}
+    deep = "[" * 50_000 + "]" * 50_000  # hluboké vnoření nesmí shodit skenování
+    assert parse_needs(deep) == {}

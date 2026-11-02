@@ -46,7 +46,7 @@ def parse_needs(text: str) -> dict[str, tuple[str, list[str]]]:
     """`{id jobu: (zobrazený název, [id jobů, na kterých závisí])}` z workflow YAML."""
     try:
         data = yaml.safe_load(text)
-    except yaml.YAMLError:
+    except (yaml.YAMLError, RecursionError, ValueError, TypeError, MemoryError):
         return {}
     jobs = data.get("jobs") if isinstance(data, dict) else None
     if not isinstance(jobs, dict):

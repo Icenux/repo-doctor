@@ -564,7 +564,11 @@ async def hosting_status(git: Git, hosting: Hosting, status: PublishStatus) -> N
             blob = git.show_file(sha, path)
             return blob.decode("utf-8", "replace") if blob is not None else None
 
-        attach_needs(ci.jobs, read)
+        try:
+            attach_needs(ci.jobs, read)
+        except (GitError, OSError, RecursionError, ValueError, TypeError, MemoryError):
+            for job in ci.jobs:  # volitelné obohacení; při chybě zůstane plochý seznam
+                job.needs = []
     if pr.state == "open":
         status.blockers = _merge_blockers(pr, ci, git.rev_parse(f"refs/heads/{status.branch}"))
 

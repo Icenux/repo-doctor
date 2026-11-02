@@ -369,3 +369,22 @@ async def test_pipeline_view_stages_long_edges_and_navigation(
         await pilot.press("enter")  # job bez kroků se nerozbaluje
         await pilot.press("escape")
         assert isinstance(app.screen, DetailScreen)
+
+
+@respx.mock
+async def test_forge_supplied_names_cannot_inject_terminal_escapes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from repo_doctor.forges.base import CIJob
+    from repo_doctor.tui.util import printable
+
+    assert printable("a\x1b[31mb\x9bc\x07") == "a?[31mb?c?"
+    app, sha = hosted_app(tmp_path, monkeypatch)
+    mock_pr_state(sha, checks=GREEN)
+    async with app.run_test(size=(140, 40)) as pilot:
+        page = await open_detail(app, pilot)
+        await pilot.press("v")
+        page.query_one(PipelineView).set_jobs([CIJob("evil\x1b]0;x\x07job", "success")])
+        await pilot.pause()
+        text = screen_text(app)
+        assert "\x1b" not in text and "\x07" not in text and "evil?]0;x?job" in text

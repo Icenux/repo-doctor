@@ -19,6 +19,7 @@ from textual.widget import Widget
 from repo_doctor import pipeline
 from repo_doctor.forges.base import CIJob, JobState
 from repo_doctor.i18n import _
+from repo_doctor.tui.util import printable
 
 if TYPE_CHECKING:
     from repo_doctor.tui.app import RepoDoctorApp
@@ -195,7 +196,7 @@ class PipelineView(Widget, can_focus=True):
         rects: dict[Key, Region] = {}
 
         def put(x: int, y: int, text: str, style: Style | None = None) -> None:
-            for i, ch in enumerate(text):
+            for i, ch in enumerate(printable(text)):  # názvy jobů a kroků dodává hosting
                 cells[(x + i, y)] = (ch, style)
 
         def link(a: tuple[int, int], b: tuple[int, int]) -> None:

@@ -58,6 +58,11 @@ def home_path(path: str) -> str:
     return "~" + path[len(home) :] if path == home or path.startswith(home + "/") else path
 
 
+def printable(text: str) -> str:
+    """Text z hostingu bez řídicích znaků (C0, C1, ESC…), aby nešlo posílat sekvence do terminálu."""
+    return "".join(c if c.isprintable() else "?" for c in text)
+
+
 def truncate(text: str, width: int) -> str:
     if width <= 0:
         return ""
