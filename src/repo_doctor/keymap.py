@@ -130,7 +130,9 @@ ACTIONS: tuple[KeyAction, ...] = (
     _a("publish_merge_local", "L", "publish", _("lokální merge opravy (fast-forward)")),
     _a("publish_push_default", "U", "publish", _("poslat výchozí větev (po lokálním merge)")),
     _a("publish_refresh", "ctrl+r", "publish", _("načíst stav znovu (PR, CI)")),
-    _a("publish_open_web", "w", "publish", _("otevřít PR/MR na webu")),
+    _a("publish_open_web", "w", "publish", _("otevřít PR/MR (v průběhu job) na webu")),
+    _a("publish_view", "v", "publish", _("přepnout: tabulka kontrol ↔ průběh CI (graf jobů)")),
+    _a("publish_steps", "enter", "publish", _("v průběhu: rozbalit kroky jobu"), label="⏎"),
     # léčba
     _a("toggle_fix", "space", "fix", _("vybrat opravu"), label="space"),
     _a("select_all", "A", "fix", _("vybrat vše")),

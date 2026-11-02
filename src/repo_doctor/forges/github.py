@@ -3,17 +3,21 @@
 from __future__ import annotations
 
 import re
+from datetime import datetime
 from typing import Any
 from urllib.parse import quote, urlsplit
 
 from repo_doctor.config import ForgeConfig
 from repo_doctor.forges.base import (
     CICheck,
+    CIJob,
     CIState,
     CIStatus,
+    CIStep,
     ConnectionReport,
     Forge,
     ForgeRepo,
+    JobState,
     PullRequest,
     PullRequestInfo,
     int_field,
@@ -89,6 +93,44 @@ def _status_checks(statuses: dict[str, Any]) -> list[CICheck]:
         )
         for s in statuses.get("statuses") or []
     ]
+
+
+def _job_state(status: object, conclusion: object) -> JobState:
+    if status == "completed":
+        if conclusion in ("success", "neutral"):
+            return "success"
+        if conclusion == "skipped":
+            return "skipped"
+        if conclusion == "cancelled":
+            return "cancelled"
+        return "failure"
+    return "running" if status == "in_progress" else "queued"
+
+
+def _when(value: object) -> datetime | None:
+    return parse_time(value)
+
+
+def _job(job: dict[str, Any], run: dict[str, Any]) -> CIJob:
+    steps = [
+        CIStep(
+            str(st.get("name") or "?"),
+            _job_state(st.get("status"), st.get("conclusion")),
+            _when(st.get("started_at")),
+            _when(st.get("completed_at")),
+        )
+        for st in sorted(job.get("steps") or [], key=lambda x: x.get("number") or 0)
+    ]
+    return CIJob(
+        name=str(job.get("name") or "?"),
+        state=_job_state(job.get("status"), job.get("conclusion")),
+        url=str(job.get("html_url") or ""),
+        workflow=str(run.get("name") or run.get("display_title") or ""),
+        workflow_path=str(run.get("path") or "").split("@", 1)[0],
+        steps=steps,
+        started=_when(job.get("started_at")),
+        completed=_when(job.get("completed_at")),
+    )
 
 
 def _pr(d: dict[str, object]) -> PullRequestInfo:
@@ -250,8 +292,33 @@ class GitHubForge(Forge):
         else:
             state = "unknown"
         return CIStatus(
-            state, pr.head_branch, "", pr.url, [*map(_run_check, items), *_status_checks(statuses)]
+            state,
+            pr.head_branch,
+            "",
+            pr.url,
+            [*map(_run_check, items), *_status_checks(statuses)],
+            await self._jobs(repo, sha),
         )
+
+    async def _jobs(self, repo: ForgeRepo, sha: str) -> list[CIJob]:
+        """Joby všech workflow běhů commitu (i s kroky); bez práva na Actions prázdný seznam."""
+        jobs: list[CIJob] = []
+        try:
+            runs = await self.client.get_json(
+                f"/repos/{repo.full_name}/actions/runs",
+                params={"head_sha": sha, "per_page": 30},
+                ttl=0,
+            )
+            for run in sorted(runs.get("workflow_runs") or [], key=lambda r: r.get("id") or 0):
+                data = await self.client.get_json(
+                    f"/repos/{repo.full_name}/actions/runs/{run.get('id')}/jobs",
+                    params={"per_page": 100, "filter": "latest"},
+                    ttl=0,
+                )
+                jobs += [_job(j, run) for j in data.get("jobs") or []]
+        except HttpError:  # graf je jen doplněk, souhrn CI se kvůli němu nesmí rozbít
+            return jobs
+        return jobs
 
     async def merge_pr(self, repo: ForgeRepo, pr: PullRequestInfo, method: str | None) -> None:
         payload: dict[str, str] = {"sha": pr.head_sha}

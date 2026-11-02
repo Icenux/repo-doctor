@@ -19,7 +19,7 @@ from rich.style import Style
 from rich.text import Text
 from textual import on, work
 from textual.app import ComposeResult
-from textual.containers import Vertical
+from textual.containers import ScrollableContainer, Vertical
 from textual.screen import Screen
 from textual.timer import Timer
 from textual.widgets import DataTable, Static
@@ -32,8 +32,9 @@ from repo_doctor.i18n import _
 from repo_doctor.tui.bindings import bindings
 from repo_doctor.tui.screens.base import BaseScreen
 from repo_doctor.tui.screens.dialogs import ConfirmDialog
-from repo_doctor.tui.util import open_url
+from repo_doctor.tui.util import open_url, printable
 from repo_doctor.tui.widgets.keybar import KeyBar
+from repo_doctor.tui.widgets.pipeline import PipelineView
 
 if TYPE_CHECKING:
     from repo_doctor.tui.app import RepoDoctorApp
@@ -295,6 +296,7 @@ class PublishScreen(BaseScreen):
         super().__init__()
         self.path = path
         self.status: publish.PublishStatus | None = None
+        self.show_pipeline = False
         self.flow = PublishFlow(self, path, on_done=self.refresh_status)
         self._timer: Timer | None = None
 
@@ -310,6 +312,8 @@ class PublishScreen(BaseScreen):
             yield Static(id="pub-ci-title")
             table: DataTable[str | Text] = DataTable(id="pub-ci", cursor_type="row")
             yield table
+            with ScrollableContainer(id="pub-pipe-scroll"):
+                yield PipelineView(id="pub-pipe")
             yield Static(id="pub-note")
         yield KeyBar(
             [
@@ -319,6 +323,7 @@ class PublishScreen(BaseScreen):
                 ("publish_merge_local", _("lokální merge")),
                 ("publish_push_default", _("push výchozí")),
                 ("publish_refresh", _("obnovit")),
+                ("publish_view", _("průběh")),
                 ("publish_open_web", _("web")),
                 ("esc", _("zpět")),
                 "help",
@@ -334,6 +339,7 @@ class PublishScreen(BaseScreen):
         self.query_one("#pub-steps", Static).update(
             Text(_("Zjišťuji stav…"), style=Style(color=self.rd.palette.muted))
         )
+        self.query_one("#pub-pipe-scroll").display = False
         self.refresh_status()
         self.query_one(DataTable).focus()
 
@@ -373,7 +379,7 @@ class PublishScreen(BaseScreen):
         line = Text(" ")
         line.append(f"{mark} ", style=Style(color=color, bold=True))
         line.append(f"{label:<10}", style=Style(color=p.muted))
-        line.append(text, style=Style(color=p.text))
+        line.append(printable(text), style=Style(color=p.text))
         if hint:
             line.append(f"   {hint}", style=Style(color=p.accent))
         return line
@@ -541,6 +547,7 @@ class PublishScreen(BaseScreen):
         title = self.query_one("#pub-ci-title", Static)
         table = self.query_one(DataTable)
         table.clear(columns=True)
+        self.query_one(PipelineView).set_jobs(st.ci.jobs if st is not None and st.ci else [])
         checks = st.ci.checks if st is not None and st.ci is not None else []
         if st is None or st.ci is None:
             title.update("")
@@ -555,8 +562,8 @@ class PublishScreen(BaseScreen):
         for check in checks:
             table.add_row(
                 Text(CI_MARKS[check.state], style=Style(color=self._ci_color(check.state))),
-                check.name,
-                Text(check.url or "—", style=Style(color=p.muted)),
+                printable(check.name),
+                Text(printable(check.url) or "—", style=Style(color=p.muted)),
                 key=check.url or check.name,
             )
         if not checks:
@@ -569,7 +576,7 @@ class PublishScreen(BaseScreen):
     def _note(self, st: publish.PublishStatus) -> None:
         text = ""
         if st.hosting_note:
-            text = st.hosting_note
+            text = printable(st.hosting_note)
         self.query_one("#pub-note", Static).update(
             Text("\n " + text if text else "", style=Style(color=self.rd.palette.muted))
         )
@@ -600,8 +607,22 @@ class PublishScreen(BaseScreen):
         self.refresh_status()
 
     def action_publish_open_web(self) -> None:
+        job = self.query_one(PipelineView).selected_job if self.show_pipeline else None
         pr = self.status.pr if self.status else None
-        if pr is None:
+        url = job.url if job is not None and job.url else pr.url if pr is not None else ""
+        if not url.startswith(("https://", "http://")):
             self.notify(_("Zatím není žádný PR/MR."), severity="warning")
-        elif not open_url(pr.url):
-            self.notify(_("xdg-open není k dispozici: {web_url}").format(web_url=pr.url))
+        elif not open_url(url):
+            self.notify(_("xdg-open není k dispozici: {web_url}").format(web_url=url))
+
+    def action_publish_view(self) -> None:
+        """Přepne tabulku kontrol a graf průběhu CI (jako na GitHub Actions)."""
+        self.show_pipeline = not self.show_pipeline
+        self.query_one(DataTable).display = not self.show_pipeline
+        self.query_one("#pub-ci-title").display = not self.show_pipeline
+        self.query_one("#pub-pipe-scroll").display = self.show_pipeline
+        (self.query_one(PipelineView) if self.show_pipeline else self.query_one(DataTable)).focus()
+
+    def action_publish_steps(self) -> None:
+        if self.show_pipeline:
+            self.query_one(PipelineView).toggle()

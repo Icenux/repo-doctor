@@ -38,6 +38,7 @@ from repo_doctor.guard import render, run_guard
 from repo_doctor.httpclient import AuthError, ForbiddenError, HttpError, NotFoundError
 from repo_doctor.i18n import _
 from repo_doctor.masking import redact, redact_url_credentials
+from repo_doctor.pipeline import attach_needs
 from repo_doctor.sshhelp import friendly_git_error
 
 ZERO_SHA = "0" * 40
@@ -556,6 +557,18 @@ async def hosting_status(git: Git, hosting: Hosting, status: PublishStatus) -> N
         status.hosting_note = describe_http_error(err, _("načtení PR"))
         return
     status.pr, status.ci = pr, ci
+    if ci.jobs and pr.head_sha:
+        sha = pr.head_sha  # závislosti jobů (`needs`) API nevrací, čtou se z workflow na commitu PR
+
+        def read(path: str) -> str | None:
+            blob = git.show_file(sha, path)
+            return blob.decode("utf-8", "replace") if blob is not None else None
+
+        try:
+            attach_needs(ci.jobs, read)
+        except (GitError, OSError, RecursionError, ValueError, TypeError, MemoryError):
+            for job in ci.jobs:  # volitelné obohacení; při chybě zůstane plochý seznam
+                job.needs = []
     if pr.state == "open":
         status.blockers = _merge_blockers(pr, ci, git.rev_parse(f"refs/heads/{status.branch}"))
 

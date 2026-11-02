@@ -393,6 +393,7 @@ def mock_pr_state(
     respx.get(f"{REPO_API}/commits/{sha}/status").respond(
         json={"state": "pending", "total_count": 0}
     )
+    respx.get(f"{REPO_API}/actions/runs").respond(json={"workflow_runs": []})
     return detail
 
 

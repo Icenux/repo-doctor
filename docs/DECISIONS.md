@@ -583,3 +583,22 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   se hosting nevolá vůbec a stránka to řekne. Akce (push, PR, merge) offline fungují, jako dřív.
 - **Mimo rozsah:** `repo-doctor publish status` v CLI a stav v MCP serveru (zatím jen TUI).
 
+
+
+
+## Průběh CI jako graf jobů (#83)
+
+- **Datový model:** `CIStatus.jobs` (`CIJob`: stav, čas, kroky, `needs`, stage) vedle `checks`; plní
+  jen `Forge.pr_ci`. Tabulka kontrol zůstává (funguje všude), graf je volitelný pohled (`v`).
+- **GitHub nevrací závislosti jobů**, proto se `needs` čtou z workflow souboru na commitu PR
+  (`git cat-file`, jen `yaml.safe_load`, limit 256 kB, nic se nespouští). Job z API (`test (3.12)`,
+  `volající / vnitřní`) se přiřadí k jobu z YAML podle nejdelší shody názvu nebo id; bez shody je bez
+  závislostí. Joby i kroky dává `actions/runs?head_sha=` → `runs/{id}/jobs`; chyba nebo chybějící právo
+  na Actions graf vynechá, souhrn CI se nerozbije.
+- **GitLab:** sloupce jsou stages (API `needs` nedává); **Gitea/Forgejo:** jediný sloupec, joby
+  seskupené podle „workflow / job“ z názvu statusu.
+- **Rozložení (`pipeline.py`, čistá logika):** sloupec = nejdelší cesta; zdroje se posunou k následníkům;
+  hrany vyplývající z jiné cesty se nekreslí (tranzitivní redukce). Hrana přes víc sloupců se nekreslí
+  a u jobu je řádek „↳ po …“ – spojnice by musely vést přes jiné uzly.
+- **Widget `PipelineView`** kreslí do mřížky znaků (box-drawing, spojnice skládané z bitových masek směrů)
+  a animuje spinner jen když něco běží. Vzhled je aproximace GitHub Actions v terminálu, ne kopie.

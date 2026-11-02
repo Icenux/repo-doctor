@@ -9,10 +9,12 @@ import httpx
 import pytest
 import respx
 
+from repo_doctor.gitwrap import Git
 from repo_doctor.tui.app import RepoDoctorApp
 from repo_doctor.tui.screens.detail import DetailScreen
 from repo_doctor.tui.screens.dialogs import ConfirmDialog
 from repo_doctor.tui.screens.publish import PublishScreen
+from repo_doctor.tui.widgets.pipeline import PipelineView
 from tests.factory import RepoBuilder, git
 from tests.sample import sample_result
 from tests.test_publish import (
@@ -179,9 +181,15 @@ def green_and_red(sha: str, *, pending: bool = False) -> None:
     )
 
 
-def hosted_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[RepoDoctorApp, str]:
+def hosted_app(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, workflow: str | None = None
+) -> tuple[RepoDoctorApp, str]:
     monkeypatch.setenv("RD_TEST_TOKEN", TOKEN)
     rb, _ = fix_repo(tmp_path)
+    if workflow is not None:  # workflow je commitnutý v opravné větvi, odkud se čtou `needs`
+        rb.git("checkout", "-q", BRANCH)
+        rb.write(".github/workflows/ci.yml", workflow).commit("ci: workflow")
+        rb.git("checkout", "-q", "main")
     rb.git("remote", "set-url", "origin", "https://github.com/nekdo/proj.git")
     sha = rb.git("rev-parse", BRANCH).strip()
     rb.git("update-ref", f"refs/remotes/origin/{BRANCH}", sha)
@@ -239,3 +247,144 @@ async def test_page_works_without_hosting_and_names_the_next_step(tmp_path: Path
         assert "na origin zatím není" in text and "nepatří žádnému nastavenému hostingu" in text
         await pilot.press("escape")
         assert isinstance(app.screen, DetailScreen)
+
+
+WORKFLOW = """
+name: CI
+jobs:
+  lint: {runs-on: x}
+  test: {needs: lint}
+  build: {needs: [test]}
+"""
+
+
+def mock_jobs(sha: str) -> None:
+    mock_pr_state(sha, checks=[{"name": "lint", "status": "completed", "conclusion": "success"}])
+    respx.get(f"{REPO_API}/actions/runs").respond(
+        json={"workflow_runs": [{"id": 5, "name": "CI", "path": ".github/workflows/ci.yml"}]}
+    )
+    steps = [
+        {"name": "Set up job", "number": 1, "status": "completed", "conclusion": "success"},
+        {"name": "Run pytest", "number": 2, "status": "in_progress", "conclusion": None},
+    ]
+    respx.get(f"{REPO_API}/actions/runs/5/jobs").respond(
+        json={
+            "jobs": [
+                {"name": "lint", "status": "completed", "conclusion": "success",
+                 "html_url": "https://github.com/nekdo/proj/job/1"},
+                {"name": "test", "status": "in_progress", "conclusion": None, "steps": steps,
+                 "html_url": "https://github.com/nekdo/proj/job/2"},
+                {"name": "build", "status": "queued", "conclusion": None},
+            ]
+        }
+    )  # fmt: skip
+
+
+@respx.mock
+async def test_pipeline_view_shows_jobs_dependencies_and_steps(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    app, sha = hosted_app(tmp_path, monkeypatch, WORKFLOW)
+    sha = Git(tmp_path / "infra-notes").rev_parse(f"refs/heads/{BRANCH}") or sha
+    mock_jobs(sha)
+    opened: list[str] = []
+
+    def fake_open(url: str) -> bool:
+        opened.append(url)
+        return True
+
+    monkeypatch.setattr("repo_doctor.tui.screens.publish.open_url", fake_open)
+    async with app.run_test(size=(140, 40)) as pilot:
+        page = await open_detail(app, pilot)
+        await pilot.press("v")
+        await settle(app, pilot)
+        text = screen_text(app)
+        assert page.show_pipeline and "lint" in text and "build" in text and "▶" in text
+        assert "odkaz" not in text and "Kontroly CI" not in text  # tabulka je schovaná
+        view = page.query_one(PipelineView)
+        graph = view.graphs[0]
+        assert graph.title == "CI" and [[graph.jobs[i].name for i in c] for c in graph.columns] == [
+            ["lint"], ["test"], ["build"],
+        ]  # fmt: skip
+        assert view.selected_job is not None and view.selected_job.name == "lint"
+        await pilot.press("right")
+        assert view.selected_job is not None and view.selected_job.name == "test"
+        assert "Run pytest" not in screen_text(app)
+        await pilot.press("enter")  # rozbalí kroky
+        await pilot.pause()
+        assert "Run pytest" in screen_text(app) and "Set up job" in screen_text(app)
+        await pilot.press("w")
+        assert opened == ["https://github.com/nekdo/proj/job/2"]
+        await pilot.press("v")
+        assert not page.show_pipeline and "odkaz" in screen_text(app)
+
+
+def test_duration_and_fit_helpers() -> None:
+    from datetime import UTC, datetime
+
+    from repo_doctor.tui.widgets.pipeline import duration, elapsed, fit
+
+    assert [duration(x) for x in (-3, 7, 75, 3725)] == ["0s", "7s", "1m 15s", "1h 02m"]
+    t0 = datetime(2026, 11, 2, 10, tzinfo=UTC)
+    assert elapsed(None, None, t0) == "" and elapsed(t0, t0.replace(minute=2), t0) == "2m 00s"
+    assert fit("abcdef", 4) == "abc…" and fit("ab", 4) == "ab"
+
+
+@respx.mock
+async def test_pipeline_view_stages_long_edges_and_navigation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from repo_doctor.forges.base import CIJob, CIStep
+
+    app, sha = hosted_app(tmp_path, monkeypatch)
+    mock_pr_state(sha, checks=GREEN)
+    async with app.run_test(size=(140, 40)) as pilot:
+        page = await open_detail(app, pilot)
+        await pilot.press("v")
+        view = page.query_one(PipelineView)
+        steps = [CIStep("krok A", "success"), CIStep("krok B", "cancelled")]
+        view.set_jobs(
+            [
+                CIJob("a", "success", workflow="Pipeline #1", stage="check"),
+                CIJob("b", "cancelled", workflow="Pipeline #1", stage="test", steps=steps),
+                CIJob("c", "skipped", workflow="Pipeline #1", stage="test"),
+                CIJob("d", "failure", workflow="Pipeline #1", stage="ship"),
+                CIJob("e", "queued", workflow="Gitea", needs=["f", "x"]),
+                CIJob("f", "running", workflow="Gitea", needs=["g"]),
+                CIJob("g", "success", workflow="Gitea"),
+                CIJob("h", "success", workflow="Gitea", needs=["e", "g"]),
+            ]
+        )
+        await pilot.pause()
+        text = screen_text(app)
+        assert "check" in text and "ship" in text and "Pipeline #1" in text
+        for key in ("j", "j", "right", "left", "down", "up", "k"):
+            await pilot.press(key)
+        assert view.selected_job is not None
+        view.selected = (0, 1)
+        await pilot.press("enter")  # job s kroky se rozbalí
+        await pilot.pause()
+        assert "krok B" in screen_text(app)
+        view.selected = (0, 0)
+        await pilot.press("enter")  # job bez kroků se nerozbaluje
+        await pilot.press("escape")
+        assert isinstance(app.screen, DetailScreen)
+
+
+@respx.mock
+async def test_forge_supplied_names_cannot_inject_terminal_escapes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from repo_doctor.forges.base import CIJob
+    from repo_doctor.tui.util import printable
+
+    assert printable("a\x1b[31mb\x9bc\x07") == "a?[31mb?c?"
+    app, sha = hosted_app(tmp_path, monkeypatch)
+    mock_pr_state(sha, checks=GREEN)
+    async with app.run_test(size=(140, 40)) as pilot:
+        page = await open_detail(app, pilot)
+        await pilot.press("v")
+        page.query_one(PipelineView).set_jobs([CIJob("evil\x1b]0;x\x07job", "success")])
+        await pilot.pause()
+        text = screen_text(app)
+        assert "\x1b" not in text and "\x07" not in text and "evil?]0;x?job" in text

@@ -5,6 +5,10 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 ## [Nevydáno]
 
 ### Přidáno
+- **Průběh CI jako graf jobů (#83):** na stránce Odeslání oprav přepne `v` tabulku kontrol na graf
+  po vzoru GitHub Actions – joby ve sloupcích podle závislostí, spojnice, ikony a barvy podle stavu
+  (běžící se točí), doba trvání a po `⏎` kroky jobu. GitHub: joby s kroky z API a `needs` z workflow na
+  commitu PR; GitLab: joby po stages; Gitea/Forgejo: plochý seznam commit statusů.
 - **Stránka Odeslání oprav (#69):** push, PR/MR, merge a lokální merge mají vlastní stránku
   (`p` na kartě repa; klávesy `P`, `C`, `M`, `L`, `U` se přesunuly z karty na ni). Ukazuje celou cestu
   opravné větve – push → PR/MR → CI → merge – a u každého kroku další klávesu. U PR vypíše

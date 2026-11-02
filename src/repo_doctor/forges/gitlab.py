@@ -7,11 +7,13 @@ from urllib.parse import quote
 from repo_doctor.config import ForgeConfig
 from repo_doctor.forges.base import (
     CICheck,
+    CIJob,
     CIState,
     CIStatus,
     ConnectionReport,
     Forge,
     ForgeRepo,
+    JobState,
     PullRequest,
     PullRequestInfo,
     int_field,
@@ -73,6 +75,20 @@ def _pipeline_state(status: str) -> CIState:
     if status == "success":
         return "success"
     return "pending" if status in _RUNNING else "none"
+
+
+def _job_state(status: str) -> JobState:
+    if status == "success":
+        return "success"
+    if status in ("failed",):
+        return "failure"
+    if status in ("running", "preparing"):
+        return "running"
+    if status in ("canceled", "canceling"):
+        return "cancelled"
+    if status in ("skipped", "manual"):
+        return "skipped"
+    return "queued"
 
 
 def _mr(d: dict[str, object]) -> PullRequestInfo:
@@ -222,6 +238,8 @@ class GitLabForge(Forge):
             return CIStatus("none", pr.head_branch)
         p = items[0]
         checks: list[CICheck] = []
+        graph: list[CIJob] = []
+        title = _("Pipeline #{number}").format(number=p.get("iid") or p.get("id") or "")
         try:
             jobs = await self.client.get_json(
                 f"/projects/{_pid(repo)}/pipelines/{p.get('id')}/jobs",
@@ -230,15 +248,25 @@ class GitLabForge(Forge):
             )
         except (NotFoundError, ForbiddenError):
             jobs = []
-        for job in jobs if isinstance(jobs, list) else []:
+        for job in sorted(jobs if isinstance(jobs, list) else [], key=lambda j: j.get("id") or 0):
             status = str(job.get("status", ""))
             state = (
                 "success" if status in ("success", "skipped", "manual") else _pipeline_state(status)
             )
             if status == "canceled":
                 state = "failure"
-            checks.append(
-                CICheck(str(job.get("name") or "?"), state, str(job.get("web_url") or ""))
+            name, url = str(job.get("name") or "?"), str(job.get("web_url") or "")
+            checks.append(CICheck(name, state, url))
+            graph.append(
+                CIJob(
+                    name,
+                    _job_state(status),
+                    url,
+                    workflow=title,
+                    stage=str(job.get("stage") or ""),
+                    started=parse_time(job.get("started_at")),
+                    completed=parse_time(job.get("finished_at")),
+                )
             )
         return CIStatus(
             _pipeline_state(str(p.get("status", ""))),
@@ -246,6 +274,7 @@ class GitLabForge(Forge):
             str(p.get("iid") or p.get("id") or ""),
             str(p.get("web_url") or ""),
             checks,
+            graph,
         )
 
     async def merge_pr(self, repo: ForgeRepo, pr: PullRequestInfo, method: str | None) -> None:

@@ -306,7 +306,9 @@ Neplatné nebo kolidující mapování se při startu nahlásí srozumitelnou ch
 | `L` | lokální merge opravy (fast-forward) |
 | `U` | poslat výchozí větev (po lokálním merge) |
 | `ctrl+r` | načíst stav znovu (PR, CI) |
-| `w` | otevřít PR/MR na webu |
+| `w` | otevřít PR/MR (v průběhu job) na webu |
+| `v` | přepnout: tabulka kontrol ↔ průběh CI (graf jobů) |
+| `⏎` | v průběhu: rozbalit kroky jobu |
 
 **Léčba**
 
@@ -552,6 +554,17 @@ Stránka ukazuje celou cestu větve – push → PR/MR → CI → merge – a u 
 a kterou klávesou. U pull requestu vypíše **jednotlivé kontroly CI** (název, výsledek, odkaz;
 `⏎` otevře detail kontroly) a u merge důvod, proč zatím nejde. Dokud CI běží, stránka se sama
 obnovuje (každých 20 s), `ctrl+r` načte stav hned; v offline režimu se PR a CI nenačítají.
+
+Klávesa `v` přepne tabulku kontrol na **průběh CI** – graf jobů po vzoru GitHub Actions: joby jako
+rámečky ve sloupcích podle závislostí, spojnice mezi nimi, u každého stav (`✓` prošel, `✗` selhal,
+točící se kolečko běží, `○` čeká, `⊘` přeskočen) a doba trvání. Šipky nebo `j`/`k` vybírají job,
+`⏎` rozbalí jeho kroky, `w` otevře job na webu. Zdroj podle hostingu:
+
+| hosting | co graf ukazuje |
+|---|---|
+| GitHub | joby všech workflow běhů commitu včetně kroků; závislosti (`needs`) se čtou z workflow souboru na commitu PR |
+| GitLab | joby pipeline, sloupce jsou stages |
+| Gitea / Forgejo | jen plochý seznam commit statusů seskupený podle workflow (API nic víc nedává) |
 Bez doběhlé zelené CI merge nenabídne:
 
 | krok | klávesa | co se stane |
