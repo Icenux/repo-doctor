@@ -602,3 +602,20 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   a u jobu je řádek „↳ po …“ – spojnice by musely vést přes jiné uzly.
 - **Widget `PipelineView`** kreslí do mřížky znaků (box-drawing, spojnice skládané z bitových masek směrů)
   a animuje spinner jen když něco běží. Vzhled je aproximace GitHub Actions v terminálu, ne kopie.
+
+## #71 – Oprava zranitelných závislostí uvnitř repo-doctoru
+
+- **Proč ne ruční úprava lockfilu:** `uv.lock` i `package-lock.json` nesou hashe, URL a vyřešený strom;
+  ruční přepsání verze by lockfile rozbilo. Aktualizaci proto dělá správce balíčků (`uv lock
+  --upgrade-package 'X>=opravená'`, `npm update X --package-lock-only --ignore-scripts`).
+- **Izolace:** nástroj běží v dočasné složce jen s manifestem a lockfilem z HEAD (`git cat-file`),
+  ne v repu uživatele – žádné `.npmrc`, skripty ani zdrojáky z cizího repa, pracovní strom se nemění
+  a oprava zůstává běžným `Patch` (`replace` lockfilu → větev, náhled, potvrzení). `UV_NO_BUILD`, bez
+  `GIT_*`, časový limit 300 s, názvy balíčků ověřené regulárním výrazem (nesmí být přepínač).
+- **Cílová verze:** `deps.fixed_in` bere z OSV (`affected[].ranges[].events[].fixed`) u každé
+  zranitelnosti nejnižší opravenou verzi vyšší než současná a z nich nejvyšší. Nález je `fixable`
+  jen když opravená verze existuje, lockfile je podporovaný a nástroj je v `PATH` (stav se určí při
+  skenu; v nálezu je `package`, `version`, `fixed_in`, aby léčba nepotřebovala síťová data skenu).
+- **Ověření výsledku:** po běhu se lockfile znovu naparsuje; závislost, která zůstala na zranitelné
+  verzi (omezení v manifestu), se do opravy nezapočítá a je v poznámkách. Bez změn žádný patch.
+- **Mimo rozsah:** Cargo, Go, yarn, pnpm, poetry – zatím ruční postup z dokumentace.

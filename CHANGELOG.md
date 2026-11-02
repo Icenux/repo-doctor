@@ -5,6 +5,11 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 ## [Nevydáno]
 
 ### Přidáno
+- **Oprava zranitelných závislostí přímo v repo-doctoru (#71):** léčba (`f`) aktualizuje závislost
+  z `deps-vulnerable` na nejnižší opravenou verzi podle OSV a výsledný `uv.lock` / `package-lock.json`
+  uloží do nové větve – nemusíš spouštět `uv`, `npm` ani nic dalšího ručně. Správce balíčků běží
+  v dočasné složce jen s manifestem a lockfilem z HEAD (npm s `--ignore-scripts`, uv bez stavění
+  sdist), repo ani pracovní strom se nemění. Nabídne se, když je nástroj v `PATH`.
 - **Průběh CI jako graf jobů (#83):** na stránce Odeslání oprav přepne `v` tabulku kontrol na graf
   po vzoru GitHub Actions – joby ve sloupcích podle závislostí, spojnice, ikony a barvy podle stavu
   (běžící se točí), doba trvání a po `⏎` kroky jobu. GitHub: joby s kroky z API a `needs` z workflow na

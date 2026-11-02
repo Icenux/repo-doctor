@@ -537,7 +537,7 @@ msgstr " Edit folder "
 msgid " a "
 msgstr " and "
 
-#: repo_doctor/checks/deps.py:71
+#: repo_doctor/checks/deps.py:139
 msgid " a {count} další"
 msgstr " and {count} more"
 
@@ -613,7 +613,7 @@ msgstr " · fetch: {fetch_error}"
 msgid " · offline"
 msgstr " · offline"
 
-#: repo_doctor/tui/util.py:102
+#: repo_doctor/tui/util.py:107
 msgid " · okno"
 msgstr " · window"
 
@@ -959,6 +959,10 @@ msgstr "Update"
 msgid "Aktualizovat nástroje"
 msgstr "Update tools"
 
+#: repo_doctor/checks/deps.py:112
+msgid "Aktualizovat zranitelné závislosti"
+msgstr "Update vulnerable dependencies"
+
 #: repo_doctor/cli.py:787
 msgid "Aktualizuje stažené nástroje na verzi připnutou v repo-doctoru."
 msgstr "Updates downloaded tools to the version pinned in repo-doctor."
@@ -1131,7 +1135,7 @@ msgstr "Linter or formatter configuration missing"
 msgid "Chybí licence"
 msgstr "No license"
 
-#: repo_doctor/checks/deps.py:87
+#: repo_doctor/checks/deps.py:155
 msgid "Chybí lockfile"
 msgstr "No lockfile"
 
@@ -1699,7 +1703,7 @@ msgstr "Merge done"
 msgid "Merge jde jen po doběhnuté zelené CI; dokud běží, stránka se sama obnovuje, ctrl+r načte stav hned."
 msgstr "Merging is only possible once CI has finished green; while it runs the page refreshes itself, ctrl+r reloads the state right away."
 
-#: repo_doctor/publish.py:690
+#: repo_doctor/publish.py:694
 msgid "Merge selhal: {why}"
 msgstr "Merge failed: {why}"
 
@@ -1779,7 +1783,7 @@ msgstr ""
 "\n"
 "With --scheduled no report is printed (--report/--output cannot be combined) and the exit code is 0."
 
-#: repo_doctor/keymap.py:25 repo_doctor/tui/util.py:111
+#: repo_doctor/keymap.py:25 repo_doctor/tui/util.py:116
 msgid "Nastavení"
 msgstr "Settings"
 
@@ -1941,7 +1945,7 @@ msgstr "Unpinned dependency versions"
 msgid "Nepřipojovat se k hostingům."
 msgstr "Do not connect to hostings."
 
-#: repo_doctor/publish.py:673
+#: repo_doctor/publish.py:677
 msgid "Nesledované nebo ignorované soubory by se přepsaly: {files}"
 msgstr "Untracked or ignored files would be overwritten: {files}"
 
@@ -2141,7 +2145,7 @@ msgstr "Offline mode (O) turns off network checks (OSV, registries, hosting APIs
 msgid "Offline režim {state}. {key} spustí nový sken."
 msgstr "Offline mode {state}. {key} starts a new scan."
 
-#: repo_doctor/publish.py:584
+#: repo_doctor/publish.py:588
 msgid "Offline režim – PR a CI se nenačítají."
 msgstr "Offline mode – PR and CI are not loaded."
 
@@ -2165,7 +2169,7 @@ msgstr "Really delete permanently?"
 msgid "Opravná větev (výchozí nejnovější repo-doctor/fixes-*)."
 msgstr "Fix branch (default: the newest repo-doctor/fixes-*)."
 
-#: repo_doctor/publish.py:617
+#: repo_doctor/publish.py:621
 msgid "Opravná větev je zároveň výchozí – není co mergovat."
 msgstr "The fix branch is also the default branch – nothing to merge."
 
@@ -2345,6 +2349,10 @@ msgstr "Scheduled scan: {v} · {describe}"
 msgid "Po checkoutu větve spusť `pre-commit install`."
 msgstr "After checking out the branch, run `pre-commit install`."
 
+#: repo_doctor/checks/deps.py:109
+msgid "Po mergi spusť testy projektu – aktualizace mohou změnit chování."
+msgstr "Run the project's tests after merging – updates can change behaviour."
+
 #: repo_doctor/checks/tree.py:374
 msgid "Podle .gitattributes patří do Git LFS, ale v gitu je celý ({human})."
 msgstr ".gitattributes says this belongs in Git LFS, but the whole file ({human}) is stored in git."
@@ -2439,7 +2447,7 @@ msgstr "Pushes branch {branch} to {remote} ({url}), {commits}:"
 msgid "Pošle zkušební upozornění všemi nastavenými kanály ([notify])."
 msgstr "Sends a test notification through all configured channels ([notify])."
 
-#: repo_doctor/publish.py:664
+#: repo_doctor/publish.py:668
 msgid "Pracovní strom repa je jinde než repo (core.worktree) – nic se nemění."
 msgstr "The repo working tree is elsewhere than the repo (core.worktree) – nothing is changed."
 
@@ -2639,7 +2647,7 @@ msgstr "Repo without a remote (no backup)"
 msgid "Repo je na hostingu archivované (jen pro čtení)."
 msgstr "The repo is archived on the host (read-only)."
 
-#: repo_doctor/publish.py:658
+#: repo_doctor/publish.py:662
 msgid "Repo má necommitnuté změny ({dirty} souborů) a výchozí větev je právě checkoutnutá – commitni je nebo ulož do stashe."
 msgstr "The repo has uncommitted changes ({dirty} files) and the default branch is checked out – commit them or stash them."
 
@@ -2667,7 +2675,7 @@ msgstr "The repo has tags (latest {tag}) but no CHANGELOG or release notes."
 msgid "Repo má testy, ale v CI konfiguraci není žádný příkaz, který je spouští."
 msgstr "The repo has tests, but no command in the CI configuration runs them."
 
-#: repo_doctor/publish.py:668
+#: repo_doctor/publish.py:672
 msgid "Repo má vlastní filtry/drivery v .git/config – mergni ručně (git merge --ff-only)."
 msgstr "The repo has its own filters/drivers in .git/config – merge manually (git merge --ff-only)."
 
@@ -3425,7 +3433,7 @@ msgstr "The default branch on the host changed since the preview – try again."
 msgid "Výchozí větev repa se nepodařilo určit."
 msgstr "The default branch of the repo could not be determined."
 
-#: repo_doctor/publish.py:630
+#: repo_doctor/publish.py:634
 msgid "Výchozí větev {target} mezitím povyrostla (historie se rozdělila). repo-doctor dělá jen fast-forward – větev {branch} si srovnej ručně (rebase nebo merge)."
 msgstr "The default branch {target} has moved on in the meantime (history diverged). repo-doctor only does fast-forward – bring {branch} up to date manually (rebase or merge)."
 
@@ -3437,7 +3445,7 @@ msgstr "Cannot save the scan result: {err}"
 msgid "Větev na hostingu se liší od lokální – srovnej je (push nebo fetch) a zkus to znovu."
 msgstr "The branch on the host differs from the local one – sync them (push or fetch) and try again."
 
-#: repo_doctor/publish.py:621
+#: repo_doctor/publish.py:625
 msgid "Větev neexistuje."
 msgstr "The branch does not exist."
 
@@ -3461,15 +3469,15 @@ msgstr "Branch {branch} is not on {remote} in its current form – push it first
 msgid "Větev {branch} se na {remote} liší od lokální (není její předchůdce). Stáhni novinky (fetch) a srovnej ji ručně – repo-doctor nikdy nepřepisuje historii."
 msgstr "Branch {branch} on {remote} differs from the local one (it is not an ancestor). Fetch and reconcile it manually – repo-doctor never rewrites history."
 
-#: repo_doctor/publish.py:624
+#: repo_doctor/publish.py:628
 msgid "Větev {branch} už ve {target} je – není co mergovat."
 msgstr "Branch {branch} is already in {target} – nothing to merge."
 
-#: repo_doctor/publish.py:639
+#: repo_doctor/publish.py:643
 msgid "Větev {target} je checkoutnutá v jiném pracovním stromě ({path})."
 msgstr "Branch {target} is checked out in another working tree ({path})."
 
-#: repo_doctor/publish.py:682
+#: repo_doctor/publish.py:686
 msgid "Větve se od náhledu změnily – zkus to znovu."
 msgstr "The branches changed since the preview – try again."
 
@@ -3525,11 +3533,11 @@ msgstr "A forgotten debugger statement."
 msgid "Zastaralé lokální branche"
 msgstr "Stale local branches"
 
-#: repo_doctor/checks/deps.py:54
+#: repo_doctor/checks/deps.py:122
 msgid "Zastaralé závislosti"
 msgstr "Outdated dependencies"
 
-#: repo_doctor/checks/deps.py:75
+#: repo_doctor/checks/deps.py:143
 msgid "Zastaralé závislosti ({level})"
 msgstr "Outdated dependencies ({level})"
 
@@ -3603,7 +3611,7 @@ msgstr "Changes: {text}"
 msgid "Změní se {files} v pracovním stromě."
 msgstr "{files} will change in the working tree."
 
-#: repo_doctor/checks/deps.py:26
+#: repo_doctor/checks/deps.py:28
 msgid "Zranitelné závislosti"
 msgstr "Vulnerable dependencies"
 
@@ -4375,6 +4383,10 @@ msgstr "history scan limit (s)"
 msgid "lint + testy ({key})"
 msgstr "lint + tests ({key})"
 
+#: repo_doctor/depupdate.py:146
+msgid "lockfile nejde zpracovat"
+msgstr "the lockfile cannot be processed"
+
 #: repo_doctor/tui/screens/publish.py:323
 msgid "lokální merge"
 msgstr "local merge"
@@ -4789,7 +4801,7 @@ msgstr "publishing fixes: push, PR, merge and CI state"
 msgid "odkaz"
 msgstr "link"
 
-#: repo_doctor/checks/deps.py:17 repo_doctor/scanner.py:391 repo_doctor/scanner.py:392
+#: repo_doctor/checks/deps.py:19 repo_doctor/scanner.py:391 repo_doctor/scanner.py:392
 msgid "offline režim"
 msgstr "offline mode"
 
@@ -5457,7 +5469,7 @@ msgstr "system"
 msgid "systémová klíčenka (doporučeno)"
 msgstr "system keyring (recommended)"
 
-#: repo_doctor/checks/deps.py:19
+#: repo_doctor/checks/deps.py:21
 msgid "síťová data nejsou k dispozici"
 msgstr "network data is not available"
 
@@ -5653,6 +5665,10 @@ msgstr "v switches the view “missing locally” ↔ “local only”."
 msgid "varování: {message}"
 msgstr "warning: {message}"
 
+#: repo_doctor/depupdate.py:155
+msgid "vedle lockfilu chybí {manifest}"
+msgstr "{manifest} is missing next to the lockfile"
+
 #: repo_doctor/tui/screens/cleanup.py:158
 msgid "velikost"
 msgstr "size"
@@ -5771,7 +5787,7 @@ msgstr "rate limit exhausted (next attempt in {wait:.0f} s)"
 msgid "vzdálená repa"
 msgstr "remote repos"
 
-#: repo_doctor/tui/screens/publish.py:537 repo_doctor/tui/util.py:115
+#: repo_doctor/tui/screens/publish.py:537 repo_doctor/tui/util.py:120
 msgid "výchozí"
 msgstr "default"
 
@@ -6099,7 +6115,15 @@ msgstr "{len} local repos without a backup or with a remote the hosting does not
 msgid "{len} repozitářů bez lokálního klonu · c naklonuje vybrané · v přepne pohled"
 msgstr "{len} repositories without a local clone · c clones the selected one · v switches the view"
 
-#: repo_doctor/checks/deps.py:97
+#: repo_doctor/checks/deps.py:90
+msgid "{lock}: aktualizace se nepovedla ({error})"
+msgstr "{lock}: the update failed ({error})"
+
+#: repo_doctor/checks/deps.py:98
+msgid "{lock}: {dep} zůstává na zranitelné verzi (omezení v manifestu nebo jiné závislosti) – uprav ručně nebo přidej do allowlistu"
+msgstr "{lock}: {dep} stays on a vulnerable version (constraint in the manifest or another dependency) – update it manually or add it to the allowlist"
+
+#: repo_doctor/checks/deps.py:165
 msgid "{manifest} deklaruje závislosti, ale chybí {lock} – verze nejsou připnuté a zranitelnosti nejde ověřit"
 msgstr "{manifest} declares dependencies, but {lock} is missing – versions are not pinned and vulnerabilities cannot be checked"
 
@@ -6246,6 +6270,18 @@ msgstr "{text!r}: the wildcard can only be used as the prefix `*.`"
 #: repo_doctor/netpolicy.py:97
 msgid "{text!r}: zástupný znak pro všechny hosty není povolený"
 msgstr "{text!r}: a wildcard for all hosts is not allowed"
+
+#: repo_doctor/depupdate.py:150
+msgid "{tool} není v PATH"
+msgstr "{tool} is not in PATH"
+
+#: repo_doctor/depupdate.py:164
+msgid "{tool} selhal: {err}"
+msgstr "{tool} failed: {err}"
+
+#: repo_doctor/depupdate.py:168
+msgid "{tool} skončil chybou: {tail}"
+msgstr "{tool} exited with an error: {tail}"
 
 #: repo_doctor/checks/git_state.py:32
 msgid "{untracked} nesledovaných"
@@ -6423,7 +6459,7 @@ msgstr "no hosting – n adds one (optional)"
 msgid "… a {n} {dalsi}"
 msgstr "… and {n} {dalsi}"
 
-#: repo_doctor/tui/widgets/pipeline.py:277
+#: repo_doctor/tui/widgets/pipeline.py:278
 msgid "↳ po {need}"
 msgstr "↳ after {need}"
 
