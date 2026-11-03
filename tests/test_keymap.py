@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from repo_doctor.i18n import catalog
 from repo_doctor.keymap import (
     ACTIONS,
     KeymapError,
@@ -87,7 +88,8 @@ def test_helpers() -> None:
 
 def test_readme_key_tables_match_keymap() -> None:
     readme = (Path(__file__).parent.parent / "README.md").read_text("utf-8")
+    en = catalog("en")  # README je anglicky, popisy zkratek se berou z locale/en.po
     for ctx, rows in grouped().items():
-        assert f"**{ctx}**" in readme
+        assert f"**{en.get(ctx, ctx)}**" in readme
         for key, desc in rows:
-            assert f"| `{key}` | {desc} |" in readme, (ctx, key)
+            assert f"| `{key}` | {en.get(desc, desc)} |" in readme, (ctx, key)
