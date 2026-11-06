@@ -100,6 +100,7 @@ class FixScreen(BaseScreen):
                 "select_all",
                 ("j/k", _("pohyb")),
                 "confirm_fix",
+                "fix_publish",
                 ("esc", _("zpět")),
                 "help",
             ]
@@ -238,6 +239,8 @@ class FixScreen(BaseScreen):
         keys: list[str | tuple[str, str]] = ["toggle_fix", "select_all", ("j/k", _("pohyb"))]
         if self.patches and (not self.dirty or any(pt.local_only for pt in self.patches)):
             keys.append("confirm_fix")
+        if self.patches and not self.dirty:
+            keys.append("fix_publish")
         bar.set_items([*keys, ("esc", _("zpět")), "help"])
 
     def _summary(self) -> None:
@@ -350,6 +353,79 @@ class FixScreen(BaseScreen):
 
         self.app.push_screen(
             ConfirmDialog(_("Potvrdit léčbu"), body, confirm_label=_("Aplikovat")), decided
+        )
+
+    def action_fix_publish(self) -> None:
+        """Vyléčit vybrané a na pozadí dotáhnout push → PR → CI → merge (#70)."""
+        if not self.ready:
+            return
+        chosen = [pt for pt in self.patches if pt.key in (self.selected or set())]
+        if not chosen:
+            self.notify(
+                _("Nic není vybráno ({key} vybere, {key2} vše).").format(
+                    key=self.rd.key("toggle_fix"), key2=self.rd.key("select_all")
+                ),
+                severity="warning",
+            )
+            return
+        if self.dirty:
+            self.notify(
+                _("Repo má necommitnuté změny – opravy se nespustí, workflow nejde zahájit."),
+                severity="error",
+            )
+            return
+        if self.rd.offline:
+            self.notify(
+                _("Workflow potřebuje hosting – vypni offline režim ({key}).").format(
+                    key=self.rd.key("toggle_offline")
+                ),
+                severity="warning",
+            )
+            return
+        if not any(pt.changes for pt in chosen):
+            self.notify(
+                _("Vybrané opravy mění jen .git/ – není co odesílat, použij {key}.").format(
+                    key=self.rd.key("confirm_fix")
+                ),
+                severity="warning",
+            )
+            return
+        repo = self.repo
+        default = (repo.state.default_branch or repo.state.branch or "main") if repo else "main"
+        n = len([pt for pt in chosen if pt.changes])
+        body = Text()
+        body.append(_("\nNa pozadí proběhne postupně:\n"))
+        body.append(
+            _("  1. nová větev {branch} se {n} {commits_word}\n").format(
+                branch=self.branch, n=n, commits_word=commits_word(n)
+            )
+        )
+        body.append(_("  2. push jen této větve (nikdy force)\n"))
+        body.append(_("  3. pull request do {default}\n").format(default=default))
+        body.append(_("  4. čekání na CI\n"))
+        body.append(_("  5. po ZELENÉ CI merge na hostingu (nejde vrátit zpět)\n"))
+        body.append(
+            _(
+                "\nPři chybě CI, konfliktu nebo odmítnutí hostingu se workflow zastaví a upozorní tě\nv Notifikacích na přehledu. Větev i PR zůstanou k ručnímu dokončení.\n"
+            )
+        )
+
+        def decided(ok: bool | None) -> None:
+            if not ok:
+                self.notify(_("Zrušeno – nic se nezměnilo."))
+                return
+            if self.rd.workflows.start_heal(self.path, chosen):
+                self.notify(
+                    _("Workflow běží na pozadí. Průběh je v Notifikacích na přehledu."),
+                    title=_("Léčba a odeslání"),
+                )
+                self.app.pop_screen()
+
+        self.app.push_screen(
+            ConfirmDialog(
+                _("Vyléčit a dotáhnout do mergi"), body, confirm_label=_("Spustit workflow")
+            ),
+            decided,
         )
 
     @work(thread=True, exclusive=True, group="fix-apply")

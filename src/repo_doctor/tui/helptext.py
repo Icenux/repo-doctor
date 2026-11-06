@@ -113,6 +113,10 @@ PAGES: dict[str, Page] = {
             ),
             N_("z sbalí nebo rozbalí skupinu, alt+g přepíná seskupení (triáž / složka / hosting)."),
             N_("S řadí podle sloupce, s obrátí řazení, b schová levý panel."),
+            N_(
+                "Blok Notifikace v levém panelu ukazuje průběh a výsledky léčby s odesláním; "
+                "⏎ otevře stránku Odeslání daného repa, N označí vše jako přečtené."
+            ),
         ),
     ),
     "detail": Page(
@@ -147,6 +151,10 @@ PAGES: dict[str, Page] = {
                 "u tabulky ⏎ otevře kontrolu."
             ),
             N_("w mimo průběh otevře PR/MR na webu."),
+            N_(
+                "A dotáhne větev na pozadí: chybějící push a PR, čekání na CI a po zelené CI merge. "
+                "Při chybě CI se zastaví a upozorní v Notifikacích."
+            ),
         ),
     ),
     "fix": Page(
@@ -155,6 +163,10 @@ PAGES: dict[str, Page] = {
             N_("space vybere nebo zruší opravu, A vybere vše; vpravo je náhled změn (diff)."),
             N_("⏎ provede vybrané až po potvrzení. Změny vzniknou jen v nové větvi."),
             N_("Nic se nepushuje – odeslání je samostatný krok na kartě repa."),
+            N_(
+                "P vyléčí vybrané a na pozadí dotáhne push, PR, čekání na CI a po zelené CI merge; "
+                "průběh je v Notifikacích na přehledu."
+            ),
         ),
     ),
     "folders": Page(

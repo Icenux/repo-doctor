@@ -115,6 +115,7 @@ ACTIONS: tuple[KeyAction, ...] = (
         _("seskupit: triáž / složka / hosting / remote"),
         show=False,
     ),
+    _a("inbox_read", "N", "dashboard", _("notifikace: označit vše jako přečtené"), show=False),
     _a("toggle_sidebar", "b", "dashboard", _("skrýt / ukázat levý panel"), show=False),
     # karta repa
     _a("allowlist", "a", "detail", _("skrýt nález (allowlist)")),
@@ -131,12 +132,19 @@ ACTIONS: tuple[KeyAction, ...] = (
     _a("publish_push_default", "U", "publish", _("poslat výchozí větev (po lokálním merge)")),
     _a("publish_refresh", "ctrl+r", "publish", _("načíst stav znovu (PR, CI)")),
     _a("publish_open_web", "w", "publish", _("otevřít PR/MR (v průběhu job) na webu")),
+    _a(
+        "publish_auto",
+        "A",
+        "publish",
+        _("dokončit automaticky: push, PR, po zelené CI merge (na pozadí)"),
+    ),
     _a("publish_view", "v", "publish", _("přepnout: tabulka kontrol ↔ průběh CI (graf jobů)")),
     _a("publish_steps", "enter", "publish", _("v průběhu: rozbalit kroky jobu"), label="⏎"),
     # léčba
     _a("toggle_fix", "space", "fix", _("vybrat opravu"), label="space"),
     _a("select_all", "A", "fix", _("vybrat vše")),
     _a("confirm_fix", "enter", "fix", _("provést vybrané"), label="⏎"),
+    _a("fix_publish", "P", "fix", _("vyléčit a dotáhnout: push, PR, po zelené CI merge")),
     # úklid
     _a("cleanup_toggle", "space", "cleanup", _("vybrat repo"), label="space"),
     _a("cleanup_all", "A", "cleanup", _("vybrat vše / nic")),

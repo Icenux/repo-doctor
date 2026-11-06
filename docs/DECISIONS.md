@@ -628,3 +628,28 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   `package`, `version`, `fixed_in`, aby léčba nepotřebovala síťová data skenu.
 - **Mimo rozsah:** Cargo, Go, yarn, pnpm, poetry, npm lockfileVersion 1–2 – zatím ruční postup. Odmítnutou
   opravu léčba nenabídne (důvody odmítnutí jdou jen do poznámek úspěšné opravy).
+
+## Vyléčit a dotáhnout do mergi, notifikace (#70)
+
+- **Jedna větev, jeden PR:** vybrané opravy skončí v jedné větvi (commit na kontrolu, jak dělá léčba) a jde
+  o ně jeden PR. Varianta „PR na každou opravu postupně“ se zamítla – vyžadovala by po každém mergi stahovat
+  výchozí větev a čekat na CI znovu; jedna špatná oprava ale zablokuje celý PR (cena za jednoduchost).
+- **Řetězí se jen existující kroky** (`fixes.apply`, `publish.plan_/apply_push`, `plan_/apply_pr`,
+  `plan_merge`/`apply_merge`) v `workflow.py`; žádná nová cesta zápisu. Merge dál rozhoduje jen `apply_merge`
+  a před zápisem znovu načte stav včetně CI. Ruční kroky na stránce Odeslání se nezměnily.
+- **CI hned po vytvoření PR bývá `none`**, což `_ci_blocker` bere jako „jde mergnout“. Workflow proto
+  čeká až `CI_GRACE_SECONDS` (90 s), než se CI objeví; když se nespustí, **zastaví se a nemerguje naslepo**
+  (hláška „mergni ručně“). Repo bez CI tak potřebuje ruční merge. Dotazování po 15 s, strop 45 minut
+  (konstanty v `workflow.py`, testy je přepisují). Čekání se počítá součtem intervalů, ne hodinami.
+- **Hosting se ověří před léčbou** (`publish.connect`), aby kvůli chybějícímu tokenu nevznikala větev zbytečně.
+- **Zastavení = výsledek, ne výjimka:** `Stop` nese `Event` (druh, úroveň, text, odkaz). Opravná větev a PR
+  zůstávají; `publish_existing` (klávesa `A` na stránce Odeslání) je idempotentní – přeskočí hotový push
+  a existující PR, takže nepotřebuje žádný soubor se stavem workflow.
+- **Běh na pozadí aplikace, ne na obrazovce:** `WorkflowRunner` (`tui/workflow_runner.py`) spouští vlákno přes
+  `App.run_worker`, takže přežije přechod mezi stránkami; zavřením aplikace (`stop_work`) se workflow přeruší.
+  Nejvýš jedno workflow na repo. Odpojený běh (CLI, schedule) je mimo rozsah.
+- **Notifikace** (`inbox.py`): jen události léčby, `inbox.json` v datové složce (práva 0600, atomický zápis,
+  posledních 100, zprávy přes `redact`, odkaz jen `http(s)://`). Průběh „CI běží“ se neukládá, je jen živý
+  řádek (`⟳`) v bloku. Blok je v levém panelu pod složkami; `⏎`/klik otevře `PublishScreen` repa, zmizelé
+  repo ukáže jen upozornění. Desktopové upozornění (`notify.send_desktop`) dostane jen zastavení s chybou či varováním.
+- **Mimo rozsah:** zprávy z plánovaného skenu v notifikacích, více repo najednou, CLI příkaz.

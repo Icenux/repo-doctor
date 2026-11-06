@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from rich.style import Style
@@ -45,6 +46,7 @@ if TYPE_CHECKING:
     from repo_doctor.tui.app import RepoDoctorApp
 
 SIDEBAR_W = 22
+NOTIFICATIONS_SHOWN = 5  # kolik posledních událostí léčby ukáže levý panel
 MIN_NAME_W = 13  # nejdelší názvy ve wireframu („thesis-2019“, „infra-notes“) se vejdou celé
 SCAN_ANIMATION_INTERVAL = 0.12  # s mezi snímky animace pruhu skenu
 # krátké tvary pro lištu; plné popisky jsou v nápovědě a paletě
@@ -338,6 +340,7 @@ class DashboardScreen(NavMixin, Screen[Any]):
                 )
             )
         opts.append(Option("", disabled=True))
+        self._notification_block(opts, head, w)
         head(_("HOSTINGY"))
         counts: dict[str, int] = {}
         for r in app.result.repos:
@@ -391,6 +394,76 @@ class DashboardScreen(NavMixin, Screen[Any]):
         if hl is not None and hl < len(opts) and not opts[hl].disabled:
             sb.highlighted = hl
 
+    def _notification_block(
+        self, opts: list[Option], head: Callable[[str], None], width: int
+    ) -> None:
+        """NOTIFIKACE pod složkami: běžící workflow a posledních pár událostí léčby (#70)."""
+        runner = self.rd.workflows
+        p = self.rd.palette
+        unread = runner.inbox.unread()
+        shown_entries = runner.inbox.entries[:NOTIFICATIONS_SHOWN]
+        if not runner.live and not shown_entries:
+            return
+        head(_("NOTIFIKACE") + (f" ({unread})" if unread else ""))
+
+        def line(text: str, color: str, oid: str, *, bold: bool = False) -> None:
+            opts.append(
+                Option(Text(pad(text, width).plain, style=Style(color=color, bold=bold)), id=oid)
+            )
+
+        for path in runner.live:
+            line(f"⟳ {runner.repo_name(path)}", p.accent, f"n:live:{path}", bold=True)
+        colors = {"ok": p.ok, "warn": p.med, "error": p.high, "info": p.text}
+        marks = {"ok": "✓", "warn": "!", "error": "✗", "info": "·"}
+        for e in shown_entries:
+            mark = marks.get(e.level, "·")
+            line(
+                f"{'●' if not e.read else ' '}{mark} {e.repo_name}",
+                colors.get(e.level, p.text) if not e.read else p.muted,
+                f"n:{e.id}",
+                bold=not e.read,
+            )
+        if unread:
+            opts.append(
+                Option(
+                    Text(
+                        _("  vše přečteno ({key})").format(key=self.rd.key("inbox_read")),
+                        style=Style(color=p.muted),
+                    ),
+                    id="n:all",
+                )
+            )
+        opts.append(Option("", disabled=True))
+
+    def _open_notification(self, oid: str) -> None:
+        runner = self.rd.workflows
+        if oid == "n:all":
+            runner.inbox.mark_read()
+            self.refresh_data()
+            return
+        if oid.startswith("n:live:"):
+            path = oid[7:]
+        else:
+            entry = runner.inbox.get(oid[2:])
+            if entry is None:
+                return
+            runner.inbox.mark_read(entry.id)
+            path = entry.repo_path
+            self.refresh_data()
+        if self.rd.repo(path) is None:
+            self.notify(
+                _("Repo už není ve výsledcích skenu – spusť sken ({key}).").format(
+                    key=self.rd.key("scan_all")
+                ),
+                severity="warning",
+            )
+            return
+        self.rd.open_publish(path)
+
+    def action_inbox_read(self) -> None:
+        self.rd.workflows.inbox.mark_read()
+        self.refresh_data()
+
     # ------------------------------------------------------------------ události
     @on(OptionList.OptionHighlighted, "#triage")
     def _highlighted(self, event: OptionList.OptionHighlighted) -> None:
@@ -414,6 +487,9 @@ class DashboardScreen(NavMixin, Screen[Any]):
     def _sidebar_selected(self, event: OptionList.OptionSelected) -> None:
         oid = event.option.id or ""
         f = self.state.filters
+        if oid.startswith("n:"):
+            self._open_notification(oid)
+            return
         if oid.startswith("root:"):
             value = oid[5:]
             f.root = None if f.root == value else value

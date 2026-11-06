@@ -17,6 +17,10 @@ push them, open a PR/MR and merge it.
 - **Publishing fixes:** a dedicated page (`p` on the repo card) with push of the fix branch, PR/MR on GitHub,
   GitLab, Gitea and Forgejo, merge on the host (only after green CI) and local merge. It shows
   the PR and the CI state per individual check. Every step is separate, with a preview and confirmation – see [Publishing fixes](#publishing-fixes-push-pr-merge).
+- **Heal and carry through (`P` in Treatment):** select several problems in a repo and let repo-doctor do the whole
+  path in the background – fix branch, push, PR, waiting for CI and, **only after green CI**, merge. If CI fails
+  (or does not start, or the host refuses) the workflow stops and you see it in the **Notifications** block on
+  the overview; clicking a notification opens the Publishing fixes page of that repo. See [Heal and carry through](#heal-and-carry-through-one-go-to-merge).
 - **Works fully offline** and without any host; network checks (OSV.dev, PyPI, npm, host APIs) are an add-on.
 - **Minimal CLI** for CI (`repo-doctor scan --report md|json|html`).
 - **What's new in 0.3:** a standalone application that needs no Python or other runtime – `.deb`, `.rpm`,
@@ -284,6 +288,7 @@ An invalid or conflicting mapping is reported at startup with a clear error
 | `alt+3` | filter ● LOW |
 | `p` | problem repos only |
 | `alt+g` | group by: triage / folder / hosting / remote |
+| `N` | notifications: mark all as read |
 | `b` | hide / show left panel |
 
 **Repo card**
@@ -309,6 +314,7 @@ An invalid or conflicting mapping is reported at startup with a clear error
 | `U` | push the default branch (after a local merge) |
 | `ctrl+r` | reload the state (PR, CI) |
 | `w` | open the PR/MR (in the progress view the job) on the web |
+| `A` | finish automatically: push, PR, merge after green CI (in the background) |
 | `v` | switch: table of checks ↔ CI progress (job graph) |
 | `⏎` | in the progress view: expand the steps of a job |
 
@@ -319,6 +325,7 @@ An invalid or conflicting mapping is reported at startup with a clear error
 | `space` | select fix |
 | `A` | select all |
 | `⏎` | apply selected |
+| `P` | heal and carry through: push, PR, merge after green CI |
 
 **Folders**
 
@@ -585,9 +592,33 @@ the PR and merge use the host token from the configuration, which needs [write p
 The merge method (merge commit, squash, rebase) is taken from the repo's settings according to `[publish] merge_method`.
 After a merge on the host, you pull the changes in Sync (`7`).
 
+## Heal and carry through (one go to merge)
+
+In Treatment (`f`), select the fixes and press `P` instead of `⏎`. After a confirmation (the default is *Cancel*)
+a workflow starts **in the background of the application** – you can browse other repos in the meantime:
+
+1. a new branch `repo-doctor/fixes-<date>` with one commit per fix (as in plain Treatment),
+2. push of that branch only (never force),
+3. a pull/merge request into the default branch,
+4. waiting for CI (checked every 15 s, at most 45 minutes),
+5. **merge on the host only after green CI** – through the same checks as the manual `M` step.
+
+The host is verified *before* the branch is created, so a missing token never leaves a stray branch behind.
+The workflow **stops** and tells you when CI fails (with the names of the failed checks), when no CI starts within
+90 seconds (it never merges blindly – merge by hand if the repo has no CI), when the PR cannot be merged, when
+the host refuses a step, or when you quit the application. The branch and the PR stay where they are; press `A` on
+the Publishing fixes page to continue from where it stopped (steps that are done are skipped).
+
+**Notifications** (a block under *Folders* in the left panel of the overview, shown when the panel is visible –
+`b`, or a terminal at least 100 columns wide) list the running workflows (`⟳`) and the last five events
+(`●` unread, `✓` ok, `!` warning, `✗` error). `⏎` or a click opens the Publishing fixes page of that repo and marks the
+notification as read; `N` marks all as read. They are kept in `inbox.json` in the data directory (the last
+100). A failure also raises a desktop notification when `[notify] desktop` is on. Only one workflow runs per repo,
+and it needs the host, so it is not available in offline mode.
+
 ## Safety guarantees – what repo-doctor never does
 
-**Never:** it doesn't push without your explicit instruction (only the *Publishing fixes* step, see below), never
+**Never:** it doesn't push without your explicit instruction (only the *Publishing fixes* step and the *Heal and carry through* workflow you start yourself, see below), never
 uses force, doesn't rewrite history, doesn't delete branches or stashes, doesn't touch uncommitted changes
 and doesn't write anything to a host that you didn't ask for (the API scan only reads). **It never prints secrets** – in the TUI,
 reports, logs, JSON, MCP or notifications only the masked form `AKIA…(20 chars)` is visible;

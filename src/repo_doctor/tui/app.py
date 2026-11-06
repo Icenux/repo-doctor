@@ -118,6 +118,10 @@ class RepoDoctorApp(App[int]):
         self.scan_done = 0
         self.scan_current = ""
         self.selected_path: str | None = None
+        from repo_doctor.tui.workflow_runner import WorkflowRunner
+
+        # workflow „vyléčit a dotáhnout do mergi“ (#70) a jeho notifikace
+        self.workflows = WorkflowRunner(self)
         self.keymap_error: str | None = None
         self.keymap_ids: dict[str, str] = build_keymap({})
         for theme in THEMES:
@@ -372,8 +376,13 @@ class RepoDoctorApp(App[int]):
         self.stop_work()
         super().exit(result, return_code, message)
 
+    def on_inbox_changed(self) -> None:
+        """Notifikace nebo průběh workflow se změnily – přehled je překreslí."""
+        self._refresh_views()
+
     def stop_work(self) -> None:
         """Zastaví veškerou práci na pozadí, aby proces po zavření nečekal na sken."""
+        self.workflows.stop_all()
         if self.scanner is not None:
             self.scanner.cancel()
         gitwrap.abort_all()

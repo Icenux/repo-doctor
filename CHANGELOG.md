@@ -5,6 +5,13 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 ## [Nevydáno]
 
 ### Přidáno
+- **Vyléčit a dotáhnout do mergi (#70):** v léčbě `P` místo `⏎` vyléčí vybrané problémy repa a na pozadí
+  aplikace dotáhne push → PR → čekání na CI → merge, a to **jen po zelené CI**. Při chybě CI, nespuštěné CI,
+  konfliktu nebo odmítnutí hostingu se workflow zastaví; větev i PR zůstanou a `A` na stránce Odeslání
+  naváže tam, kde skončilo. Hosting se ověří dřív než vznikne větev.
+- **Blok Notifikace na přehledu (#70):** pod složkami v levém panelu běžící workflow a posledních pět
+  událostí léčby (uložené v `inbox.json`); `⏎` / klik otevře stránku Odeslání daného repa, `N` označí vše
+  jako přečtené. Chyba workflow přijde i jako desktopové upozornění.
 - **Oprava zranitelných závislostí přímo v repo-doctoru (#71):** léčba (`f`) přepíše zranitelnou
   závislost v `uv.lock` / `package-lock.json` na nejnižší opravenou verzi podle OSV a uloží ji do nové
   větve. Nepotřebuje `uv`, `npm` ani jiný program: verzi, odkaz a hash bere z PyPI / npm registru
