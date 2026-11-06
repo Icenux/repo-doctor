@@ -4,6 +4,11 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Opraveno
+- **Falešné nálezy tajemství u testovacích hodnot (#90):** filtr „zjevně vymyšlená hodnota“ už nezřeďuje
+  řadu znaků pevným prefixem klíče. Hodnoty typu `sk-ant-api03-AbCdEfGh…`, `glpat-AbCd…` či
+  `xoxb-1234567890-abcdefghij` v testech se proto přestanou hlásit jako tajemství.
+
 ### Změněno
 - **UI (#89):** jediné téma s černým pozadím a zelenými (`#00aa00`) obrysy a texty; zrušen přepínač
   světlého/tmavého tématu (`t`) i volba Vzhled v Nastavení. Přehled už při návratu do okna nešedne.

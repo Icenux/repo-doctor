@@ -61,6 +61,7 @@ def test_negatives(line: str) -> None:
 SEQ_DIGITS = "".join(str(i) for i in range(10))
 SEQ_UP = "abcdefghijklmnopqrstuvwxyz"
 SEQ_DOWN = SEQ_UP[::-1]
+SEQ_MIXED = "".join(c.upper() if i % 2 == 0 else c for i, c in enumerate(SEQ_UP))  # AbCdEf…
 
 
 @pytest.mark.parametrize(
@@ -78,6 +79,11 @@ SEQ_DOWN = SEQ_UP[::-1]
         "GH=" + "gh" + "p_" + SEQ_DIGITS * 4,
         'token = "' + "zxyx" * 6 + '"',
         "export API_KEY=" + SEQ_DIGITS * 2,
+        # pevný prefix (sk-ant-api03-, glpat-, xoxb-…) nesmí ředit řadu v těle hodnoty (#90)
+        "ANTHROPIC_API_KEY=" + "sk-" + "ant-" + "api03-" + SEQ_MIXED + SEQ_DIGITS[:6],
+        "OPENAI_API_KEY=" + "sk-" + "proj-" + SEQ_MIXED + "01",
+        "t: " + "gl" + "pat-" + SEQ_MIXED[:20],
+        "slack " + "xo" + "xb-" + SEQ_DIGITS + "-" + SEQ_UP[:10],
     ],
 )
 def test_obviously_fake_values_are_not_findings(line: str) -> None:
@@ -99,6 +105,10 @@ def test_fake_filter_keeps_realistic_values() -> None:
         "DATABASE_URL=postgres://app:" + "Company" + "123456" + "@db/app",
         "DATABASE_URL=postgres://app:" + "Qwerty" + "123456" + "@db/app",
         'secret_key = "some-long-text-with-' + "abc...xyz" + '-inside"',
+        # prefix se odřezává jen u klíčů s pevným prefixem vendora, ne u obecných hesel (#90)
+        'password = "' + "Company" + "_123456" + '"',
+        'api_key = "' + "Prod" + "-" + SEQ_UP[:12] + '"',
+        "DATABASE_URL=postgres://app:" + "Company" + "_123456" + "@db/app",
     ],
 )
 def test_partial_sequences_are_still_findings(line: str) -> None:
