@@ -207,6 +207,9 @@ SEQUENCE_RUN = 6  # tolik po sobě jdoucích znaků (123456, abcdef, zyxwvu) už
 SEQUENCE_SHARE = 0.8  # řady musí tvořit aspoň tento podíl hodnoty (Company123456 zůstává nález)
 MAX_PERIOD = 4  # opakující se vzor typu zxyxzxyx…
 TRUNCATED_EXAMPLE = re.compile(r"[A-Za-z0-9_-]{0,12}(?:\.\.\.|…)[A-Za-z0-9_-]{0,12}")
+KEY_PREFIX = re.compile(
+    r"(?:[A-Za-z]+\d*[-_])+"
+)  # pevný prefix: sk-ant-api03-, glpat-, xoxb-, ghp_
 
 
 def _sequence_share(value: str) -> float:
@@ -249,12 +252,14 @@ def _is_obvious_fake(value: str) -> bool:
     """Celá hodnota je zjevně vymyšlená: `sk-abc...xyz`, `1234567890`, `abcdefgh`, `zxyxzxyx`.
 
     Posuzuje se hodnota jako celek, ne podřetězec: reálné heslo `Company123456` se dál hlásí.
+    Řada či perioda se hledá i v těle za pevným prefixem (`sk-ant-api03-AbCdEf…`), jinak by
+    prefix podíl řady zředil pod práh a testovací hodnoty by se hlásily jako nález.
     """
-    return (
-        TRUNCATED_EXAMPLE.fullmatch(value) is not None
-        or _sequence_share(value) >= SEQUENCE_SHARE
-        or _is_periodic(value)
-    )
+    if TRUNCATED_EXAMPLE.fullmatch(value) is not None:
+        return True
+    prefix = KEY_PREFIX.match(value)
+    bodies = (value, value[prefix.end() :]) if prefix else (value,)
+    return any(_sequence_share(b) >= SEQUENCE_SHARE or _is_periodic(b) for b in bodies)
 
 
 def _looks_placeholder(value: str) -> bool:

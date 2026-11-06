@@ -61,6 +61,7 @@ def test_negatives(line: str) -> None:
 SEQ_DIGITS = "".join(str(i) for i in range(10))
 SEQ_UP = "abcdefghijklmnopqrstuvwxyz"
 SEQ_DOWN = SEQ_UP[::-1]
+SEQ_MIXED = "".join(c.upper() if i % 2 == 0 else c for i, c in enumerate(SEQ_UP))  # AbCdEf…
 
 
 @pytest.mark.parametrize(
@@ -78,6 +79,11 @@ SEQ_DOWN = SEQ_UP[::-1]
         "GH=" + "gh" + "p_" + SEQ_DIGITS * 4,
         'token = "' + "zxyx" * 6 + '"',
         "export API_KEY=" + SEQ_DIGITS * 2,
+        # pevný prefix (sk-ant-api03-, glpat-, xoxb-…) nesmí ředit řadu v těle hodnoty (#90)
+        "ANTHROPIC_API_KEY=" + "sk-" + "ant-" + "api03-" + SEQ_MIXED + SEQ_DIGITS[:6],
+        "OPENAI_API_KEY=" + "sk-" + "proj-" + SEQ_MIXED + "01",
+        "t: " + "gl" + "pat-" + SEQ_MIXED[:20],
+        "slack " + "xo" + "xb-" + SEQ_DIGITS + "-" + SEQ_UP[:10],
     ],
 )
 def test_obviously_fake_values_are_not_findings(line: str) -> None:
