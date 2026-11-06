@@ -201,7 +201,7 @@ class ForgeDialog(ModalScreen[ForgeFormResult | None]):
         super().__init__()
         self.forge = forge
         self.existing = (existing_names or set()) - ({forge.name} if forge else set())
-        # průvodce: u http:// URL mimo allow_http_hosts nabídne přidání hosta (jinak chyba)
+        # u http:// URL mimo allow_http_hosts nabídne přidání hosta (jinak jen chyba s návodem)
         self.offer_http_allow = offer_http_allow
 
     def compose(self) -> ComposeResult:
@@ -360,7 +360,9 @@ class ForgeDialog(ModalScreen[ForgeFormResult | None]):
         result = self._build()
         if result is None:
             return
-        reason = insecure_reason(result.config)
+        reason = insecure_reason(
+            result.config, getattr(self.app, "key", lambda _id: None)("screen_settings")
+        )
         if reason is None:
             self.dismiss(result)
             return

@@ -203,7 +203,9 @@ url = "http://git.tailnet-name.ts.net:3000"
 An entry is an exact hostname, `*.domain` (subdomains only), an IP address or a CIDR network, without a port.
 A repo's `.repo-doctor.toml` doesn't know this option – a foreign repo can't allow `http` for itself. On the
 Hostings screen such a host is marked "unencrypted connection, allowed in allow_http_hosts";
-the first-run wizard offers to add a host with an explanation of the risk.
+the first-run wizard and the *Add hosting* / *Edit hosting* dialogs on the Hostings screen offer to add the host
+(with an explanation of the risk). You can also edit the *Hosts with unencrypted http allowed (allow_http_hosts)*
+field in Settings (key `4`).
 
 A remote such as `ssh://git@git.tailnet-name.ts.net:2222/me/repo.git` is matched to a host by
 hostname (the SSH port may differ from the web one). Aliases from `~/.ssh/config` work too

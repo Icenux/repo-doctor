@@ -139,7 +139,7 @@ msgstr ""
 "\n"
 "Get newer versions of downloaded tools with: repo-doctor tools --update"
 
-#: repo_doctor/tui/screens/forges.py:265
+#: repo_doctor/tui/screens/forges.py:273
 msgid ""
 "\n"
 "Odebrat hosting {name} ({type})?\n"
@@ -277,7 +277,7 @@ msgstr ""
 "\n"
 "This run uses folders from the command line (nothing is saved): "
 
-#: repo_doctor/tui/screens/forges.py:258
+#: repo_doctor/tui/screens/forges.py:266
 msgid ""
 "\n"
 "Token v systémové klíčence se také smaže."
@@ -559,7 +559,7 @@ msgstr " DIAGNOSIS "
 msgid " Jen lokální úpravy (.git/) jde provést i tak."
 msgstr " Local-only changes (.git/) can be applied anyway."
 
-#: repo_doctor/tui/screens/forms.py:433
+#: repo_doctor/tui/screens/forms.py:435
 msgid " Naklonovat {full_name} "
 msgstr " Clone {full_name} "
 
@@ -574,10 +574,6 @@ msgstr " PREVIEW OF CHANGES · {files} "
 #: repo_doctor/tui/screens/detail.py:372
 msgid " NÁLEZY · {len} "
 msgstr " FINDINGS · {len} "
-
-#: repo_doctor/sshhelp.py:36
-msgid " Pokud je server v důvěryhodné síti (Tailscale), přidej ho do `allow_http_hosts`."
-msgstr " If the server is on a trusted network (Tailscale), add it to `allow_http_hosts`."
 
 #: repo_doctor/tui/screens/fix.py:110
 msgid " PŘEDPIS "
@@ -753,7 +749,7 @@ msgstr ""
 "\n"
 "See the LICENSE file.\n"
 
-#: repo_doctor/templates.py:249
+#: repo_doctor/templates.py:254
 msgid ""
 "# Vygenerováno repo-doctorem\n"
 ".git\n"
@@ -1289,11 +1285,11 @@ msgstr "Connection string with a password"
 msgid "CycloneDX 1.5 (JSON) z lockfilů repa – bez sítě. Kam uložit?"
 msgstr "CycloneDX 1.5 (JSON) from the repo lockfiles – offline. Where to save it?"
 
-#: repo_doctor/tui/screens/forms.py:476
+#: repo_doctor/tui/screens/forms.py:478
 msgid "Cíl už existuje – klon ho nepřepíše, zvol jiný název."
 msgstr "The target already exists – the clone will not overwrite it, choose another name."
 
-#: repo_doctor/tui/screens/forms.py:434
+#: repo_doctor/tui/screens/forms.py:436
 msgid "Cílová sledovaná složka"
 msgstr "Target watched folder"
 
@@ -1549,11 +1545,11 @@ msgstr "Host {name} cannot be used: {why}"
 msgid "Hosting {name} nemá token – PR a merge vyžadují token s právem zápisu."
 msgstr "Host {name} has no token – PRs and merges need a token with write permission."
 
-#: repo_doctor/tui/screens/forges.py:255
+#: repo_doctor/tui/screens/forges.py:263
 msgid "Hosting {name} odebrán."
 msgstr "Hosting {name} removed."
 
-#: repo_doctor/tui/screens/forges.py:214
+#: repo_doctor/tui/screens/forges.py:220
 msgid "Hosting {name} uložen. T otestuje připojení."
 msgstr "Hosting {name} saved. T tests the connection."
 
@@ -1566,8 +1562,8 @@ msgid "Hostingy (GitHub, GitLab, Codeberg, Forgejo…), ze kterých se čtou dat
 msgstr "Hosting services (GitHub, GitLab, Codeberg, Forgejo…) that CI, PR and alert data is read from."
 
 #: repo_doctor/tui/screens/settings.py:194
-msgid "Hosty s povoleným nešifrovaným http (čárkami)"
-msgstr "Hosts allowed over unencrypted http (comma-separated)"
+msgid "Hosty s povoleným nešifrovaným http (allow_http_hosts, čárkami)"
+msgstr "Hosts with unencrypted http allowed (allow_http_hosts, comma-separated)"
 
 #: repo_doctor/checks/docker.py:51
 msgid "Hygiena Dockerfile"
@@ -1634,8 +1630,8 @@ msgid "Jednorázové obejití: git push --no-verify. Odinstalace: smaž hook."
 msgstr "One-off bypass: git push --no-verify. To uninstall, delete the hook."
 
 #: repo_doctor/tui/screens/settings.py:196
-msgid "Jen pro důvěryhodnou síť (Tailscale/VPN) – po http jde i token hostingu. Hostname, *.domena, IP nebo síť CIDR, bez portu."
-msgstr "Only for a trusted network (Tailscale/VPN) – the hosting token is sent over http too. Hostname, *.domain, IP or CIDR network, without port."
+msgid "Jen pro důvěryhodnou síť (Tailscale/VPN) – po http jde i token hostingu. Hostname, *.domena, IP (např. 100.101.102.103) nebo síť CIDR, bez portu a bez http://."
+msgstr "Only for a trusted network (Tailscale/VPN) – the hosting token is sent over http too. Hostname, *.domain, IP (e.g. 100.101.102.103) or a CIDR network, without a port and without http://."
 
 #: repo_doctor/tui/screens/publish.py:175
 msgid "Jen tahle jedna větev, nikdy force ani tagy. Nové commity jsou zkontrolované na tajemství."
@@ -1665,7 +1661,7 @@ msgstr "Repo card: findings by category on the left, an explanation of the selec
 msgid "Klon selhal: {msg}"
 msgstr "Clone failed: {msg}"
 
-#: repo_doctor/tui/screens/forms.py:449
+#: repo_doctor/tui/screens/forms.py:451
 msgid ""
 "Klonuje se jen po potvrzení; existující složku nic nepřepíše.\n"
 msgstr ""
@@ -1887,7 +1883,7 @@ msgstr "Install tools"
 msgid "Nainstaluj ručně: {id} ({purpose})"
 msgstr "Install manually: {id} ({purpose})"
 
-#: repo_doctor/tui/screens/forms.py:447
+#: repo_doctor/tui/screens/forms.py:449
 msgid "Naklonovat"
 msgstr "Clone"
 
@@ -2095,7 +2091,7 @@ msgstr "Unknown tool {remove!r} (valid: {join})."
 msgid "Neúplný .gitignore"
 msgstr "Incomplete .gitignore"
 
-#: repo_doctor/tui/screens/forms.py:381
+#: repo_doctor/tui/screens/forms.py:383
 msgid "Nešifrované spojení"
 msgstr "Unencrypted connection"
 
@@ -2171,7 +2167,7 @@ msgstr "Hosting name (otherwise all)."
 msgid "Název remotu (předává git)."
 msgstr "Remote name (passed by git)."
 
-#: repo_doctor/tui/screens/forms.py:441
+#: repo_doctor/tui/screens/forms.py:443
 msgid "Název složky"
 msgstr "Folder name"
 
@@ -2199,11 +2195,11 @@ msgstr "Only one fix variant can be selected per check."
 msgid "Odebere nástroj stažený repo-doctorem (např. gitleaks)."
 msgstr "Removes a tool downloaded by repo-doctor (e.g. gitleaks)."
 
-#: repo_doctor/tui/screens/folders.py:195 repo_doctor/tui/screens/forges.py:268 repo_doctor/tui/screens/settings.py:462
+#: repo_doctor/tui/screens/folders.py:195 repo_doctor/tui/screens/forges.py:276 repo_doctor/tui/screens/settings.py:462
 msgid "Odebrat"
 msgstr "Remove"
 
-#: repo_doctor/tui/screens/forges.py:264
+#: repo_doctor/tui/screens/forges.py:272
 msgid "Odebrat hosting"
 msgstr "Remove hosting"
 
@@ -2519,6 +2515,10 @@ msgstr "Continue"
 msgid "Pokračovat?"
 msgstr "Continue?"
 
+#: repo_doctor/netpolicy.py:214
+msgid "Pokud je server v důvěryhodné síti (Tailscale), přidej {what} do pole „Hosty s povoleným nešifrovaným http“ (allow_http_hosts) {where}. Zadej jen host, bez portu a bez http://."
+msgstr "If the server is on a trusted network (Tailscale), add {what} to the “Hosts with unencrypted http allowed” field (allow_http_hosts) {where}. Enter only the host, without a port and without http://."
+
 #: repo_doctor/checks/static_code.py:352
 msgid "Port databáze nebo cache je otevřený na všech rozhraních (chybí 127.0.0.1:)."
 msgstr "A database or cache port is open on all interfaces (127.0.0.1: is missing)."
@@ -2555,7 +2555,7 @@ msgstr "Confirm"
 msgid "Potvrdit léčbu"
 msgstr "Confirm treatment"
 
-#: repo_doctor/tui/screens/forms.py:385
+#: repo_doctor/tui/screens/forms.py:387
 msgid "Povolit http pro tento host"
 msgstr "Allow http for this host"
 
@@ -2745,7 +2745,7 @@ msgstr "Add at least one folder (or skip the wizard with esc)."
 msgid "Připojené git hostingy."
 msgstr "Connected git hostings."
 
-#: repo_doctor/tui/screens/forges.py:104
+#: repo_doctor/tui/screens/forges.py:106
 msgid "Připojení je volitelné a jen pro čtení – na hostingu repo-doctor nic nemění."
 msgstr "Connecting is optional and read-only – repo-doctor changes nothing on the hosting."
 
@@ -2765,7 +2765,7 @@ msgstr "README.md for {name}"
 msgid "REPOZITÁŘ"
 msgstr "REPOSITORY"
 
-#: repo_doctor/sshhelp.py:61
+#: repo_doctor/sshhelp.py:59
 msgid "Remote používá nepovolený protokol {protocol}, repo-doctor ho z bezpečnostních důvodů nefetchuje (povolené jsou https a ssh)."
 msgstr "The remote uses the disallowed protocol {protocol}; for security reasons repo-doctor does not fetch over it (https and ssh are allowed)."
 
@@ -2977,11 +2977,11 @@ msgstr "FOLDERS"
 msgid "Self-hosted runner ve veřejném repu"
 msgstr "Self-hosted runner in a public repo"
 
-#: repo_doctor/sshhelp.py:39
+#: repo_doctor/sshhelp.py:37
 msgid "Server není dostupný (síť, VPN/Tailscale, port)."
 msgstr "The server is not reachable (network, VPN/Tailscale, port)."
 
-#: repo_doctor/sshhelp.py:32
+#: repo_doctor/sshhelp.py:33
 msgid "Server odmítl SSH klíč. Zkontroluj, že je klíč přidaný v účtu na hostingu, případně `core.sshCommand` / `~/.ssh/config`."
 msgstr "The server rejected the SSH key. Check that the key is added to your hosting account, and possibly `core.sshCommand` / `~/.ssh/config`."
 
@@ -3337,7 +3337,7 @@ msgstr "Instance URL (empty = github.com / gitlab.com)"
 msgid "URL instance musí začínat http:// nebo https://"
 msgstr "The instance URL must start with http:// or https://"
 
-#: repo_doctor/tui/screens/forms.py:382
+#: repo_doctor/tui/screens/forms.py:384
 msgid ""
 "URL instance používá http:// – token i data půjdou po síti bez šifrování.\n"
 "To je v pořádku jen v důvěryhodné síti, kde šifrování zajišťuje VPN (např. Tailscale). Na veřejném internetu ho může kdokoli po cestě přečíst.\n"
@@ -3349,9 +3349,9 @@ msgstr ""
 "\n"
 "Add {host} to allow_http_hosts?"
 
-#: repo_doctor/forges/__init__.py:41
-msgid "URL instance používá nešifrovaný http:// – token by šel po síti v otevřené podobě. Pokud je server v důvěryhodné síti (Tailscale), přidej jeho host do allow_http_hosts (Nastavení, 7)."
-msgstr "The instance URL uses unencrypted http:// – the token would travel over the network in plain text. If the server is on a trusted network (Tailscale), add its host to allow_http_hosts (Settings, 7)."
+#: repo_doctor/forges/__init__.py:47
+msgid "URL instance používá nešifrovaný http:// – token by šel po síti v otevřené podobě."
+msgstr "The instance URL uses unencrypted http:// – the token would travel over the network in the clear."
 
 #: repo_doctor/config.py:93
 msgid "URL nesmí obsahovat přihlašovací údaje"
@@ -3473,7 +3473,7 @@ msgstr "Select a finding."
 msgid "Vyber repo v pohledu „na hostingu bez lokálního klonu“."
 msgstr "Select a repo in the “on hosting without a local clone” view."
 
-#: repo_doctor/tui/screens/forms.py:474
+#: repo_doctor/tui/screens/forms.py:476
 msgid "Vyber složku a platný název."
 msgstr "Choose a folder and a valid name."
 
@@ -4089,7 +4089,7 @@ msgstr "chmod 777 gives everyone write access."
 msgid "chore(repo-doctor): automatické opravy ({n})"
 msgstr "chore(repo-doctor): automatic fixes ({n})"
 
-#: repo_doctor/sync.py:28 repo_doctor/tui/screens/forges.py:299
+#: repo_doctor/sync.py:28 repo_doctor/tui/screens/forges.py:309
 msgid "chyba"
 msgstr "error"
 
@@ -4329,6 +4329,10 @@ msgstr "depth"
 msgid "hook repo-doctor guard pro stage pre-push v .pre-commit-config.yaml (sdílené s ostatními, commit do větve oprav)"
 msgstr "repo-doctor guard hook for the pre-push stage in .pre-commit-config.yaml (shared with others, commit to the fixes branch)"
 
+#: repo_doctor/netpolicy.py:208
+msgid "host {host}"
+msgstr "host {host}"
+
 #: repo_doctor/tui/screens/dashboard.py:162
 msgid "hosting"
 msgstr "hosting"
@@ -4432,6 +4436,10 @@ msgstr "is unknown ({lic})"
 #: repo_doctor/cleanup.py:312
 msgid "je to pracovní strom (git worktree), ne samostatný klon"
 msgstr "it is a working tree (git worktree), not a standalone clone"
+
+#: repo_doctor/netpolicy.py:208
+msgid "jeho host"
+msgstr "its host"
 
 #: repo_doctor/checks/prepush.py:137
 msgid "jen lokálně (.git/hooks)"
@@ -4761,7 +4769,7 @@ msgstr "clone repo"
 msgid "nalezeno {count} repozitářů · navržená hloubka {depth}"
 msgstr "found {count} repositories · suggested depth {depth}"
 
-#: repo_doctor/templates.py:230
+#: repo_doctor/templates.py:235
 msgid ""
 "name: CI\n"
 "on:\n"
@@ -4875,7 +4883,7 @@ msgstr "not found (404) – {short}"
 msgid "není na větvi (detached HEAD)"
 msgstr "not on a branch (detached HEAD)"
 
-#: repo_doctor/tui/screens/forges.py:130
+#: repo_doctor/tui/screens/forges.py:132
 msgid "neotestováno (T)"
 msgstr "not tested (T)"
 
@@ -5047,7 +5055,7 @@ msgstr "tool"
 msgid "nástroje"
 msgstr "tools"
 
-#: repo_doctor/tui/screens/forges.py:112 repo_doctor/tui/triage_model.py:18
+#: repo_doctor/tui/screens/forges.py:114 repo_doctor/tui/triage_model.py:18
 msgid "název"
 msgstr "name"
 
@@ -5191,7 +5199,7 @@ msgstr "open on the web"
 msgid "otevřít v editoru"
 msgstr "open in editor"
 
-#: repo_doctor/tui/screens/forges.py:115
+#: repo_doctor/tui/screens/forges.py:117
 msgid "ověřeno"
 msgstr "verified"
 
@@ -5447,7 +5455,7 @@ msgstr "pins {count} to a SHA (the original tag stays in a comment)"
 msgid "připnutí akcí na commit SHA"
 msgstr "pin actions to commit SHAs"
 
-#: repo_doctor/tui/screens/forges.py:112
+#: repo_doctor/tui/screens/forges.py:114
 msgid "připojení"
 msgstr "connection"
 
@@ -5819,7 +5827,7 @@ msgstr "tab switch · enter = selected button · esc cancel"
 msgid "tag :latest"
 msgstr "tag :latest"
 
-#: repo_doctor/secrets_scan.py:475
+#: repo_doctor/secrets_scan.py:482
 msgid "tajemství"
 msgstr "secret"
 
@@ -5839,7 +5847,7 @@ msgstr "pulse"
 msgid "tep "
 msgstr "pulse "
 
-#: repo_doctor/tui/screens/forges.py:128
+#: repo_doctor/tui/screens/forges.py:130
 msgid "testuji…"
 msgstr "testing…"
 
@@ -5903,7 +5911,7 @@ msgstr "delete permanently"
 msgid "trvale smaže"
 msgstr "deletes permanently"
 
-#: repo_doctor/tui/screens/detail.py:271 repo_doctor/tui/screens/forges.py:112
+#: repo_doctor/tui/screens/detail.py:271 repo_doctor/tui/screens/forges.py:114
 msgid "typ"
 msgstr "type"
 
@@ -5963,9 +5971,17 @@ msgstr "it no longer exists or it is a symlink"
 msgid "uživatel"
 msgstr "user"
 
-#: repo_doctor/tui/screens/forges.py:112
+#: repo_doctor/tui/screens/forges.py:114
 msgid "uživatel / org"
 msgstr "user / org"
+
+#: repo_doctor/netpolicy.py:210
+msgid "v Nastavení (klávesa {key})"
+msgstr "in Settings (key {key})"
+
+#: repo_doctor/netpolicy.py:212
+msgid "v Nastavení nebo v config.toml"
+msgstr "in Settings or in config.toml"
 
 #: repo_doctor/forges/tokens.py:140
 msgid "v klíčence není token pro hosting {name}"
@@ -6031,7 +6047,7 @@ msgstr "visibility"
 msgid "viditelnost repa na hostingu neznámá"
 msgstr "repo visibility on the hosting is unknown"
 
-#: repo_doctor/tui/screens/forges.py:117
+#: repo_doctor/tui/screens/forges.py:119
 msgid "vlastní CA"
 msgstr "custom CA"
 
@@ -6353,7 +6369,7 @@ msgstr "{default} is {commits} behind {upstream} (as of the last fetch; for the 
 msgid "{default} má {commits}, které nejsou na {remote}"
 msgstr "{default} has {commits} that are not on {remote}"
 
-#: repo_doctor/tui/screens/forges.py:207
+#: repo_doctor/tui/screens/forges.py:213
 msgid "{err}. Použij raději token_env nebo token_cmd."
 msgstr "{err}. Prefer token_env or token_cmd."
 
@@ -6489,7 +6505,7 @@ msgstr "{name} {version} is not in the lockfile"
 msgid "{name} {version} v lockfilu není (nebo je ve více verzích)"
 msgstr "{name} {version} is not in the lockfile (or it is present in several versions)"
 
-#: repo_doctor/tui/screens/forges.py:290
+#: repo_doctor/tui/screens/forges.py:300
 msgid "{name}: připojeno jako {user}, vidí {repo_count} repozitářů."
 msgstr "{name}: connected as {user}, sees {repo_count} repositories."
 
@@ -6789,7 +6805,7 @@ msgstr "no PR/MR yet"
 msgid "žádný commit {no_pulse_days}+ dní"
 msgstr "no commit for {no_pulse_days}+ days"
 
-#: repo_doctor/tui/screens/forges.py:154
+#: repo_doctor/tui/screens/forges.py:156
 msgid "žádný hosting – n přidá (volitelné)"
 msgstr "no hosting – n adds one (optional)"
 
@@ -6861,11 +6877,11 @@ msgstr "◐ theme"
 msgid "⚠ Ověřování TLS je vypnuté – spojení jde odposlechnout. Raději nastav vlastní CA."
 msgstr "⚠ TLS verification is off – the connection can be eavesdropped. Better set a custom CA."
 
-#: repo_doctor/tui/screens/forges.py:122
+#: repo_doctor/tui/screens/forges.py:124
 msgid "⚠ http (povoleno)"
 msgstr "⚠ http (allowed)"
 
-#: repo_doctor/tui/screens/forges.py:119
+#: repo_doctor/tui/screens/forges.py:121
 msgid "⚠ vypnuto"
 msgstr "⚠ off"
 
@@ -6907,14 +6923,14 @@ msgstr "✓ {name} ({type}): user {v}, sees {repo_count} repositories"
 msgid "✓ {path} je platná ({len} složek, {len2} hostingů)."
 msgstr "✓ {path} is valid ({len} folders, {len2} hostings)."
 
-#: repo_doctor/tui/screens/forges.py:133
+#: repo_doctor/tui/screens/forges.py:135
 msgid "✓ {v} · {repo_count} rep"
 msgstr "✓ {v} · {repo_count} repos"
 
-#: repo_doctor/tui/screens/forges.py:139
+#: repo_doctor/tui/screens/forges.py:141
 msgid "✗ chyba"
 msgstr "✗ error"
 
-#: repo_doctor/tui/screens/forges.py:124
+#: repo_doctor/tui/screens/forges.py:126
 msgid "✗ http"
 msgstr "✗ http"

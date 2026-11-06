@@ -191,11 +191,11 @@ class SettingsScreen(BaseScreen):
             )
             yield Label(_("Ignorované repozitáře (název nebo glob, čárkami)"))
             yield Input(compact=True, value=", ".join(cfg.ignore_repos), id="ignore_repos")
-            yield Label(_("Hosty s povoleným nešifrovaným http (čárkami)"))
+            yield Label(_("Hosty s povoleným nešifrovaným http (allow_http_hosts, čárkami)"))
             yield Static(
                 _(
                     "Jen pro důvěryhodnou síť (Tailscale/VPN) – po http jde i token hostingu. "
-                    "Hostname, *.domena, IP nebo síť CIDR, bez portu."
+                    "Hostname, *.domena, IP (např. 100.101.102.103) nebo síť CIDR, bez portu a bez http://."
                 ),
                 classes="hint",
             )
