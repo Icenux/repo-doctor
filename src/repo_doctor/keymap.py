@@ -86,7 +86,6 @@ ACTIONS: tuple[KeyAction, ...] = (
     _a("scan_fetch", "F", "global", _("skenovat vše + git fetch (novinky z remote)"), show=False),
     _a("cancel_scan", "x", "global", _("zrušit běžící sken"), show=False),
     _a("toggle_offline", "O", "global", _("offline režim (bez síťových kontrol)"), show=False),
-    _a("toggle_theme", "t", "global", _("světlé / tmavé téma"), show=False),
     _a("back", "q", "global", _("zpět"), "go_back"),
     _a("quit", "ctrl+q", "global", _("konec (zastaví i běžící sken)")),
     # pohyb (platí ve všech seznamech)
@@ -116,7 +115,6 @@ ACTIONS: tuple[KeyAction, ...] = (
         show=False,
     ),
     _a("inbox_read", "N", "dashboard", _("notifikace: označit vše jako přečtené"), show=False),
-    _a("toggle_sidebar", "b", "dashboard", _("skrýt / ukázat levý panel"), show=False),
     # karta repa
     _a("allowlist", "a", "detail", _("skrýt nález (allowlist)")),
     _a("open_editor", "o", "detail", _("otevřít v editoru")),

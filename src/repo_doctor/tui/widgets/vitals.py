@@ -39,16 +39,18 @@ def scan_dots(width: int, frame: int) -> list[int]:
 
 
 def scan_bar(width: int, done: int, total: int, frame: int, p: Palette) -> Text:
-    """Zelený ukazatel průběhu skenu s černými tečkami, které letí zprava doleva."""
+    """Ukazatel průběhu skenu: vyplněná část je jednolitě zelená, tečky letí jen v pravé části.
+
+    Animace nesmí prostupovat do zeleného pruhu, který se posouvá zleva doprava (#89).
+    """
     filled = round(width * done / total) if total else 0
     t = Text()
     for i, mask in enumerate(scan_dots(width, frame)):
-        on = i < filled
+        if i < filled:
+            t.append(" ", style=Style(bgcolor=p.ok))
+            continue
         char = chr(0x2800 + mask) if mask else " "
-        t.append(
-            char,
-            style=Style(color="black", bgcolor=p.ok) if on else Style(color=p.muted, bgcolor=p.dim),
-        )
+        t.append(char, style=Style(color=p.muted, bgcolor=p.dim))
     return t
 
 

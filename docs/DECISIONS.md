@@ -172,8 +172,20 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
 - **Hledání `/`** filtruje podle názvu repa, cesty, ID kontroly a textu nálezu.
 - **Historie „Od včerejška“** porovnává s předchozím uloženým skenem (ne nutně
   s kalendářním včerejškem) – posledních N skenů (`limits.history_size`, výchozí 30).
-- **Barvy světlého tématu** jsou ztmavené varianty palety, aby text severit měl na pozadí
-  `#f5f6f8` kontrast alespoň 4.5:1 (WCAG AA).
+- ~~Barvy světlého tématu~~ – zrušeno v #89, viz níže.
+
+## UI: jediné téma, bez přepínače panelu (#89)
+
+- **Jediné téma, černé pozadí.** Světlé téma, klávesa `t` a volba „Vzhled“ v Nastavení jsou pryč;
+  obrysy a texty mají základní zelenou `#00aa00`, barvy severit zůstávají (červená / jantarová / modrá),
+  jinak by se z nálezů nedalo poznat, co hoří. Pozadí je vždy `#000000`: Textual při fokusu přidává
+  světlý nádech (`background-tint`), kvůli kterému oblast přehledu při návratu do okna zešedla, proto
+  je v `app.tcss` vypnutý.
+- **Klávesa `b` (skrýt levý panel) a `ui.show_sidebar` jsou zrušené.** Levý panel se i nadále sám schová
+  pod 100 sloupců (`SIDEBAR_MIN_WIDTH`), jinak by se nevešla tabulka.
+- **Staré konfigurace se nerozbijí:** klíče `ui.theme` a `ui.show_sidebar` se při načtení tiše zahodí
+  (`UIConfig._drop_removed_keys`), přestože jinak platí `extra="forbid"`.
+- **Animace skenu je jen v nevyplněné (pravé) části pruhu;** zelená vyplněná část je jednolitá.
 
 ## MCP server (0.2.0)
 

@@ -216,7 +216,7 @@ def test_cleanup_screen_snapshot(
         await pilot.app.workers.wait_for_complete()  # type: ignore[attr-defined]
         await pilot.pause()  # type: ignore[attr-defined]
 
-    app = make_app(tmp_path, result=result, theme="dark")
+    app = make_app(tmp_path, result=result)
     assert snap_compare(app, terminal_size=size, run_before=run_before)  # type: ignore[operator]
 
 

@@ -19,7 +19,6 @@ from repo_doctor.i18n import _
 from repo_doctor.tui.bindings import bindings
 from repo_doctor.tui.screens.base import BaseScreen
 from repo_doctor.tui.screens.dialogs import ConfirmDialog
-from repo_doctor.tui.theme import DARK_NAME, LIGHT_NAME
 from repo_doctor.tui.util import available_editors, editor_installed, home_path, resolve_editor
 from repo_doctor.tui.widgets.forms import IntRange, PositiveNumber, split_list
 from repo_doctor.tui.widgets.keybar import KeyBar
@@ -101,14 +100,6 @@ class SettingsScreen(BaseScreen):
                 value=cfg.ui.language,
                 allow_blank=False,
                 id="language",
-            )
-            yield Label(_("Vzhled"))
-            yield Select(
-                compact=True,
-                options=[(_("tmavé"), "dark"), (_("světlé"), "light")],
-                value=cfg.ui.theme,
-                allow_blank=False,
-                id="theme",
             )
             yield Label(_("Editor"))
             yield Static(
@@ -359,7 +350,7 @@ class SettingsScreen(BaseScreen):
         self._fill_allowlist()
         self.refresh_schedule()
         self._show_editor()
-        self.query_one("#theme", Select).focus()
+        self.query_one("#language", Select).focus()
 
     def _show_editor(self) -> None:
         cmd, source = resolve_editor(self.rd.config.ui.editor)
@@ -393,10 +384,7 @@ class SettingsScreen(BaseScreen):
     def _select(self, event: Select.Changed) -> None:
         store = self.rd.store
         wid, value = event.select.id, event.value
-        if wid == "theme" and value != self.rd.config.ui.theme:
-            if self._save(store.set_value, "ui", "theme", value):
-                self.app.theme = LIGHT_NAME if value == "light" else DARK_NAME
-        elif wid == "language" and value != self.rd.config.ui.language:
+        if wid == "language" and value != self.rd.config.ui.language:
             if self._save(store.set_value, "ui", "language", value):
                 self.notify(_("Jazyk se změní po restartu aplikace."))
         elif wid == "scan_on_start" and (value == "on") != self.rd.config.ui.scan_on_start:

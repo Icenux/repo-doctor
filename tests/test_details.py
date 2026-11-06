@@ -10,7 +10,7 @@ from repo_doctor.deps import Dependency, DepsData
 from repo_doctor.forges import gitea, github, gitlab
 from repo_doctor.gitwrap import Git, TreeEntry
 from repo_doctor.tui.screens.detail import LABEL_W, detail_items, layout_items
-from repo_doctor.tui.theme import THEMES, palette_for
+from repo_doctor.tui.theme import PALETTE as p
 from tests.factory import RepoBuilder
 from tests.sample import sample_result
 from tests.tui_helpers import make_app, screen_text
@@ -106,7 +106,6 @@ def test_forge_repo_fields() -> None:
 
 
 def test_layout_wraps_or_truncates() -> None:
-    p = palette_for(THEMES[0].name)
     items = [Text(f"položka-{i}") for i in range(6)]
     wrapped = layout_items("HISTORIE", items, 40, wrap=True, p=p)
     assert len(wrapped) > 1 and all(line.cell_len <= 40 for line in wrapped)

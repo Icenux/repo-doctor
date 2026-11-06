@@ -6,6 +6,10 @@ Screen {
 
 .hidden { display: none; }
 
+/* Pozadí je vždy černé (#89): Textual na fokusu a při najetí přidává světlý nádech
+   (background-tint), z něhož se oblast přehledu zešedne. */
+*, *:focus, *:hover, *:focus-within { background-tint: transparent; }
+
 /* panely */
 .panel, #triage-panel, #diagnosis, #findings-panel, #rx-panel, #diff-panel, #card-header, #fix-header {
     border: round $rd-border;

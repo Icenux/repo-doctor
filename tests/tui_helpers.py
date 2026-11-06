@@ -123,13 +123,11 @@ def make_app(
     *,
     config: str | None = CONFIG,
     result: ScanResult | None = None,
-    theme: str | None = None,
     **kw: Any,
 ) -> RepoDoctorApp:
     cfg = tmp / "config.toml"
     if config is not None:
-        text = config + (f'\n[ui]\ntheme = "{theme}"\n' if theme else "")
-        cfg.write_text(text)
+        cfg.write_text(config)
     kw.setdefault("auto_scan", False)
     kw.setdefault("tools_backend", FakeTools())
     kw.setdefault("history_delta", {"high": 2, "low": -5, "no_pulse": 1})

@@ -20,7 +20,7 @@ from repo_doctor.tui.screens.help import HelpScreen
 from repo_doctor.tui.screens.remote import RemoteScreen
 from repo_doctor.tui.screens.settings import SettingsScreen
 from repo_doctor.tui.screens.wizard import WizardScreen
-from repo_doctor.tui.theme import LIGHT_NAME
+from repo_doctor.tui.theme import PALETTE, THEME_NAME
 from tests import factory as fx
 from tests.sample import sample_result
 from tests.tui_helpers import CONFIG, fake_factory, make_app, screen_text
@@ -88,9 +88,7 @@ async def test_dashboard_sort_filter_group(tmp_path: Path) -> None:
         assert d.state.group_by == "remote"
         await pilot.press("alt+g")
         assert d.state.group_by == "triage"
-        await pilot.press("b")
-        assert not d.query_one("#sidebar").display
-        await pilot.press("b")
+        await pilot.press("b")  # přepínač levého panelu zrušen (#89)
         assert d.query_one("#sidebar").display
 
 
@@ -172,8 +170,8 @@ async def test_screen_switching_and_help(tmp_path: Path) -> None:
         assert "PŘEHLED (TRIÁŽ)" in screen_text(app)
         await pilot.press("j", "k", "escape")
         assert isinstance(app.screen, DashboardScreen)
-        await pilot.press("t")
-        assert app.theme == LIGHT_NAME
+        await pilot.press("t")  # přepínač tématu zrušen (#89): klávesa nedělá nic
+        assert app.theme == THEME_NAME
         await pilot.press("O")
         assert app.offline
         await pilot.press("q")  # na přehledu jen poradí, aplikaci nezavře
@@ -650,7 +648,6 @@ async def test_settings(tmp_path: Path) -> None:
         screen.query_one("#editor").value = "nvim"  # type: ignore[attr-defined]
         screen.query_one("#ignore_paths").value = "vendor/**, docs/**"  # type: ignore[attr-defined]
         screen.query_one("#templates_dir").value = "~/tpl"  # type: ignore[attr-defined]
-        screen.query_one("#theme").value = "light"  # type: ignore[attr-defined]
         screen.query_one("#scan_on_start").value = "on"  # type: ignore[attr-defined]
         screen.query_one("#fail_on").value = "medium"  # type: ignore[attr-defined]
         screen.query_one("#license").value = "ISC"  # type: ignore[attr-defined]
@@ -671,7 +668,7 @@ async def test_settings(tmp_path: Path) -> None:
         await pilot.press("d", "tab", "enter")
         await pilot.pause()
     cfg = ConfigStore(tmp_path / "config.toml").load()
-    assert cfg.limits.large_file_mb == 2.5 and cfg.ui.editor == "nvim" and cfg.ui.theme == "light"
+    assert cfg.limits.large_file_mb == 2.5 and cfg.ui.editor == "nvim"
     assert cfg.ui.scan_on_start
     assert cfg.ignore_paths == ["vendor/**", "docs/**"] and cfg.templates_dir == "~/tpl"
     assert cfg.checks.fail_on.value == "medium" and cfg.license == "ISC"
@@ -830,8 +827,9 @@ async def test_columns_follow_panel_width(tmp_path: Path) -> None:
         await pilot.pause()
         d = dash(app)
         assert not d.query_one("#sidebar").display
-        await pilot.press("b")  # levý panel ručně zapnutý na úzkém terminálu
+        await pilot.press("b")  # přepínač levého panelu zrušen (#89): panel zůstává schovaný
         await pilot.pause()
+        assert not d.query_one("#sidebar").display
         cols = d._columns()
         assert cols.name_w >= 13
         assert not cols.show_pulse
@@ -993,10 +991,22 @@ def test_scan_dots_animate_and_stack() -> None:
 
 
 def test_scan_bar_is_green_where_filled() -> None:
-    from repo_doctor.tui.theme import DARK
     from repo_doctor.tui.widgets.vitals import scan_bar
 
-    bar = scan_bar(10, 5, 10, 3, DARK)
-    assert bar.cell_len == 10
-    assert [s.style.bgcolor.name for s in bar.spans[:5]] == [DARK.ok] * 5  # type: ignore[union-attr]
-    assert [s.style.bgcolor.name for s in bar.spans[5:]] == [DARK.dim] * 5  # type: ignore[union-attr]
+    for frame in range(40):
+        bar = scan_bar(10, 5, 10, frame, PALETTE)
+        assert bar.cell_len == 10
+        # animace nesmí prostupovat do zeleného pruhu (#89): vyplněná část je bez teček
+        assert bar.plain[:5] == " " * 5
+        assert [s.style.bgcolor.name for s in bar.spans[:5]] == [PALETTE.ok] * 5  # type: ignore[union-attr]
+        assert [s.style.bgcolor.name for s in bar.spans[5:]] == [PALETTE.dim] * 5  # type: ignore[union-attr]
+    # v pravé části se tečky naopak objevují
+    assert any(scan_bar(10, 5, 10, f, PALETTE).plain[5:].strip() for f in range(40))
+
+
+async def test_dashboard_keybar_shows_settings(tmp_path: Path) -> None:
+    """Nastavení je ve spodní liště přehledu (#89), i na 120 sloupcích."""
+    app = make_app(tmp_path)
+    async with app.run_test(size=(120, 32)) as pilot:
+        await pilot.pause()
+        assert "nastavení" in screen_text(app)
