@@ -320,6 +320,7 @@ class PublishScreen(BaseScreen):
                 ("publish_push", _("push")),
                 ("publish_pr", _("PR/MR")),
                 ("publish_merge", _("merge")),
+                ("publish_auto", _("automaticky")),
                 ("publish_merge_local", _("lokální merge")),
                 ("publish_push_default", _("push výchozí")),
                 ("publish_refresh", _("obnovit")),
@@ -602,6 +603,36 @@ class PublishScreen(BaseScreen):
 
     def action_publish_merge_local(self) -> None:
         self.flow.start("merge_local")
+
+    def action_publish_auto(self) -> None:
+        """Dotáhne opravnou větev na pozadí: chybějící push a PR, čekání na CI, merge po zelené CI."""
+        runner = self.rd.workflows
+        if runner.active(self.path):
+            self.notify(
+                _("Workflow tohoto repa už běží – průběh je v Notifikacích na přehledu."),
+                severity="warning",
+            )
+            return
+        body = Text(
+            _(
+                "\nNa pozadí se dokončí to, co ještě chybí: push opravné větve, pull request,\nčekání na CI a po ZELENÉ CI merge na hostingu (nejde vrátit zpět).\n\nPři chybě CI se workflow zastaví a upozorní tě v Notifikacích na přehledu.\n"
+            ),
+            style=Style(color=self.rd.palette.text),
+        )
+
+        def decided(ok: bool | None) -> None:
+            if not ok:
+                self.notify(_("Zrušeno – nic se nezměnilo."))
+            elif runner.start_publish(self.path):
+                self.notify(
+                    _("Workflow běží na pozadí. Průběh je v Notifikacích na přehledu."),
+                    title=_("Odeslání"),
+                )
+
+        self.app.push_screen(
+            ConfirmDialog(_("Dokončit automaticky"), body, confirm_label=_("Spustit workflow")),
+            decided,
+        )
 
     def action_publish_refresh(self) -> None:
         self.refresh_status()
