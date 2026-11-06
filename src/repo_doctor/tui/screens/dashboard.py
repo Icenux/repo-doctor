@@ -46,6 +46,7 @@ if TYPE_CHECKING:
     from repo_doctor.tui.app import RepoDoctorApp
 
 SIDEBAR_W = 22
+SIDEBAR_MIN_WIDTH = 100  # užší terminál levý panel schová (jinak by se nevešla tabulka)
 NOTIFICATIONS_SHOWN = 5  # kolik posledních událostí léčby ukáže levý panel
 MIN_NAME_W = 13  # nejdelší názvy ve wireframu („thesis-2019“, „infra-notes“) se vejdou celé
 SCAN_ANIMATION_INTERVAL = 0.12  # s mezi snímky animace pruhu skenu
@@ -59,6 +60,7 @@ DASH_KEYS: list[str | tuple[str, str]] = [
     ("collapse_band", _("sbalit")),
     ("screen_folders", _("složky")),
     ("screen_forges", "hostingy"),
+    ("screen_settings", _("nastavení")),
     "help",
     ("quit", _("konec")),
 ]
@@ -89,7 +91,6 @@ class DashboardScreen(NavMixin, Screen[Any]):
     def __init__(self) -> None:
         super().__init__()
         self.state = TriageState()
-        self.sidebar_forced: bool | None = None
         self._row_paths: list[str | None] = []
         self._row_groups: list[str | None] = []
         self._scan_frame = 0
@@ -116,7 +117,6 @@ class DashboardScreen(NavMixin, Screen[Any]):
 
     def on_mount(self) -> None:
         self.state.group_by = self.rd.config.ui.group_by
-        self.sidebar_forced = None if self.rd.config.ui.show_sidebar else False
         self.refresh_data()
         self.query_one(TriageList).focus()
         self.set_interval(SCAN_ANIMATION_INTERVAL, self._animate_scan)
@@ -127,9 +127,6 @@ class DashboardScreen(NavMixin, Screen[Any]):
             self.refresh_data(light=True)
 
     def on_resize(self, event: Resize) -> None:
-        self.refresh_data()
-
-    def on_theme_changed(self) -> None:
         self.refresh_data()
 
     def on_config_changed(self) -> None:
@@ -144,9 +141,7 @@ class DashboardScreen(NavMixin, Screen[Any]):
         return self.app.size.width
 
     def _sidebar_visible(self) -> bool:
-        if self.sidebar_forced is not None:
-            return self.sidebar_forced
-        return self.width >= 100
+        return self.width >= SIDEBAR_MIN_WIDTH
 
     def refresh_data(self, *, light: bool = False) -> None:
         if not self.is_mounted:
@@ -202,7 +197,7 @@ class DashboardScreen(NavMixin, Screen[Any]):
     def _columns(self) -> Columns:
         panel_w = self.width - (SIDEBAR_W if self._sidebar_visible() else 0) - 4
         cols = Columns(width=panel_w, show_pulse=self.width >= 90, show_host=self.width >= 80)
-        # Rozhoduje i skutečné místo v panelu: když je zapnutý levý panel (b) na užším terminálu,
+        # Rozhoduje i skutečné místo v panelu: když je levý panel vedle tabulky,
         # obětujeme nejdřív TEP, pak HOSTING, aby se nezkracovaly názvy repozitářů.
         if cols.show_pulse and cols.name_w < MIN_NAME_W:
             cols = Columns(width=panel_w, show_pulse=False, show_host=cols.show_host)
@@ -593,10 +588,6 @@ class DashboardScreen(NavMixin, Screen[Any]):
     def action_group_cycle(self) -> None:
         order = ["triage", "root", "forge", "remote"]
         self.state.group_by = order[(order.index(self.state.group_by) + 1) % len(order)]  # type: ignore[assignment]
-        self.refresh_data()
-
-    def action_toggle_sidebar(self) -> None:
-        self.sidebar_forced = not self._sidebar_visible()
         self.refresh_data()
 
     def set_category(self, category: Category | None) -> None:

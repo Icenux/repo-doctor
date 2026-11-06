@@ -142,15 +142,25 @@ class AllowEntry(_Model):
     repo: str | None = None
 
 
+# Klíče `[ui]` zrušené v #89 (jediné téma, levý panel bez přepínače); ve starých configech
+# se tiše zahodí, aby se kvůli nim aplikace nezastavila.
+_REMOVED_UI_KEYS = ("theme", "show_sidebar")
+
+
 class UIConfig(_Model):
-    theme: Literal["dark", "light"] = "dark"
     editor: str | None = None
     group_by: Literal["triage", "root", "forge", "remote"] = "triage"
-    show_sidebar: bool = True
     # true = TUI po spuštění rovnou skenuje (jinak ukáže poslední uložený výsledek)
     scan_on_start: bool = False
     # jazyk rozhraní: auto = podle LANG / LC_ALL (cs_* → čeština, jinak angličtina)
     language: Literal["auto", "cs", "en"] = "auto"
+
+    @model_validator(mode="before")
+    @classmethod
+    def _drop_removed_keys(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            return {k: v for k, v in data.items() if k not in _REMOVED_UI_KEYS}
+        return data
 
 
 class CIConfig(_Model):

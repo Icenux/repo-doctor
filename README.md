@@ -257,7 +257,6 @@ An invalid or conflicting mapping is reported at startup with a clear error
 | `F` | scan all + git fetch (news from remotes) |
 | `x` | cancel running scan |
 | `O` | offline mode (no network checks) |
-| `t` | light / dark theme |
 | `q` | back |
 | `ctrl+q` | quit (also stops a running scan) |
 
@@ -289,7 +288,6 @@ An invalid or conflicting mapping is reported at startup with a clear error
 | `p` | problem repos only |
 | `alt+g` | group by: triage / folder / hosting / remote |
 | `N` | notifications: mark all as read |
-| `b` | hide / show left panel |
 
 **Repo card**
 
@@ -545,7 +543,6 @@ my_emails = ["me@proton.me"]   # your other addresses for the email-exposure che
 ssh_batch_mode = true     # false = don't add `-o BatchMode=yes` (custom SSH wrapper)
 
 [ui]
-theme = "dark"            # dark | light (t toggles)
 scan_on_start = false     # true = scan right after the TUI starts
 language = "auto"         # auto (by LANG) | cs | en; one-off --lang or REPO_DOCTOR_LANG
 editor = "nvim"            # the o key on the repo card; unset: $VISUAL / $EDITOR / vi

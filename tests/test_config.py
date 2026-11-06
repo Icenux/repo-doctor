@@ -106,7 +106,7 @@ def test_roundtrip_preserves_comments(tmp_path: Path) -> None:
     store.upsert_root(RootConfig(path="/mnt/data/git", depth=2))
     store.upsert_root(RootConfig(path="~/projekty", depth=4, enabled=False), index=0)
     store.set_value("limits", "stash_days", 10)
-    store.set_value("ui", "theme", "light")
+    store.set_value("ui", "language", "en")
     store.set_value("ui", "editor", None)
     store.set_top("license", "ISC")
     store.set_top("templates_dir", None)
@@ -178,3 +178,12 @@ def test_repo_overrides(tmp_path: Path) -> None:
 
 def test_limits_defaults() -> None:
     assert LimitsConfig().history_size == 30
+
+
+def test_removed_ui_keys_are_ignored(tmp_path: Path) -> None:
+    """Klíče zrušené v #89 (jediné téma, bez přepínače panelu) staré configy nerozbijí."""
+    f = tmp_path / "config.toml"
+    f.write_text('[ui]\ntheme = "light"\nshow_sidebar = false\nlanguage = "cs"\n')
+    cfg = ConfigStore(f).load()
+    assert cfg.ui.language == "cs"
+    assert not hasattr(cfg.ui, "theme") and not hasattr(cfg.ui, "show_sidebar")

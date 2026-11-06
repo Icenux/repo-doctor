@@ -112,7 +112,7 @@ PAGES: dict[str, Page] = {
                 "/ hledá repo podle názvu, p nechá jen problémová repa, alt+1/2/3 filtruje závažnost."
             ),
             N_("z sbalí nebo rozbalí skupinu, alt+g přepíná seskupení (triáž / složka / hosting)."),
-            N_("S řadí podle sloupce, s obrátí řazení, b schová levý panel."),
+            N_("S řadí podle sloupce, s obrátí řazení."),
             N_(
                 "Blok Notifikace v levém panelu ukazuje průběh a výsledky léčby s odesláním; "
                 "⏎ otevře stránku Odeslání daného repa, N označí vše jako přečtené."

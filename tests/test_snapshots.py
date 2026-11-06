@@ -12,10 +12,9 @@ from tests.sample import sample_result
 from tests.tui_helpers import make_app
 
 SIZES = [(80, 24), (160, 48)]
-THEMES = ["dark", "light"]
 
 
-def _fix_app(tmp: Path, theme: str) -> Any:
+def _fix_app(tmp: Path) -> Any:
     rb = fx.RepoBuilder.create(tmp / "infra-notes")
     rb.write(".gitignore", "node_modules/\ndist/\n").write("main.py", "print(1)\n").write(
         "util.py", "x=1\n"
@@ -23,7 +22,7 @@ def _fix_app(tmp: Path, theme: str) -> Any:
     rb.write("pyproject.toml", "[project]\nname='x'\n").commit()
     result = sample_result()
     result.repos[0].path = str(rb.path)
-    return make_app(tmp, result=result, theme=theme)
+    return make_app(tmp, result=result)
 
 
 async def _wait(pilot: Any) -> None:
@@ -32,28 +31,25 @@ async def _wait(pilot: Any) -> None:
     await pilot.pause()
 
 
-@pytest.mark.parametrize("theme", THEMES)
 @pytest.mark.parametrize("size", SIZES, ids=lambda s: f"{s[0]}x{s[1]}")
-def test_dashboard(snap_compare: Any, tmp_path: Path, size: tuple[int, int], theme: str) -> None:
-    assert snap_compare(make_app(tmp_path, theme=theme), terminal_size=size)
+def test_dashboard(snap_compare: Any, tmp_path: Path, size: tuple[int, int]) -> None:
+    assert snap_compare(make_app(tmp_path), terminal_size=size)
 
 
-@pytest.mark.parametrize("theme", THEMES)
 @pytest.mark.parametrize("size", SIZES, ids=lambda s: f"{s[0]}x{s[1]}")
-def test_detail(snap_compare: Any, tmp_path: Path, size: tuple[int, int], theme: str) -> None:
-    assert snap_compare(make_app(tmp_path, theme=theme), terminal_size=size, press=["enter", "j"])
+def test_detail(snap_compare: Any, tmp_path: Path, size: tuple[int, int]) -> None:
+    assert snap_compare(make_app(tmp_path), terminal_size=size, press=["enter", "j"])
 
 
-@pytest.mark.parametrize("theme", THEMES)
 @pytest.mark.parametrize("size", SIZES, ids=lambda s: f"{s[0]}x{s[1]}")
-def test_fix_confirm(snap_compare: Any, tmp_path: Path, size: tuple[int, int], theme: str) -> None:
+def test_fix_confirm(snap_compare: Any, tmp_path: Path, size: tuple[int, int]) -> None:
     async def run_before(pilot: Any) -> None:
         await pilot.press("f")
         await _wait(pilot)
         await pilot.press("enter")
         await pilot.pause()
 
-    assert snap_compare(_fix_app(tmp_path, theme), terminal_size=size, run_before=run_before)
+    assert snap_compare(_fix_app(tmp_path), terminal_size=size, run_before=run_before)
 
 
 # Velikost wireframů (100×31) – zdroj obrázků v dokumentaci.
@@ -72,7 +68,7 @@ def test_wireframe_fix(snap_compare: Any, tmp_path: Path) -> None:
         await pilot.press("enter")
         await pilot.pause()
 
-    assert snap_compare(_fix_app(tmp_path, "dark"), terminal_size=(100, 31), run_before=run_before)
+    assert snap_compare(_fix_app(tmp_path), terminal_size=(100, 31), run_before=run_before)
 
 
 def test_dashboard_unchecked_repo(snap_compare: Any, tmp_path: Path) -> None:
@@ -92,7 +88,7 @@ def test_dashboard_unchecked_repo(snap_compare: Any, tmp_path: Path) -> None:
             findings=[UnsafeOwnership().for_path("/srv/sdilene/cizi")],
         )
     )
-    assert snap_compare(make_app(tmp_path, result=result, theme="dark"), terminal_size=(80, 24))
+    assert snap_compare(make_app(tmp_path, result=result), terminal_size=(80, 24))
 
 
 def test_detail_unchecked_repo(snap_compare: Any, tmp_path: Path) -> None:
@@ -111,5 +107,5 @@ def test_detail_unchecked_repo(snap_compare: Any, tmp_path: Path) -> None:
             findings=[UnsafeOwnership().for_path("/srv/sdilene/cizi")],
         )
     ]
-    app = make_app(tmp_path, result=result, theme="dark")
+    app = make_app(tmp_path, result=result)
     assert snap_compare(app, terminal_size=(80, 24), press=["enter"])

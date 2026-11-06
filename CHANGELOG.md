@@ -4,6 +4,13 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Změněno
+- **UI (#89):** jediné téma s černým pozadím a zelenými (`#00aa00`) obrysy a texty; zrušen přepínač
+  světlého/tmavého tématu (`t`) i volba Vzhled v Nastavení. Přehled už při návratu do okna nešedne.
+  Zrušena klávesa `b` pro skrytí levého panelu (panel se dál sám schová na úzkém terminálu).
+  Animace průběhu skenu se děje jen v pravé, dosud nevyplněné části pruhu. Spodní lišta přehledu
+  ukazuje i Nastavení. Klíče `ui.theme` a `ui.show_sidebar` ve starých konfiguracích se ignorují.
+
 ### Přidáno
 - **Vyléčit a dotáhnout do mergi (#70):** v léčbě `P` místo `⏎` vyléčí vybrané problémy repa a na pozadí
   aplikace dotáhne push → PR → čekání na CI → merge, a to **jen po zelené CI**. Při chybě CI, nespuštěné CI,

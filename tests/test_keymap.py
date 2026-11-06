@@ -61,7 +61,7 @@ def test_open_fix_conflicts_in_both_contexts() -> None:
         ({"scan_all": "esc"}, "vyhrazená"),
         ({"scan_all": "j"}, "kolize"),  # s pohybem
         ({"allowlist": "o"}, "kolize"),  # v rámci karty
-        ({"clone": "t"}, "kolize"),  # s globální
+        ({"clone": "O"}, "kolize"),  # s globální
     ],
 )
 def test_invalid(overrides: dict[str, str], needle: str) -> None:

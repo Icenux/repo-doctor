@@ -1,4 +1,4 @@
-"""Paleta „Triáž“ – tmavé téma podle zadání a světlé odvozené se stejným kontrastem (WCAG AA)."""
+"""Paleta „Triáž“ – jediné téma: černé pozadí, obrysy a texty v zelené #00aa00."""
 
 from __future__ import annotations
 
@@ -37,45 +37,31 @@ class Palette:
         return self.high if score < 40 else self.med if score < 70 else self.ok
 
 
-DARK = Palette(
-    background="#12141a",
-    panel="#171a21",
-    selection="#223047",
-    text="#c9ced8",
-    muted="#6b7385",
-    dim="#3a404d",
-    border="#343a47",
-    accent="#5fd3b0",
+# Jediné téma (#89): černé pozadí a základní zelená #00aa00 pro obrysy a texty.
+# Barvy severit zůstávají rozlišitelné (červená / jantarová / modrá), jinak by se z nálezů
+# nedalo poznat, co hoří. Všechny texty mají na černé kontrast ≥ 4.5:1 (WCAG AA).
+BASE_GREEN = "#00aa00"
+PALETTE = Palette(
+    background="#000000",
+    panel="#000000",
+    selection="#003300",
+    text=BASE_GREEN,
+    muted="#008a00",
+    dim="#004d00",
+    border="#006600",
+    accent=BASE_GREEN,
     high="#ff5f6d",
     med="#f5b642",
     low="#6fa8ff",
-    ok="#7bd88f",
-    diff_add="#16281f",
+    ok=BASE_GREEN,
+    diff_add="#062a0a",
     diff_del="#2b1719",
 )
-# Světlé téma: barvy severit ztmavené tak, aby na pozadí #f5f6f8 měly kontrast ≥ 4.5:1.
-LIGHT = Palette(
-    background="#f5f6f8",
-    panel="#ffffff",
-    selection="#d9e4f5",
-    text="#1d2330",
-    muted="#566072",
-    dim="#a3aab6",
-    border="#c3c9d3",
-    accent="#0b7a5f",
-    high="#c01530",
-    med="#8a5300",
-    low="#1d5bb8",
-    ok="#1b7532",
-    diff_add="#dff3e5",
-    diff_del="#fbe3e6",
-)
 
-DARK_NAME = "repo-doctor-dark"
-LIGHT_NAME = "repo-doctor-light"
+THEME_NAME = "repo-doctor"
 
 
-def _theme(name: str, p: Palette, dark: bool) -> Theme:
+def _theme(name: str, p: Palette) -> Theme:
     return Theme(
         name=name,
         primary=p.accent,
@@ -89,7 +75,7 @@ def _theme(name: str, p: Palette, dark: bool) -> Theme:
         surface=p.panel,
         panel=p.panel,
         boost=p.selection,
-        dark=dark,
+        dark=True,
         variables={
             "rd-muted": p.muted,
             "rd-dim": p.dim,
@@ -119,11 +105,7 @@ def _theme(name: str, p: Palette, dark: bool) -> Theme:
     )
 
 
-THEMES = (_theme(DARK_NAME, DARK, True), _theme(LIGHT_NAME, LIGHT, False))
-
-
-def palette_for(theme_name: str) -> Palette:
-    return LIGHT if theme_name == LIGHT_NAME else DARK
+THEME = _theme(THEME_NAME, PALETTE)
 
 
 def sev_text(p: Palette, sev: Severity, count: int | None = None, *, width: int = 2) -> Text:

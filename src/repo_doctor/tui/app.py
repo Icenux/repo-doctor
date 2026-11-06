@@ -22,7 +22,7 @@ from repo_doctor.models import RepoResult, ScanResult
 from repo_doctor.scanner import ScanEvent, Scanner, ScanOptions
 from repo_doctor.tui.bindings import bindings
 from repo_doctor.tui.commands import RepoCommands
-from repo_doctor.tui.theme import DARK_NAME, LIGHT_NAME, THEMES, Palette, palette_for
+from repo_doctor.tui.theme import PALETTE, THEME, THEME_NAME, Palette
 
 if TYPE_CHECKING:
     from rich.console import RenderableType
@@ -124,9 +124,8 @@ class RepoDoctorApp(App[int]):
         self.workflows = WorkflowRunner(self)
         self.keymap_error: str | None = None
         self.keymap_ids: dict[str, str] = build_keymap({})
-        for theme in THEMES:
-            self.register_theme(theme)
-        self.theme = LIGHT_NAME if self.config.ui.theme == "light" else DARK_NAME
+        self.register_theme(THEME)
+        self.theme = THEME_NAME
         self._dashboard: DashboardScreen | None = None
 
     # ------------------------------------------------------------------ vlastnosti
@@ -135,7 +134,7 @@ class RepoDoctorApp(App[int]):
 
     @property
     def palette(self) -> Palette:
-        return palette_for(self.theme)
+        return PALETTE
 
     @property
     def roots(self) -> list[RootConfig]:
@@ -441,13 +440,6 @@ class RepoDoctorApp(App[int]):
             )
         )
         self._refresh_views()
-
-    def action_toggle_theme(self) -> None:
-        self.theme = DARK_NAME if self.theme == LIGHT_NAME else LIGHT_NAME
-        for screen in self.screen_stack:
-            redraw = getattr(screen, "on_theme_changed", None)
-            if callable(redraw):
-                redraw()
 
     def action_search(self) -> None:
         if self._in_wizard():

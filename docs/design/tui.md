@@ -34,19 +34,20 @@ Vizuální pravidla:
 - Spodní lišta zkratek jako „klávesové čepičky“ (klávesa na akcentním pozadí + popisek).
 - Potvrzovací dialog je modální, s akcentním rámečkem; výchozí tlačítko je **Zrušit**.
 
-Paleta (tmavé téma, jako Textual theme; světlé téma odvoď se stejným kontrastem, WCAG AA):
+Paleta (jediné téma, jako Textual theme; základní barva obrysů a textů je `#00aa00`, pozadí je vždy černé;
+všechny texty mají na černé kontrast alespoň 4.5:1, WCAG AA):
 
 | role | barva | role | barva |
 |---|---|---|---|
-| pozadí | `#12141a` | panel | `#171a21` |
-| výběr řádku | `#223047` | text | `#c9ced8` |
-| tlumený text | `#6b7385` | potlačený | `#3a404d` |
-| rámeček | `#343a47` | akcent | `#5fd3b0` |
+| pozadí | `#000000` | panel | `#000000` |
+| výběr řádku | `#003300` | text | `#00aa00` |
+| tlumený text | `#008a00` | potlačený | `#004d00` |
+| rámeček | `#006600` | akcent | `#00aa00` |
 | HIGH | `#ff5f6d` | MED | `#f5b642` |
-| LOW | `#6fa8ff` | OK | `#7bd88f` |
-| diff + (pozadí) | `#16281f` | diff − (pozadí) | `#2b1719` |
+| LOW | `#6fa8ff` | OK | `#00aa00` |
+| diff + (pozadí) | `#062a0a` | diff − (pozadí) | `#2b1719` |
 
-Responzivita: pod 100 sloupců se skryje levý panel (přepínač `b`), pod 90 sloupec TEP, pod 80 sloupec HOSTING. Nic se nesmí zalamovat ani přetékat.
+Responzivita: pod 100 sloupců se skryje levý panel (bez přepínače), pod 90 sloupec TEP, pod 80 sloupec HOSTING. Nic se nesmí zalamovat ani přetékat.
 
 Wireframy (100×31). Rozložení, pojmenování a hierarchii dodrž, detaily můžeš vylepšit. Ulož je i do `docs/design/tui.md` a snapshot testy by jim měly odpovídat.
 

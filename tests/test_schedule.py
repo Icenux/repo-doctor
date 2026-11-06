@@ -239,7 +239,7 @@ def test_settings_schedule_snapshot(
 
     fixed = Path("/tmp/repo-doctor-snapshot")  # cesta ke konfiguraci je vidět v nastavení
     fixed.mkdir(exist_ok=True)
-    app = make_app(fixed, theme="dark", schedule_backend=FakeBackend())
+    app = make_app(fixed, schedule_backend=FakeBackend())
     assert snap_compare(app, terminal_size=size, run_before=run_before)  # type: ignore[operator]
 
 
