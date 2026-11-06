@@ -105,6 +105,10 @@ def test_fake_filter_keeps_realistic_values() -> None:
         "DATABASE_URL=postgres://app:" + "Company" + "123456" + "@db/app",
         "DATABASE_URL=postgres://app:" + "Qwerty" + "123456" + "@db/app",
         'secret_key = "some-long-text-with-' + "abc...xyz" + '-inside"',
+        # prefix se odřezává jen u klíčů s pevným prefixem vendora, ne u obecných hesel (#90)
+        'password = "' + "Company" + "_123456" + '"',
+        'api_key = "' + "Prod" + "-" + SEQ_UP[:12] + '"',
+        "DATABASE_URL=postgres://app:" + "Company" + "_123456" + "@db/app",
     ],
 )
 def test_partial_sequences_are_still_findings(line: str) -> None:
