@@ -666,18 +666,23 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   repo ukáže jen upozornění. Desktopové upozornění (`notify.send_desktop`) dostane jen zastavení s chybou či varováním.
 - **Mimo rozsah:** zprávy z plánovaného skenu v notifikacích, více repo najednou, CLI příkaz.
 
-## Audit závislosti na uv a Node 24 v CI (#86)
+## Bez uv ve vývoji, CI i vydání (#86)
 
-- **Aplikace uv nepotřebuje:** ve zdrojích (`src/`) se `uv` nespouští ani nevyžaduje, hlídá to
-  `tests/test_no_external_tools.py` (#71). README popisuje instalaci jen z balíčků (.deb, .rpm, tarball).
-  Zbylé zmínky `uv` jsou v hlavičkách vývojových nástrojů (`i18n_tools`, `packaging/build.sh`),
-  v rozpoznávání `uv.lock` v cizích projektech a v textech dokumentace kontrol. Nic z toho není
-  podmínkou provozu, a tak se nemění.
-- **uv zůstává jen ve vývoji:** CI (`ci.yml`) a vydání (`release.yml`) ho používají k reprodukovatelné
-  instalaci z `uv.lock`. Přechod na pip by ztratil zamčené verze, proto zůstává (viz Samostatná aplikace #21).
-- **Node.js 20 v akcích:** `actions/checkout` zvednut z v4 na v6.1.0 a `astral-sh/setup-uv` z v5 na v7.6.0
-  (oboje `using: node24`), dál připnuté na SHA. Stejné verze (`@v6`, `@v7`) používají i šablony CI,
-  které repo-doctor generuje do cizích repozitářů (`templates.py`).
-- **Šablona CI pro Python** dál předpokládá `uv` v cizím projektu (`uv sync`, `uv run`). Vybírá se podle
-  ekosystému, ne podle přítomnosti `uv.lock`. Je to obsah vygenerovaný pro uživatele, ne závislost
-  repo-doctoru; zůstává jako samostatná otázka mimo tento PR.
+- **Aplikace uv nepotřebuje** (a nespouští ho): hlídá `tests/test_no_external_tools.py` (#71). Od #86 ho
+  nepotřebuje ani vývoj, hlídá `tests/test_no_uv.py`. Dřívější rozhodnutí „uv zůstává vývojovým nástrojem“
+  (#21, #71) se tímto ruší.
+- **Zámky jsou `requirements-dev.txt` a `requirements-build.txt`** s hashi, generované `pip-compile --generate-hashes
+  --allow-unsafe` z `pyproject.toml` (příkazy v `CLAUDE.md`). Instalují se `pip install --require-hashes`, takže
+  podvržený balíček s jiným hashem selže. Skupiny `dev` a `build` jsou nově `[project.optional-dependencies]`,
+  protože `pip-compile` nezná PEP 735 skupiny. Soubory leží v kořeni, aby je repo-doctor při skenu sám sebe
+  poznal jako lockfile (`requirements*.txt` vedle `pyproject.toml`).
+- **Omezení:** `pip-compile` zamyká pro Python, kterým běžel (3.12). Na 3.13 se instaluje stejná sada, bez
+  vlastního rozlišení. Dokud se závislosti mezi verzemi Pythonu neliší, nevadí to; matice CI to ověřuje.
+- **CI a vydání:** `actions/setup-python` + `pip`. Sestavení vydání dál běží v kontejneru `ubuntu:22.04`
+  (glibc 2.35); Python už nedodává python-build-standalone od uv, ale sada akcí `setup-python`.
+- **Node.js 20 v akcích:** `actions/checkout` v6.1.0 a `actions/setup-python` v6 (oboje `using: node24`),
+  připnuté na SHA. Šablony CI pro cizí repozitáře používají `@v6`.
+- **Šablona CI pro Python** už nepředpokládá `uv`: `pip install` (`requirements.txt`, `pip install -e .`
+  jen když existuje `pyproject.toml`/`setup.py`), pak `ruff` a `pytest`.
+- **Zůstává (funkce produktu):** rozpoznávání `uv.lock` v cizích projektech, jeho přepis při opravě
+  zranitelných závislostí (`lockfiles/pypi.py`) a zmínky `uv` v dokumentaci kontrol jako příklady.

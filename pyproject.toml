@@ -31,18 +31,21 @@ dependencies = [
 [project.scripts]
 repo-doctor = "repo_doctor.cli:main"
 
-[dependency-groups]
+[project.optional-dependencies]
+# Vývoj a testy; zamčené verze jsou v requirements-dev.txt (viz CLAUDE.md).
 dev = [
     "pytest>=8",
     "pytest-asyncio>=0.23",
     "pytest-cov>=5",
-    "pytest-textual-snapshot>=1.0",
+    # 1.1 vyžaduje syrupy<5; uložené snapshoty jsou ve formátu syrupy 6 (tests/__snapshots__)
+    "pytest-textual-snapshot>=1.0,<1.1",
     "respx>=0.21",
     "ruff>=0.6",
     "mypy>=1.10",
     "types-pyyaml>=6.0.12.20260906",
 ]
 # Sestavení samostatné aplikace pro balíčky (packaging/build.sh), jen v CI a lokálně.
+# zamčeno v requirements-build.txt
 build = ["pyinstaller>=6.21,<7"]
 
 [build-system]

@@ -1,5 +1,5 @@
 # Překlad repo-doctoru. Zdrojový jazyk je čeština (msgid).
-# Po změně textů v kódu: uv run python -m repo_doctor.i18n_tools
+# Po změně textů v kódu: python -m repo_doctor.i18n_tools
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"

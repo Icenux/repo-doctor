@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Sestaví samostatnou aplikaci (vlastní Python + všechny knihovny) do dist/repo-doctor/.
 #
-# Volání (z kořene repa, v prostředí se závislostmi a skupinou `build`):
-#   uv sync --locked --no-dev --group build && uv run packaging/build.sh
+# Volání (z kořene repa, ve virtuálním prostředí se závislostmi pro sestavení):
+#   python3 -m venv .venv && . .venv/bin/activate
+#   pip install --require-hashes -r requirements-build.txt && pip install --no-deps -e .
+#   packaging/build.sh
 #
 # Výsledek je složka (PyInstaller onedir) se spustitelným souborem dist/repo-doctor/repo-doctor.
 # Značku způsobu instalace (install-kind) do ní přidávají až balíčky – viz packaging/package.sh.

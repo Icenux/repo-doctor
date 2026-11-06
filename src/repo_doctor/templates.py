@@ -162,10 +162,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v7
-      - run: uv sync
-      - run: uv run ruff check .
-      - run: uv run pytest
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip ruff pytest
+          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+          if [ -f pyproject.toml ] || [ -f setup.py ]; then python -m pip install -e .; fi
+      - run: ruff check .
+      - run: pytest
 """,
     "node": """\
 name: CI

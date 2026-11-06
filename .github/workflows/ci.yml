@@ -14,17 +14,22 @@ jobs:
         python: ["3.12", "3.13"]
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ matrix.python }}
-      - run: uv sync --locked
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: závislosti (zamčené, s kontrolou hashů)
+        run: |
+          python -m pip install --require-hashes -r requirements-dev.txt
+          python -m pip install --no-deps -e .
       - name: ruff
         run: |
-          uv run ruff check src tests
-          uv run ruff format --check src tests
+          ruff check src tests
+          ruff format --check src tests
       - name: mypy
-        run: uv run mypy
+        run: mypy
       - name: pytest
-        run: uv run pytest --cov --cov-report=term
+        run: pytest --cov --cov-report=term
       - name: dogfooding – repo-doctor sám na sebe
-        run: uv run repo-doctor scan . --offline --report md --fail-on high
+        run: repo-doctor scan . --offline --report md --fail-on high
