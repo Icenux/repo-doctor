@@ -53,14 +53,15 @@ SCAN_ANIMATION_INTERVAL = 0.12  # s mezi snímky animace pruhu skenu
 # krátké tvary pro lištu; plné popisky jsou v nápovědě a paletě
 DASH_KEYS: list[str | tuple[str, str]] = [
     ("scan_all", _("sken všech rep")),
-    ("scan_repo", _("sken repa")),
     ("search", _("hledat")),
     ("open_card", _("karta")),
     ("open_fix", _("léčba")),
-    ("collapse_band", _("sbalit")),
     ("screen_folders", _("složky")),
     ("screen_forges", "hostingy"),
     ("screen_settings", _("nastavení")),
+    # lišta vypouští položky zprava: méně důležité jsou na konci, aby se Nastavení vešlo i na 120 sloupců
+    ("scan_repo", _("sken repa")),
+    ("collapse_band", _("sbalit")),
     "help",
     ("quit", _("konec")),
 ]

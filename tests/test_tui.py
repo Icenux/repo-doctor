@@ -1002,3 +1002,11 @@ def test_scan_bar_is_green_where_filled() -> None:
         assert [s.style.bgcolor.name for s in bar.spans[5:]] == [PALETTE.dim] * 5  # type: ignore[union-attr]
     # v pravé části se tečky naopak objevují
     assert any(scan_bar(10, 5, 10, f, PALETTE).plain[5:].strip() for f in range(40))
+
+
+async def test_dashboard_keybar_shows_settings(tmp_path: Path) -> None:
+    """Nastavení je ve spodní liště přehledu (#89), i na 120 sloupcích."""
+    app = make_app(tmp_path)
+    async with app.run_test(size=(120, 32)) as pilot:
+        await pilot.pause()
+        assert "nastavení" in screen_text(app)

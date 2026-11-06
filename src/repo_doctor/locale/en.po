@@ -523,15 +523,15 @@ msgstr ""
 msgid "  [běží proces – přeskočeno]"
 msgstr "  [process running – skipped]"
 
-#: repo_doctor/tui/screens/dashboard.py:374
+#: repo_doctor/tui/screens/dashboard.py:375
 msgid "  beze změny"
 msgstr "  no change"
 
-#: repo_doctor/tui/screens/dashboard.py:425
+#: repo_doctor/tui/screens/dashboard.py:426
 msgid "  vše přečteno ({key})"
 msgstr "  mark all read ({key})"
 
-#: repo_doctor/tui/screens/dashboard.py:331
+#: repo_doctor/tui/screens/dashboard.py:332
 msgid "  žádné ({key} přidá)"
 msgstr "  none ({key} adds)"
 
@@ -615,7 +615,7 @@ msgstr " no changes"
 msgid " export reportu "
 msgstr " export report "
 
-#: repo_doctor/tui/screens/dashboard.py:351
+#: repo_doctor/tui/screens/dashboard.py:352
 msgid " jen problémová"
 msgstr " problems only"
 
@@ -639,7 +639,7 @@ msgstr " repo-doctor · first run "
 msgid " sbaleno · {toggle_key} rozbalí"
 msgstr " collapsed · {toggle_key} expands"
 
-#: repo_doctor/tui/screens/dashboard.py:354
+#: repo_doctor/tui/screens/dashboard.py:355
 msgid " seskupit: "
 msgstr " group by: "
 
@@ -1389,7 +1389,7 @@ msgstr "Export the scan result to a file."
 msgid "Exportovat"
 msgstr "Export"
 
-#: repo_doctor/tui/screens/dashboard.py:350
+#: repo_doctor/tui/screens/dashboard.py:351
 msgid "FILTR"
 msgstr "FILTER"
 
@@ -1461,7 +1461,7 @@ msgstr "HEAD points directly at commit {sha}, not at a branch."
 msgid "HISTORIE"
 msgstr "HISTORY"
 
-#: repo_doctor/tui/screens/dashboard.py:339
+#: repo_doctor/tui/screens/dashboard.py:340
 msgid "HOSTINGY"
 msgstr "HOSTINGS"
 
@@ -1863,7 +1863,7 @@ msgstr "ON HOSTING"
 msgid "NELZE ZKONTROLOVAT"
 msgstr "CANNOT BE CHECKED"
 
-#: repo_doctor/tui/screens/dashboard.py:402
+#: repo_doctor/tui/screens/dashboard.py:403
 msgid "NOTIFIKACE"
 msgstr "NOTIFICATIONS"
 
@@ -1953,7 +1953,7 @@ msgstr "Run git fetch first (updates remote-tracking refs only; off by default).
 msgid "Nejdřív přejdi (tab) na tabulku allowlistu."
 msgstr "Move to the allowlist table first (tab)."
 
-#: repo_doctor/tui/screens/dashboard.py:556
+#: repo_doctor/tui/screens/dashboard.py:557
 msgid "Nejdřív vyber repo."
 msgstr "Select a repo first."
 
@@ -2175,7 +2175,7 @@ msgstr "Remote name (passed by git)."
 msgid "Název složky"
 msgstr "Folder name"
 
-#: repo_doctor/tui/screens/dashboard.py:371
+#: repo_doctor/tui/screens/dashboard.py:372
 msgid "OD VČEREJŠKA"
 msgstr "SINCE YESTERDAY"
 
@@ -2657,7 +2657,7 @@ msgstr "Push {branch} → {remote} ({url}), {commits}:"
 msgid "Python projekt bez konfigurace linteru či formátovače (ruff, flake8, black…)."
 msgstr "Python project without a linter or formatter configuration (ruff, flake8, black…)."
 
-#: repo_doctor/tui/screens/dashboard.py:190
+#: repo_doctor/tui/screens/dashboard.py:191
 msgid "PŘEHLED · {v}"
 msgstr "OVERVIEW · {v}"
 
@@ -2857,7 +2857,7 @@ msgstr "The repo belongs to another user – cannot create the SBOM."
 msgid "Repo patří jinému uživateli – repo-doctor ho nikdy nemění."
 msgstr "The repo belongs to another user – repo-doctor never changes it."
 
-#: repo_doctor/tui/screens/dashboard.py:450
+#: repo_doctor/tui/screens/dashboard.py:451
 msgid "Repo už není ve výsledcích skenu – spusť sken ({key})."
 msgstr "The repo is no longer in the scan results – run a scan ({key})."
 
@@ -2969,7 +2969,7 @@ msgstr "SCORE "
 msgid "SLEDOVAT"
 msgstr "WATCH"
 
-#: repo_doctor/tui/screens/dashboard.py:315
+#: repo_doctor/tui/screens/dashboard.py:316
 msgid "SLOŽKY"
 msgstr "FOLDERS"
 
@@ -3243,7 +3243,7 @@ msgstr "T tests the connection; a hosting outage blocks nothing, the checks are 
 msgid "TEP · 30 DNÍ"
 msgstr "PULSE · 30 DAYS"
 
-#: repo_doctor/tui/screens/dashboard.py:188
+#: repo_doctor/tui/screens/dashboard.py:189
 msgid "TRIÁŽ"
 msgstr "TRIAGE"
 
@@ -3751,7 +3751,7 @@ msgstr "No version has been released yet."
 msgid "Zatím není žádný PR/MR."
 msgstr "There is no PR/MR yet."
 
-#: repo_doctor/tui/screens/dashboard.py:244
+#: repo_doctor/tui/screens/dashboard.py:245
 msgid "Zatím žádný sken – stiskni {key} a repo-doctor zkontroluje všechna repa ve sledovaných složkách."
 msgstr "No scan yet – press {key} and repo-doctor checks all repos in the watched folders."
 
@@ -3985,7 +3985,7 @@ msgstr "no tracked branch"
 msgid "bez tagu"
 msgstr "no tag"
 
-#: repo_doctor/tui/screens/dashboard.py:375
+#: repo_doctor/tui/screens/dashboard.py:376
 msgid "bez tepu"
 msgstr "no pulse"
 
@@ -4305,7 +4305,7 @@ msgstr "scan history (count)"
 msgid "hlavní klon (nejnovější aktivita)"
 msgstr "main clone (most recent activity)"
 
-#: repo_doctor/reports/html.py:176 repo_doctor/tui/screens/dashboard.py:57
+#: repo_doctor/reports/html.py:176 repo_doctor/tui/screens/dashboard.py:56
 msgid "hledat"
 msgstr "search"
 
@@ -4313,7 +4313,7 @@ msgstr "search"
 msgid "hledat repo"
 msgstr "search repo"
 
-#: repo_doctor/tui/screens/dashboard.py:109
+#: repo_doctor/tui/screens/dashboard.py:110
 msgid "hledat v názvech repozitářů a nálezech…"
 msgstr "search repository names and findings…"
 
@@ -4329,7 +4329,7 @@ msgstr "depth"
 msgid "hook repo-doctor guard pro stage pre-push v .pre-commit-config.yaml (sdílené s ostatními, commit do větve oprav)"
 msgstr "repo-doctor guard hook for the pre-push stage in .pre-commit-config.yaml (shared with others, commit to the fixes branch)"
 
-#: repo_doctor/tui/screens/dashboard.py:161
+#: repo_doctor/tui/screens/dashboard.py:162
 msgid "hosting"
 msgstr "hosting"
 
@@ -4361,7 +4361,7 @@ msgstr "hosting {forge_name} unavailable: {reason}"
 msgid "hosting: bez dat"
 msgstr "hosting: no data"
 
-#: repo_doctor/tui/screens/dashboard.py:161
+#: repo_doctor/tui/screens/dashboard.py:162
 msgid "hostingy"
 msgstr "hostings"
 
@@ -4373,7 +4373,7 @@ msgstr "hostings (GitHub, Forgejo…)"
 msgid "hostingy vypnuté (--no-forges)"
 msgstr "hostings turned off (--no-forges)"
 
-#: repo_doctor/tui/screens/dashboard.py:161
+#: repo_doctor/tui/screens/dashboard.py:162
 msgid "hostingů"
 msgstr "hostings"
 
@@ -4449,7 +4449,7 @@ msgstr "the token has no access to the repo"
 msgid "k čemu"
 msgstr "purpose"
 
-#: repo_doctor/tui/screens/dashboard.py:58
+#: repo_doctor/tui/screens/dashboard.py:57
 msgid "karta"
 msgstr "card"
 
@@ -4461,7 +4461,7 @@ msgstr "repo card"
 msgid "karta · {name}"
 msgstr "card · {name}"
 
-#: repo_doctor/tui/screens/dashboard.py:367
+#: repo_doctor/tui/screens/dashboard.py:368
 msgid "kat.: {label}"
 msgstr "cat.: {label}"
 
@@ -4469,7 +4469,7 @@ msgstr "cat.: {label}"
 msgid "kategorie"
 msgstr "category"
 
-#: repo_doctor/tui/screens/dashboard.py:367
+#: repo_doctor/tui/screens/dashboard.py:368
 msgid "kategorie: vše"
 msgstr "category: all"
 
@@ -4529,7 +4529,7 @@ msgstr "the keyring is not available: {error}"
 msgid "kolize: klávesa {display_key!r} je přiřazena akcím `{id}` ({v}) a `{id2}` ({v2})"
 msgstr "conflict: key {display_key!r} is assigned to actions `{id}` ({v}) and `{id2}` ({v2})"
 
-#: repo_doctor/tui/app.py:51 repo_doctor/tui/screens/dashboard.py:65
+#: repo_doctor/tui/app.py:51 repo_doctor/tui/screens/dashboard.py:66
 msgid "konec"
 msgstr "quit"
 
@@ -4653,7 +4653,7 @@ msgstr "locally"
 msgid "lokálně +{ahead} / −{behind} commitů"
 msgstr "locally +{ahead} / −{behind} commits"
 
-#: repo_doctor/tui/screens/dashboard.py:59
+#: repo_doctor/tui/screens/dashboard.py:58
 msgid "léčba"
 msgstr "treatment"
 
@@ -4803,7 +4803,7 @@ msgstr "e.g. test fixture, false positive"
 msgid "napřed"
 msgstr "ahead"
 
-#: repo_doctor/keymap.py:78 repo_doctor/tui/screens/dashboard.py:63
+#: repo_doctor/keymap.py:78 repo_doctor/tui/screens/dashboard.py:61
 msgid "nastavení"
 msgstr "settings"
 
@@ -5567,7 +5567,7 @@ msgstr "repo-doctor guard: push stopped – the new commits contain secrets:"
 msgid "repo-doctor projde tvoje git repozitáře, najde bezpečnostní a hygienické problémy a umí bezpečně připravit opravy. Ovládá se jen z klávesnice, myš je volitelná."
 msgstr "repo-doctor goes through your git repositories, finds security and hygiene problems and can safely prepare fixes. It is fully keyboard-driven; the mouse is optional."
 
-#: repo_doctor/tui/screens/dashboard.py:162
+#: repo_doctor/tui/screens/dashboard.py:163
 msgid "repo-doctor · triáž"
 msgstr "repo-doctor · triage"
 
@@ -5615,7 +5615,7 @@ msgstr "run: inserts"
 msgid "rychlejší a přesnější sken tajemství"
 msgstr "faster and more accurate secret scan"
 
-#: repo_doctor/tui/screens/dashboard.py:60
+#: repo_doctor/tui/screens/dashboard.py:64
 msgid "sbalit"
 msgstr "collapse"
 
@@ -5643,11 +5643,11 @@ msgstr "sendmail is not installed"
 msgid "seskupit: triáž / složka / hosting / remote"
 msgstr "group by: triage / folder / hosting / remote"
 
-#: repo_doctor/tui/screens/dashboard.py:361
+#: repo_doctor/tui/screens/dashboard.py:362
 msgid "severity ≥ {short}"
 msgstr "severity ≥ {short}"
 
-#: repo_doctor/tui/screens/dashboard.py:363
+#: repo_doctor/tui/screens/dashboard.py:364
 msgid "severity: vše"
 msgstr "severity: all"
 
@@ -5659,7 +5659,7 @@ msgstr "scan"
 msgid "sken "
 msgstr "scan "
 
-#: repo_doctor/tui/screens/dashboard.py:56
+#: repo_doctor/tui/screens/dashboard.py:63
 msgid "sken repa"
 msgstr "scan repo"
 
@@ -5691,7 +5691,7 @@ msgstr "score"
 msgid "složka"
 msgstr "folder"
 
-#: repo_doctor/tui/screens/dashboard.py:61
+#: repo_doctor/tui/screens/dashboard.py:59
 msgid "složky"
 msgstr "folders"
 
@@ -6081,7 +6081,7 @@ msgstr "exclude patterns"
 msgid "vyléčit a dotáhnout: push, PR, po zelené CI merge"
 msgstr "heal and carry through: push, PR, merge after green CI"
 
-#: repo_doctor/tui/screens/dashboard.py:322 repo_doctor/tui/screens/folders.py:109
+#: repo_doctor/tui/screens/dashboard.py:323 repo_doctor/tui/screens/folders.py:109
 msgid "vyp."
 msgstr "off"
 
@@ -6297,7 +6297,7 @@ msgstr "cancel"
 msgid "zrušit běžící sken"
 msgstr "cancel running scan"
 
-#: repo_doctor/tui/screens/dashboard.py:88
+#: repo_doctor/tui/screens/dashboard.py:89
 msgid "zrušit hledání"
 msgstr "cancel search"
 
@@ -6461,7 +6461,7 @@ msgstr "{manifest} declares dependencies, but {lock} is missing – versions are
 msgid "{manifest} deklaruje {names}, ale v {lock} nejsou: lockfile je zastaralý a instalace z něj tyto balíčky nezíská."
 msgstr "{manifest} declares {names}, but they are missing from {lock}: the lockfile is stale and installing from it will not get these packages."
 
-#: repo_doctor/tui/screens/dashboard.py:157
+#: repo_doctor/tui/screens/dashboard.py:158
 msgid "{mode} · sken {astimezone:%H:%M}"
 msgstr "{mode} · scan {astimezone:%H:%M}"
 
@@ -6737,7 +6737,7 @@ msgstr "person"
 msgid "řadit podle sloupce"
 msgstr "sort by column"
 
-#: repo_doctor/tui/screens/dashboard.py:183
+#: repo_doctor/tui/screens/dashboard.py:184
 msgid "řazeno: {v} {v2}"
 msgstr "sorted: {v} {v2}"
 
@@ -6745,7 +6745,7 @@ msgstr "sorted: {v} {v2}"
 msgid "Široká oprávnění tokenu"
 msgstr "Broad token permissions"
 
-#: repo_doctor/tui/screens/dashboard.py:242
+#: repo_doctor/tui/screens/dashboard.py:243
 msgid "Žádná repa neodpovídají filtru."
 msgstr "No repos match the filter."
 
@@ -6829,11 +6829,11 @@ msgstr "▲ HIGH / ◆ MED / ● LOW – finding severity; the repo score is der
 msgid "◉ veřejné"
 msgstr "◉ public"
 
-#: repo_doctor/tui/screens/dashboard.py:348
+#: repo_doctor/tui/screens/dashboard.py:349
 msgid "○ bez remote"
 msgstr "○ no remote"
 
-#: repo_doctor/tui/screens/dashboard.py:154
+#: repo_doctor/tui/screens/dashboard.py:155
 msgid "○ offline"
 msgstr "○ offline"
 
@@ -6845,7 +6845,7 @@ msgstr "○ private"
 msgid "○ vyp."
 msgstr "○ off"
 
-#: repo_doctor/tui/screens/dashboard.py:154
+#: repo_doctor/tui/screens/dashboard.py:155
 msgid "● online"
 msgstr "● online"
 
