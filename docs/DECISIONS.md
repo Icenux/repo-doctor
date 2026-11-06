@@ -665,3 +665,19 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   řádek (`⟳`) v bloku. Blok je v levém panelu pod složkami; `⏎`/klik otevře `PublishScreen` repa, zmizelé
   repo ukáže jen upozornění. Desktopové upozornění (`notify.send_desktop`) dostane jen zastavení s chybou či varováním.
 - **Mimo rozsah:** zprávy z plánovaného skenu v notifikacích, více repo najednou, CLI příkaz.
+
+## Audit závislosti na uv a Node 24 v CI (#86)
+
+- **Aplikace uv nepotřebuje:** ve zdrojích (`src/`) se `uv` nespouští ani nevyžaduje, hlídá to
+  `tests/test_no_external_tools.py` (#71). README popisuje instalaci jen z balíčků (.deb, .rpm, tarball).
+  Zbylé zmínky `uv` jsou v hlavičkách vývojových nástrojů (`i18n_tools`, `packaging/build.sh`),
+  v rozpoznávání `uv.lock` v cizích projektech a v textech dokumentace kontrol. Nic z toho není
+  podmínkou provozu, a tak se nemění.
+- **uv zůstává jen ve vývoji:** CI (`ci.yml`) a vydání (`release.yml`) ho používají k reprodukovatelné
+  instalaci z `uv.lock`. Přechod na pip by ztratil zamčené verze, proto zůstává (viz Samostatná aplikace #21).
+- **Node.js 20 v akcích:** `actions/checkout` zvednut z v4 na v6.1.0 a `astral-sh/setup-uv` z v5 na v7.6.0
+  (oboje `using: node24`), dál připnuté na SHA. Stejné verze (`@v6`, `@v7`) používají i šablony CI,
+  které repo-doctor generuje do cizích repozitářů (`templates.py`).
+- **Šablona CI pro Python** dál předpokládá `uv` v cizím projektu (`uv sync`, `uv run`). Vybírá se podle
+  ekosystému, ne podle přítomnosti `uv.lock`. Je to obsah vygenerovaný pro uživatele, ne závislost
+  repo-doctoru; zůstává jako samostatná otázka mimo tento PR.

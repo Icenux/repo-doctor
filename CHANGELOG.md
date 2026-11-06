@@ -38,6 +38,9 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
   obnovuje, `ctrl+r` ji načte hned, `w` otevře PR/MR na webu a `⏎` na řádku CI detail kontroly.
 
 ### Opraveno
+- **CI na Node.js 24 (#86):** `actions/checkout` v6.1.0 a `astral-sh/setup-uv` v7.6.0 (dřív v4 a v5 na Node 20)
+  ve workflow i v šablonách CI, které repo-doctor generuje. Audit závislosti na `uv`: aplikace ho nepotřebuje,
+  zůstává jen vývojovým nástrojem (viz `docs/DECISIONS.md`).
 - Falešné nálezy tajemství (#74): zjevně vymyšlené hodnoty z dokumentace a testů (`sk-abc...xyz`,
   `123...`, `1234567890abcdef`, `abcdefgh…`, `zyxwvut…`, `zxyxzxyx…`) se už nehlásí. Skener je pozná
   podle výpustky `...`, řady 6 a více po sobě jdoucích znaků a krátce se opakujícího vzoru.
