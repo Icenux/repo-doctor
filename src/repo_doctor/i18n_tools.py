@@ -1,7 +1,7 @@
 """Vývojářské nástroje k překladům: vytažení textů z kódu a synchronizace `.po`.
 
-    uv run python -m repo_doctor.i18n_tools          # doplní nové texty do locale/en.po
-    uv run python -m repo_doctor.i18n_tools --check  # jen ověří (exit 1, když něco chybí)
+    python -m repo_doctor.i18n_tools          # doplní nové texty do locale/en.po
+    python -m repo_doctor.i18n_tools --check  # jen ověří (exit 1, když něco chybí)
 
 Hledá volání `_("…")` a `N_("…")` s doslovným řetězcem v `src/repo_doctor`. Nové texty
 přidá s prázdným překladem, nepoužívané odebere, existující překlady zachová.
@@ -51,7 +51,7 @@ def _quote(text: str) -> str:
 def render_po(lang: str, messages: dict[str, list[str]], translations: dict[str, str]) -> str:
     out = [
         "# Překlad repo-doctoru. Zdrojový jazyk je čeština (msgid).",
-        "# Po změně textů v kódu: uv run python -m repo_doctor.i18n_tools",
+        "# Po změně textů v kódu: python -m repo_doctor.i18n_tools",
         'msgid ""',
         'msgstr ""',
         '"Content-Type: text/plain; charset=UTF-8\\n"',

@@ -12,6 +12,6 @@ Tests that CI does not run eventually stop passing and nobody notices. A green b
 
 ## Steps
 
-1. Add a test step to the CI configuration (e.g. `uv run pytest`, `npm test`).
+1. Add a test step to the CI configuration (e.g. `pytest`, `npm test`).
 2. If you use a custom script or tool this check does not recognize, add the finding to the allowlist.
 3. Verify that CI really runs and is green (the `forge-ci-failing` check).

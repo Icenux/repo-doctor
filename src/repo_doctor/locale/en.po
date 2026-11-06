@@ -1,5 +1,5 @@
 # Překlad repo-doctoru. Zdrojový jazyk je čeština (msgid).
-# Po změně textů v kódu: uv run python -m repo_doctor.i18n_tools
+# Po změně textů v kódu: python -m repo_doctor.i18n_tools
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4774,7 +4774,7 @@ msgid ""
 "  check:\n"
 "    runs-on: ubuntu-latest\n"
 "    steps:\n"
-"      - uses: actions/checkout@v4\n"
+"      - uses: actions/checkout@v6\n"
 "      - run: echo \"Doplň lint a testy projektu.\"\n"
 msgstr ""
 "name: CI\n"
@@ -4788,7 +4788,7 @@ msgstr ""
 "  check:\n"
 "    runs-on: ubuntu-latest\n"
 "    steps:\n"
-"      - uses: actions/checkout@v4\n"
+"      - uses: actions/checkout@v6\n"
 "      - run: echo \"Add the project lint and tests.\"\n"
 
 #: repo_doctor/tui/screens/settings.py:134

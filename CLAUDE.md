@@ -3,22 +3,32 @@
 ## Spuštění
 
 ```sh
-uv sync                       # závislosti (Python 3.12+)
-uv run repo-doctor            # TUI (na terminálu)
-uv run repo-doctor scan ~/projekty --offline --report md
-uv run repo-doctor explain secrets-history
+python3 -m venv .venv && . .venv/bin/activate                  # Python 3.12+
+pip install --require-hashes -r requirements-dev.txt && pip install --no-deps -e .
+repo-doctor                   # TUI (na terminálu)
+repo-doctor scan ~/projekty --offline --report md
+repo-doctor explain secrets-history
+```
+
+Zamčené verze jsou v `requirements-dev.txt` (vývoj) a `requirements-build.txt` (sestavení aplikace),
+oba s hashi. Po změně závislostí v `pyproject.toml` je přegeneruj (`pip install pip-tools`; stávající
+verze zůstanou, aktualizace všeho = přidej `--upgrade`):
+
+```sh
+pip-compile --generate-hashes --allow-unsafe --strip-extras --extra dev -o requirements-dev.txt pyproject.toml
+pip-compile --generate-hashes --allow-unsafe --strip-extras --extra build -o requirements-build.txt pyproject.toml
 ```
 
 ## Testy a kvalita
 
 ```sh
-uv run pytest                 # testy nikdy nevolají síť (respx), repa se staví v tmp_path
-uv run pytest --cov           # pokrytí ≥ 85 %
-uv run ruff check src tests && uv run ruff format --check src tests
-uv run mypy                   # --strict
-uv run pytest tests/test_snapshots.py --snapshot-update   # po vědomé změně vzhledu TUI
-uv run python -m repo_doctor.reports.jsonreport > docs/report-schema.json  # po změně JSON schématu
-uv run python -m repo_doctor.i18n_tools          # po změně textů: doplní locale/en.po (pak přelož)
+pytest                 # testy nikdy nevolají síť (respx), repa se staví v tmp_path
+pytest --cov           # pokrytí ≥ 85 %
+ruff check src tests && ruff format --check src tests
+mypy                   # --strict
+pytest tests/test_snapshots.py --snapshot-update   # po vědomé změně vzhledu TUI
+python -m repo_doctor.reports.jsonreport > docs/report-schema.json  # po změně JSON schématu
+python -m repo_doctor.i18n_tools          # po změně textů: doplní locale/en.po (pak přelož)
 ```
 
 Testovací „tajemství“ se skládají až za běhu (`tests/factory.py`), do repa nepatří žádné
@@ -31,8 +41,8 @@ repo-doctor se nainstaluje z balíčku a musí fungovat bez dalších programů 
 Nic, co by uživatel musel doinstalovat (`uv`, `npm`, `pip`, `cargo`, `go`…), nesmí být podmínkou
 funkce a repo-doctor je nespouští. Opravy píšeme v Pythonu (např. `lockfiles/` přepisuje lockfily
 z metadat registrů). Volitelné programy (`gitleaks`, `notify-send`…) mají záložní chování a jsou
-vyjmenované v `tests/test_no_external_tools.py`, který tuhle zásadu hlídá. `uv` je jen vývojový
-nástroj. Nejde-li něco bezpečně udělat bez cizího nástroje, oprava se nenabídne a zůstane
+vyjmenované v `tests/test_no_external_tools.py`, který tuhle zásadu hlídá. Ani vývoj `uv` nepotřebuje (zámky jsou `requirements-*.txt`, CI používá `pip`).
+Nejde-li něco bezpečně udělat bez cizího nástroje, oprava se nenabídne a zůstane
 ruční postup v dokumentaci kontroly – nikdy „spusť si X“ jako náhrada léčby.
 
 ## Architektura
@@ -86,10 +96,10 @@ ruční postup v dokumentaci kontroly – nikdy „spusť si X“ jako náhrada 
 
 ## Vydání
 
-Uživatelé instalují sestavenou aplikaci (balíčky), ne přes uv/pipx – uv je jen vývojový nástroj.
+Uživatelé instalují sestavenou aplikaci (balíčky), ne přes pip/pipx.
 
 ```sh
-uv sync --locked --no-dev --group build && uv run packaging/build.sh   # dist/repo-doctor
+pip install --require-hashes -r requirements-build.txt && pip install --no-deps -e . && packaging/build.sh   # dist/repo-doctor
 packaging/package.sh        # dist/release: .deb, .rpm, tarball, PKGBUILD, SHA256SUMS (potřebuje nfpm)
 ```
 

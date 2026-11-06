@@ -12,6 +12,6 @@ Testy, které CI nespouští, časem přestanou procházet a nikdo si toho nevš
 
 ## Postup
 
-1. Přidej krok s testy do CI konfigurace (např. `uv run pytest`, `npm test`).
+1. Přidej krok s testy do CI konfigurace (např. `pytest`, `npm test`).
 2. Používáš-li vlastní skript nebo nástroj, který tento nález nepozná, dej nález do allowlistu.
 3. Ověř, že CI opravdu běží a je zelená (kontrola `forge-ci-failing`).

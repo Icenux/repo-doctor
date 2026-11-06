@@ -665,3 +665,24 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   řádek (`⟳`) v bloku. Blok je v levém panelu pod složkami; `⏎`/klik otevře `PublishScreen` repa, zmizelé
   repo ukáže jen upozornění. Desktopové upozornění (`notify.send_desktop`) dostane jen zastavení s chybou či varováním.
 - **Mimo rozsah:** zprávy z plánovaného skenu v notifikacích, více repo najednou, CLI příkaz.
+
+## Bez uv ve vývoji, CI i vydání (#86)
+
+- **Aplikace uv nepotřebuje** (a nespouští ho): hlídá `tests/test_no_external_tools.py` (#71). Od #86 ho
+  nepotřebuje ani vývoj, hlídá `tests/test_no_uv.py`. Dřívější rozhodnutí „uv zůstává vývojovým nástrojem“
+  (#21, #71) se tímto ruší.
+- **Zámky jsou `requirements-dev.txt` a `requirements-build.txt`** s hashi, generované `pip-compile --generate-hashes
+  --allow-unsafe` z `pyproject.toml` (příkazy v `CLAUDE.md`). Instalují se `pip install --require-hashes`, takže
+  podvržený balíček s jiným hashem selže. Skupiny `dev` a `build` jsou nově `[project.optional-dependencies]`,
+  protože `pip-compile` nezná PEP 735 skupiny. Soubory leží v kořeni, aby je repo-doctor při skenu sám sebe
+  poznal jako lockfile (`requirements*.txt` vedle `pyproject.toml`).
+- **Omezení:** `pip-compile` zamyká pro Python, kterým běžel (3.12). Na 3.13 se instaluje stejná sada, bez
+  vlastního rozlišení. Dokud se závislosti mezi verzemi Pythonu neliší, nevadí to; matice CI to ověřuje.
+- **CI a vydání:** `actions/setup-python` + `pip`. Sestavení vydání dál běží v kontejneru `ubuntu:22.04`
+  (glibc 2.35); Python už nedodává python-build-standalone od uv, ale sada akcí `setup-python`.
+- **Node.js 20 v akcích:** `actions/checkout` v6.1.0 a `actions/setup-python` v6 (oboje `using: node24`),
+  připnuté na SHA. Šablony CI pro cizí repozitáře používají `@v6`.
+- **Šablona CI pro Python** už nepředpokládá `uv`: `pip install` (`requirements.txt`, `pip install -e .`
+  jen když existuje `pyproject.toml`/`setup.py`), pak `ruff` a `pytest`.
+- **Zůstává (funkce produktu):** rozpoznávání `uv.lock` v cizích projektech, jeho přepis při opravě
+  zranitelných závislostí (`lockfiles/pypi.py`) a zmínky `uv` v dokumentaci kontrol jako příklady.
