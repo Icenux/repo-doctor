@@ -52,10 +52,10 @@ def _safe_diff(diff: str) -> str:
     `redact` zná jen hodnoty, které už scanner našel; diff ale nese i okolní řádky souboru."""
     out: list[str] = []
     for line in diff.splitlines():
+        # kontroluje se tělo každého řádku, i „hlavičkového“: odstraněný řádek `-- KEY=…` vypadá
+        # v diffu jako `---…` a při rozlišování hlaviček by se přeskočil
         body = line[1:] if line[:1] in "+- " else line
-        if not line.startswith(("---", "+++", "@@")) and next(
-            secrets_scan.scan_line(body, "x.env", 0), None
-        ):
+        if next(secrets_scan.scan_line(body, "x.env", 0), None):
             out.append(f"{line[:1]}[line hidden: possible secret]")
         else:
             out.append(line)

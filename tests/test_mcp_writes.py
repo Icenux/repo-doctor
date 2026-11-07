@@ -251,6 +251,9 @@ def test_preview_diff_hides_secret_looking_lines() -> None:
     out = _safe_diff(diff)
     assert secret not in out and "possible secret" in out
     assert "+USER app" in out and "--- a/Dockerfile" in out
+    # odstraněný řádek `-- KEY=…` v diffu začíná `---`, ale hlavička to není
+    sneaky = f"--- a/x.sql\n+++ b/x.sql\n@@ -1 +1 @@\n--- AWS_KEY={secret}\n+++ ok\n"
+    assert secret not in _safe_diff(sneaky)
 
 
 # ----------------------------------------------------------------- sync_ff
