@@ -230,7 +230,7 @@ class PublishFlow:
             head,
             "",
             _(
-                "CI je zelená a hosting hlásí, že jde mergnout. Merge na hostingu nejde vrátit zpět."
+                "CI je zelená a hosting hlásí, že jde mergnout. Merge změní výchozí větev na hostingu. repo-doctor ho nevrací, jde vrátit jen revert commitem."
             ),
         )
 
@@ -615,7 +615,7 @@ class PublishScreen(BaseScreen):
             return
         body = Text(
             _(
-                "\nNa pozadí se dokončí to, co ještě chybí: push opravné větve, pull request,\nčekání na CI a po ZELENÉ CI merge na hostingu (nejde vrátit zpět).\n\nPři chybě CI se workflow zastaví a upozorní tě v Notifikacích na přehledu.\n"
+                "\nNa pozadí se dokončí to, co ještě chybí: push opravné větve, pull request,\nčekání na CI a po ZELENÉ CI merge na hostingu (repo-doctor ho nevrací, jde vrátit jen revert commitem).\n\nPři chybě CI se workflow zastaví a upozorní tě v Notifikacích na přehledu.\n"
             ),
             style=Style(color=self.rd.palette.text),
         )

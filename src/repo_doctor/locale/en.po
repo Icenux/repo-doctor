@@ -89,13 +89,13 @@ msgstr ""
 msgid ""
 "\n"
 "Na pozadí se dokončí to, co ještě chybí: push opravné větve, pull request,\n"
-"čekání na CI a po ZELENÉ CI merge na hostingu (nejde vrátit zpět).\n"
+"čekání na CI a po ZELENÉ CI merge na hostingu (repo-doctor ho nevrací, jde vrátit jen revert commitem).\n"
 "\n"
 "Při chybě CI se workflow zastaví a upozorní tě v Notifikacích na přehledu.\n"
 msgstr ""
 "\n"
 "Whatever is still missing is finished in the background: push of the fix branch, pull request,\n"
-"waiting for CI and, after GREEN CI, a merge on the host (cannot be undone).\n"
+"waiting for CI and, after GREEN CI, a merge on the host (repo-doctor does not undo it; it can only be reverted with a revert commit).\n"
 "\n"
 "If CI fails the workflow stops and tells you in Notifications on the overview.\n"
 
@@ -195,7 +195,7 @@ msgstr ""
 "\n"
 "Nothing is deleted from disk – it is only removed from config.toml.\n"
 
-#: repo_doctor/tui/screens/fix.py:408
+#: repo_doctor/tui/screens/fix.py:412
 msgid ""
 "\n"
 "Při chybě CI, konfliktu nebo odmítnutí hostingu se workflow zastaví a upozorní tě\n"
@@ -513,11 +513,11 @@ msgid ""
 msgstr ""
 "  4. waiting for CI\n"
 
-#: repo_doctor/tui/screens/fix.py:406
+#: repo_doctor/tui/screens/fix.py:407
 msgid ""
-"  5. po ZELENÉ CI merge na hostingu (nejde vrátit zpět)\n"
+"  5. po ZELENÉ CI merge na hostingu (repo-doctor ho nevrací, jde jen revert commitem)\n"
 msgstr ""
-"  5. after GREEN CI, merge on the host (cannot be undone)\n"
+"  5. after GREEN CI, merge on the host (repo-doctor does not undo it; only a revert commit can)\n"
 
 #: repo_doctor/cli.py:333
 msgid "  [běží proces – přeskočeno]"
@@ -1146,8 +1146,8 @@ msgid "CI běží…"
 msgstr "CI running…"
 
 #: repo_doctor/tui/screens/publish.py:232
-msgid "CI je zelená a hosting hlásí, že jde mergnout. Merge na hostingu nejde vrátit zpět."
-msgstr "CI is green and the host reports the PR can be merged. A merge on the host cannot be undone."
+msgid "CI je zelená a hosting hlásí, že jde mergnout. Merge změní výchozí větev na hostingu. repo-doctor ho nevrací, jde vrátit jen revert commitem."
+msgstr "CI is green and the host reports the PR can be merged. The merge changes the default branch on the host. repo-doctor does not undo it; it can only be reverted with a revert commit."
 
 #: repo_doctor/workflow.py:352
 msgid "CI je zelená, čekám na hosting…"
@@ -1797,11 +1797,11 @@ msgstr ""
 msgid "Léčba"
 msgstr "Treatment"
 
-#: repo_doctor/tui/screens/fix.py:420
+#: repo_doctor/tui/screens/fix.py:424
 msgid "Léčba a odeslání"
 msgstr "Heal and publish"
 
-#: repo_doctor/tui/screens/fix.py:468
+#: repo_doctor/tui/screens/fix.py:472
 msgid "Léčba hotová"
 msgstr "Treatment done"
 
@@ -1809,7 +1809,7 @@ msgstr "Treatment done"
 msgid "Léčba hotová, lokální změny v .git/ provedeny. Není co odesílat."
 msgstr "Healing done, local changes in .git/ applied. Nothing to publish."
 
-#: repo_doctor/tui/screens/fix.py:445
+#: repo_doctor/tui/screens/fix.py:449
 msgid "Léčba se nepovedla"
 msgstr "Treatment failed"
 
@@ -3137,7 +3137,7 @@ msgstr "Git LFS files stored directly in git"
 msgid "Správce balíčků skončil s kódem {code}."
 msgstr "The package manager exited with code {code}."
 
-#: repo_doctor/tui/screens/fix.py:426 repo_doctor/tui/screens/publish.py:633
+#: repo_doctor/tui/screens/fix.py:430 repo_doctor/tui/screens/publish.py:633
 msgid "Spustit workflow"
 msgstr "Start workflow"
 
@@ -3525,7 +3525,7 @@ msgstr "The chosen folders are saved to the configuration and scanned right away
 msgid "Vylučující vzory (čárkami, např. **/archiv/**)"
 msgstr "Exclude patterns (comma-separated, e.g. **/archive/**)"
 
-#: repo_doctor/tui/screens/fix.py:426
+#: repo_doctor/tui/screens/fix.py:430
 msgid "Vyléčit a dotáhnout do mergi"
 msgstr "Heal and carry through to merge"
 
@@ -3573,7 +3573,7 @@ msgstr "Explains a check and prints the manual fix steps."
 msgid "Vytvořen PR #{number}: {url}"
 msgstr "Created PR #{number}: {url}"
 
-#: repo_doctor/tui/screens/fix.py:455
+#: repo_doctor/tui/screens/fix.py:459
 msgid "Vytvořena větev {branch} s {n} {commits_word}. Nic se nepushnulo – zkontroluj ji: git log {branch}. Odeslat ji jde na stránce Odeslání oprav (z karty repa klávesou {key})."
 msgstr "Created branch {branch} with {n} {commits_word}. Nothing was pushed – review it: git log {branch}. You can publish it on the Publishing fixes page (from the repo card with {key})."
 
@@ -3699,7 +3699,7 @@ msgstr "All repos from hostings have a local clone. ✓"
 msgid "Všechny volitelné nástroje jsou nainstalované."
 msgstr "All optional tools are installed."
 
-#: repo_doctor/tui/screens/fix.py:419 repo_doctor/tui/screens/publish.py:628
+#: repo_doctor/tui/screens/fix.py:423 repo_doctor/tui/screens/publish.py:628
 msgid "Workflow běží na pozadí. Průběh je v Notifikacích na přehledu."
 msgstr "The workflow is running in the background. Progress is in Notifications on the overview."
 
@@ -3845,7 +3845,7 @@ msgstr "{files} will change in the working tree."
 msgid "Zranitelné závislosti"
 msgstr "Vulnerable dependencies"
 
-#: repo_doctor/tui/screens/fix.py:415 repo_doctor/tui/screens/publish.py:123 repo_doctor/tui/screens/publish.py:625
+#: repo_doctor/tui/screens/fix.py:419 repo_doctor/tui/screens/publish.py:123 repo_doctor/tui/screens/publish.py:625
 msgid "Zrušeno – nic se nezměnilo."
 msgstr "Cancelled – nothing was changed."
 

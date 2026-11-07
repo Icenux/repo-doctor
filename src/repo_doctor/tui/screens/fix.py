@@ -403,7 +403,11 @@ class FixScreen(BaseScreen):
         body.append(_("  2. push jen této větve (nikdy force)\n"))
         body.append(_("  3. pull request do {default}\n").format(default=default))
         body.append(_("  4. čekání na CI\n"))
-        body.append(_("  5. po ZELENÉ CI merge na hostingu (nejde vrátit zpět)\n"))
+        body.append(
+            _(
+                "  5. po ZELENÉ CI merge na hostingu (repo-doctor ho nevrací, jde jen revert commitem)\n"
+            )
+        )
         body.append(
             _(
                 "\nPři chybě CI, konfliktu nebo odmítnutí hostingu se workflow zastaví a upozorní tě\nv Notifikacích na přehledu. Větev i PR zůstanou k ručnímu dokončení.\n"
