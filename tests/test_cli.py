@@ -61,7 +61,7 @@ def test_scan_formats_and_exit_codes(
     assert "AKIA…(20 znaků)" in out
     if fmt == "json":
         data = json.loads(out)
-        assert data["schema_version"] == 1 and data["summary"]["repos"] == 2
+        assert data["schema_version"] == 2 and data["summary"]["repos"] == 2
 
 
 def test_scan_thresholds(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:

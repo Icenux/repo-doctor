@@ -36,19 +36,21 @@ def score(findings: Iterable[Finding]) -> int:
 
 
 class Band(StrEnum):
-    CRITICAL = "critical"
-    WATCH = "watch"
-    NO_PULSE = "no_pulse"
-    HEALTHY = "healthy"
+    """Skupina v triáži: podle nejzávažnějšího nálezu repa (#73)."""
+
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    NONE = "none"
     UNCHECKED = "unchecked"
 
     @property
     def label(self) -> str:
         return {
-            "critical": _("KRITICKÉ"),
-            "watch": _("SLEDOVAT"),
-            "no_pulse": _("BEZ TEPU"),
-            "healthy": _("ZDRAVÉ"),
+            "high": "HIGH",
+            "medium": "MED",
+            "low": "LOW",
+            "none": _("BEZ NÁLEZŮ"),
             "unchecked": _("NELZE ZKONTROLOVAT"),
         }[self.value]
 
@@ -65,17 +67,16 @@ def is_no_pulse(repo: RepoResult, days: int = 90, now: datetime | None = None) -
     return now - last > timedelta(days=days)
 
 
-def band(repo: RepoResult, no_pulse_days: int = 90, now: datetime | None = None) -> Band:
-    """Priorita: KRITICKÉ > SLEDOVAT > BEZ TEPU > ZDRAVÉ; repo bez skóre je zvlášť."""
+def band(repo: RepoResult) -> Band:
+    """Skupina podle nejzávažnějšího nálezu; repo bez skóre (nešlo zkontrolovat) je zvlášť."""
     if repo.score is None:
         return Band.UNCHECKED
-    if repo.score < 40 or any(f.severity is Severity.HIGH for f in repo.findings):
-        return Band.CRITICAL
-    if repo.score < 70:
-        return Band.WATCH
-    if is_no_pulse(repo, no_pulse_days, now):
-        return Band.NO_PULSE
-    return Band.HEALTHY
+    return {
+        Severity.HIGH: Band.HIGH,
+        Severity.MEDIUM: Band.MEDIUM,
+        Severity.LOW: Band.LOW,
+        None: Band.NONE,
+    }[repo.worst]
 
 
 SPARK = "▁▂▃▄▅▆▇█"

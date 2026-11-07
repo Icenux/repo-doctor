@@ -10,10 +10,18 @@ from rich.text import Text
 from repo_doctor.czech import more
 from repo_doctor.i18n import _
 from repo_doctor.models import RepoResult, Severity
-from repo_doctor.scoring import Band, gauge, score_label, sparkline
+from repo_doctor.scoring import Band, band, gauge, score_label, sparkline
 from repo_doctor.tui.theme import Palette
 from repo_doctor.tui.triage_model import Group
 from repo_doctor.tui.util import git_state, pad
+
+BAND_COLOR = {
+    Band.HIGH: "high",
+    Band.MEDIUM: "med",
+    Band.LOW: "low",
+    Band.NONE: "ok",
+    Band.UNCHECKED: "muted",
+}
 
 PULSE_W = 12
 GIT_W = 10
@@ -61,14 +69,14 @@ def header_text(cols: Columns, p: Palette) -> Text:
 
 
 def repo_row(repo: RepoResult, cols: Columns, p: Palette) -> Text:
-    color = p.score(repo.score)
+    repo_band = band(repo)
+    color = getattr(p, BAND_COLOR[repo_band])  # barva skóre = barva skupiny (#73)
     t = Text()
     t.append("▌", style=Style(color=color))
     t.append(f"{score_label(repo.score):>3} ", style=Style(color=color, bold=True))
     t.append(gauge(repo.score), style=Style(color=color))
     t.append("  ")
-    critical = repo.score is not None and repo.score < 40
-    t.append(pad(repo.name, cols.name_w, Style(color=p.text, bold=critical)))
+    t.append(pad(repo.name, cols.name_w, Style(color=p.text, bold=repo_band is Band.HIGH)))
     t.append(" ")
     counts = repo.counts()
     for sev in Severity:
@@ -107,15 +115,6 @@ def repo_row(repo: RepoResult, cols: Columns, p: Palette) -> Text:
         )
         t.append(" ")
     return t
-
-
-BAND_COLOR = {
-    Band.CRITICAL: "high",
-    Band.WATCH: "med",
-    Band.NO_PULSE: "muted",
-    Band.HEALTHY: "ok",
-    Band.UNCHECKED: "muted",
-}
 
 
 def group_header(group: Group, width: int, p: Palette, *, collapsed: bool, toggle_key: str) -> Text:

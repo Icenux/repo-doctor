@@ -238,7 +238,7 @@ asyncio.run(main())
         "TRIAGE",
         "scan all repos",
         "repositories",
-        "CRITICAL",
+        "HIGH",
         "sorted by finding severity",
         "quit",
     ):

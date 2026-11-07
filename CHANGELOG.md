@@ -5,6 +5,9 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 ## [Nevydáno]
 
 ### Změněno
+- **Triáž podle nejzávažnějšího nálezu (#73):** přehled ukazuje všechna repa ve skupinách HIGH / MED / LOW /
+  BEZ NÁLEZŮ. Skupina „Bez tepu“ zrušena, tep je jen sloupec vpravo a v hlavičce. Barva skóre odpovídá skupině.
+  V JSON reportu má `repos[].band` nové hodnoty (`high`, `medium`, `low`, `none`, `unchecked`), `schema_version` je 2.
 - **MCP vidí jen sledované složky (#38):** `[mcp] restrict_to_roots` (výchozí zapnuto) zavírá `scan` repa podle
   libovolné cesty a skrývá v nástrojích repa mimo sledované složky. Dřívější chování vrátí `false`.
 - **UI (#89):** jediné téma s černým pozadím a zelenými (`#00aa00`) obrysy a texty; zrušen přepínač

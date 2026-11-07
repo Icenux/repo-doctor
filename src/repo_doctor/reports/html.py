@@ -83,13 +83,13 @@ def _count_span(sev: Severity, n: int) -> str:
     return f'<span class="{cls}" title="{sev.short}">{sev.symbol} {n}</span>'
 
 
-def _repo(r: RepoResult, no_pulse_days: int, now: datetime | None) -> str:
+def _repo(r: RepoResult) -> str:
     counts = r.counts()
     cls = _score_class(r.score)
     vis = visibility_label(r.visibility)
     head = (
         f'<summary><span class="score {cls}">{score_label(r.score)} {gauge(r.score)}</span>'
-        f"<h2>{escape(r.name)}</h2><span class=muted>{escape(band(r, no_pulse_days, now).label)}</span>"
+        f"<h2>{escape(r.name)}</h2><span class=muted>{escape(band(r).label)}</span>"
         + "".join(_count_span(s, counts[s]) for s in Severity)
         + f"<span class=muted>{escape(r.forge or '')} {escape(vis)}</span></summary>"
     )
@@ -177,7 +177,7 @@ def render(result: ScanResult, *, no_pulse_days: int = 90, now: datetime | None 
 </div>
 </header>
 <main>
-{"".join(_repo(r, no_pulse_days, now) for r in repos)}
+{"".join(_repo(r) for r in repos)}
 </main>
 <script>{JS}</script>
 </body>

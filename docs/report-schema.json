@@ -711,7 +711,7 @@
   },
   "properties": {
     "schema_version": {
-      "default": 1,
+      "default": 2,
       "title": "Schema Version",
       "type": "integer"
     },
@@ -785,5 +785,5 @@
   ],
   "title": "JReport",
   "type": "object",
-  "$id": "https://github.com/Luquas95/repo-doctor/report-schema-v1.json"
+  "$id": "https://github.com/Luquas95/repo-doctor/report-schema-v2.json"
 }

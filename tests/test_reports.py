@@ -23,7 +23,7 @@ def test_json_schema_stable() -> None:
     assert data["schema_version"] == SCHEMA_VERSION
     assert data["summary"]["repos"] == 14
     infra = next(r for r in data["repos"] if r["name"] == "infra-notes")
-    assert infra["band"] == "critical"
+    assert infra["band"] == "high"
     f = infra["findings"][0]
     assert set(f) == {
         "id",

@@ -172,14 +172,14 @@ def _page(total: int, offset: int, limit: int) -> Page:
     return Page(total=total, offset=offset, limit=limit, next_offset=nxt)
 
 
-def _summary(repo: RepoResult, no_pulse_days: int) -> RepoSummary:
+def _summary(repo: RepoResult) -> RepoSummary:
     counts = repo.counts()
     return RepoSummary(
         name=repo.name,
         path=repo.path,
         root=repo.root,
         score=repo.score,
-        band=band(repo, no_pulse_days).value,
+        band=band(repo).value,
         high=counts[Severity.HIGH],
         medium=counts[Severity.MEDIUM],
         low=counts[Severity.LOW],
@@ -293,9 +293,8 @@ class RepoDoctorTools:
             repos = [r for r in repos if r.score is not None and r.score <= max_score]
         repos.sort(key=lambda r: (101 if r.score is None else r.score, r.name))
         page = _page(len(repos), offset, limit)
-        days = self.config.limits.no_pulse_days
         items = repos[page.offset : page.offset + page.limit]
-        return RepoList(page=page, repos=[_summary(r, days) for r in items])
+        return RepoList(page=page, repos=[_summary(r) for r in items])
 
     def repo_status(self, repo: str) -> RepoStatus:
         r = self._repo(repo)

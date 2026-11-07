@@ -18,7 +18,7 @@ vypouští na úzkém terminálu méně důležité klávesy, `?` a `q` zůstáv
 
 Aplikace nemá vypadat jako další obecná tabulka. Koncept stojí na lékařské metafoře, použité střídmě a vždy srozumitelně:
 
-- **Triáž místo seznamu:** přehled třídí repozitáře do pásem **KRITICKÉ** (skóre < 40 nebo jakýkoli HIGH), **SLEDOVAT** (< 70), **BEZ TEPU** (žádný commit 90+ dní, konfigurovatelné) a **ZDRAVÉ**. Pásma jdou sbalit (`z`); ZDRAVÉ je ve výchozím stavu sbalené.
+- **Triáž místo seznamu:** přehled ukazuje všechna repa a třídí je podle nejzávažnějšího nálezu do skupin **HIGH**, **MED**, **LOW** a **BEZ NÁLEZŮ** (#73; wireframe níže je ze starší verze s pásmy KRITICKÉ / SLEDOVAT / BEZ TEPU / ZDRAVÉ). Uvnitř skupiny jsou repa podle skóre. Skupiny jdou sbalit (`z`), výchozí je vše rozbalené. Tep není skupina, je to jen sloupec vpravo.
 - **Tep:** sparkline počtu commitů za den za posledních 30 dní (`▁▂▃▄▅▆▇█`). Mrtvé repo má plochou čáru. V hlavičce je souhrnný tep všech repozitářů.
 - **Karta** = detail repa, **Diagnóza** = detail nálezu, **Léčba** = obrazovka oprav, **Předpis** = vybrané opravy.
 - **Vitální funkce v hlavičce:** počet repozitářů, počty podle severity, celkové zdraví (průměrné skóre) a tep. Při skenu se pod nimi zobrazí průběh a právě běžící kontrola.

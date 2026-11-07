@@ -51,13 +51,15 @@ async def test_dashboard_navigation(tmp_path: Path) -> None:
         assert isinstance(app.screen, DetailScreen)
         await pilot.press("escape")
         assert isinstance(app.screen, DashboardScreen)
-        # pásmo ZDRAVÉ je sbalené, z ho rozbalí
-        healthy_before = len(d.visible_repos())
+        # všechna repa jsou vidět; z sbalí skupinu vybraného repa a podruhé ji rozbalí
+        all_repos = len(d.visible_repos())
         await pilot.press("G")
         await pilot.press("z")
-        assert len(d.visible_repos()) > healthy_before
+        assert len(d.visible_repos()) < all_repos
+        await pilot.press("z")
+        assert len(d.visible_repos()) == all_repos
         text = screen_text(app)
-        assert "KRITICKÉ" in text and "SLEDOVAT" in text and "BEZ TEPU" in text
+        assert "HIGH" in text and "MED" in text and "BEZ TEPU" not in text
 
 
 async def test_dashboard_sort_filter_group(tmp_path: Path) -> None:
@@ -424,7 +426,7 @@ async def test_export(tmp_path: Path) -> None:
         await pilot.press("e")
         await pilot.pause()
     data = json.loads(target.read_text())
-    assert data["schema_version"] == 1
+    assert data["schema_version"] == 2
     assert "AKIA…(20 znaků)" in target.read_text()
 
 

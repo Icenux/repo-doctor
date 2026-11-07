@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: en\n"
 
-#: repo_doctor/tui/widgets/triage.py:139
+#: repo_doctor/tui/widgets/triage.py:138
 msgid ""
 "\n"
 "  vyber repo (j/k)"
@@ -13,7 +13,7 @@ msgstr ""
 "\n"
 "  select a repo (j/k)"
 
-#: repo_doctor/tui/widgets/triage.py:143
+#: repo_doctor/tui/widgets/triage.py:142
 msgid ""
 "\n"
 "  ✓ bez nálezů"
@@ -453,7 +453,7 @@ msgstr "   last commit {relative_time}"
 msgid "   {v} zruší sken"
 msgstr "   {v} cancels the scan"
 
-#: repo_doctor/tui/widgets/triage.py:153
+#: repo_doctor/tui/widgets/triage.py:152
 msgid "   ✓ opravitelné"
 msgstr "   ✓ fixable"
 
@@ -523,15 +523,15 @@ msgstr ""
 msgid "  [běží proces – přeskočeno]"
 msgstr "  [process running – skipped]"
 
-#: repo_doctor/tui/screens/dashboard.py:375
+#: repo_doctor/tui/screens/dashboard.py:373
 msgid "  beze změny"
 msgstr "  no change"
 
-#: repo_doctor/tui/screens/dashboard.py:426
+#: repo_doctor/tui/screens/dashboard.py:424
 msgid "  vše přečteno ({key})"
 msgstr "  mark all read ({key})"
 
-#: repo_doctor/tui/screens/dashboard.py:332
+#: repo_doctor/tui/screens/dashboard.py:330
 msgid "  žádné ({key} přidá)"
 msgstr "  none ({key} adds)"
 
@@ -611,7 +611,7 @@ msgstr " no changes"
 msgid " export reportu "
 msgstr " export report "
 
-#: repo_doctor/tui/screens/dashboard.py:352
+#: repo_doctor/tui/screens/dashboard.py:350
 msgid " jen problémová"
 msgstr " problems only"
 
@@ -631,11 +631,11 @@ msgstr " publishing fixes "
 msgid " repo-doctor · první spuštění "
 msgstr " repo-doctor · first run "
 
-#: repo_doctor/tui/widgets/triage.py:127
+#: repo_doctor/tui/widgets/triage.py:126
 msgid " sbaleno · {toggle_key} rozbalí"
 msgstr " collapsed · {toggle_key} expands"
 
-#: repo_doctor/tui/screens/dashboard.py:355
+#: repo_doctor/tui/screens/dashboard.py:353
 msgid " seskupit: "
 msgstr " group by: "
 
@@ -985,7 +985,7 @@ msgstr "<th>severity</th><th>check</th><th>finding</th><th>where</th>"
 msgid "> **Upozornění**"
 msgstr "> **Warnings**"
 
-#: repo_doctor/tui/helptext.py:154
+#: repo_doctor/tui/helptext.py:158
 msgid "A dotáhne větev na pozadí: chybějící push a PR, čekání na CI a po zelené CI merge. Při chybě CI se zastaví a upozorní v Notifikacích."
 msgstr "A carries the branch through in the background: the missing push and PR, waiting for CI and, after green CI, the merge. If CI fails it stops and tells you in Notifications."
 
@@ -1085,9 +1085,9 @@ msgstr "Audit and maintenance of git repositories. Without a command it starts t
 msgid "Automatické opravy z repo-doctor – {commits}:"
 msgstr "Automatic fixes from repo-doctor – {commits}:"
 
-#: repo_doctor/scoring.py:50
-msgid "BEZ TEPU"
-msgstr "NO PULSE"
+#: repo_doctor/scoring.py:53
+msgid "BEZ NÁLEZŮ"
+msgstr "NO FINDINGS"
 
 #: repo_doctor/update.py:328
 msgid "Balík nejde rozbalit: {error}"
@@ -1129,7 +1129,7 @@ msgstr "No changes – no notification."
 msgid "Bezpečnost"
 msgstr "Security"
 
-#: repo_doctor/tui/helptext.py:116
+#: repo_doctor/tui/helptext.py:120
 msgid "Blok Notifikace v levém panelu ukazuje průběh a výsledky léčby s odesláním; ⏎ otevře stránku Odeslání daného repa, N označí vše jako přečtené."
 msgstr "The Notifications block in the left panel shows the progress and results of heal-and-publish; ⏎ opens the Publish page of that repo, N marks everything as read."
 
@@ -1297,7 +1297,7 @@ msgstr "The target already exists – the clone will not overwrite it, choose an
 msgid "Cílová sledovaná složka"
 msgstr "Target watched folder"
 
-#: repo_doctor/tui/helptext.py:233
+#: repo_doctor/tui/helptext.py:237
 msgid "D smaže trvale – jen po výslovném potvrzení."
 msgstr "D deletes permanently – only after explicit confirmation."
 
@@ -1337,7 +1337,7 @@ msgstr "Fast-forwarded: {repos}. Nothing was pushed."
 msgid "Dohnáno: {repos} ({commits}). Nic se nepushnulo."
 msgstr "Caught up: {repos} ({commits}). Nothing was pushed."
 
-#: repo_doctor/tui/helptext.py:241
+#: repo_doctor/tui/helptext.py:245
 msgid "Dohání se jen fast-forward; repa s lokálními změnami nebo rozcházející se větví se přeskočí."
 msgstr "Only fast-forward is used; repos with local changes or a diverged branch are skipped."
 
@@ -1381,7 +1381,7 @@ msgstr "Export"
 msgid "Export SBOM"
 msgstr "Export SBOM"
 
-#: repo_doctor/tui/helptext.py:222
+#: repo_doctor/tui/helptext.py:226
 msgid "Export výsledku skenu do souboru."
 msgstr "Export the scan result to a file."
 
@@ -1389,7 +1389,7 @@ msgstr "Export the scan result to a file."
 msgid "Exportovat"
 msgstr "Export"
 
-#: repo_doctor/tui/screens/dashboard.py:351
+#: repo_doctor/tui/screens/dashboard.py:349
 msgid "FILTR"
 msgstr "FILTER"
 
@@ -1417,7 +1417,7 @@ msgstr "Category filter: {label}"
 msgid "Formulářové dialogy"
 msgstr "Form dialogs"
 
-#: repo_doctor/tui/helptext.py:254
+#: repo_doctor/tui/helptext.py:258
 msgid "Formulářový dialog (složka, hosting, klon)."
 msgstr "Form dialog (folder, hosting service, clone)."
 
@@ -1461,7 +1461,7 @@ msgstr "HEAD points directly at commit {sha}, not at a branch."
 msgid "HISTORIE"
 msgstr "HISTORY"
 
-#: repo_doctor/tui/screens/dashboard.py:340
+#: repo_doctor/tui/screens/dashboard.py:338
 msgid "HOSTINGY"
 msgstr "HOSTINGS"
 
@@ -1561,7 +1561,7 @@ msgstr "Hosting {name} saved. T tests the connection."
 msgid "Hostingy"
 msgstr "Hostings"
 
-#: repo_doctor/tui/helptext.py:180
+#: repo_doctor/tui/helptext.py:184
 msgid "Hostingy (GitHub, GitLab, Codeberg, Forgejo…), ze kterých se čtou data o CI, PR a alertech."
 msgstr "Hosting services (GitHub, GitLab, Codeberg, Forgejo…) that CI, PR and alert data is read from."
 
@@ -1605,7 +1605,7 @@ msgstr "Expression injection into run:"
 msgid "JSON (.json) – stabilní schéma pro skripty"
 msgstr "JSON (.json) – stable schema for scripts"
 
-#: repo_doctor/tui/helptext.py:225
+#: repo_doctor/tui/helptext.py:229
 msgid "JSON má stabilní, verzované schéma pro skripty a CI."
 msgstr "JSON has a stable, versioned schema for scripts and CI."
 
@@ -1653,15 +1653,11 @@ msgstr "Only these checks (comma-separated)."
 msgid "Jen zjistí, zda je venku nová verze."
 msgstr "Only checks whether a new version is out."
 
-#: repo_doctor/scoring.py:48
-msgid "KRITICKÉ"
-msgstr "CRITICAL"
-
 #: repo_doctor/keymap.py:19
 msgid "Karta repa"
 msgstr "Repo card"
 
-#: repo_doctor/tui/helptext.py:123
+#: repo_doctor/tui/helptext.py:127
 msgid "Karta repa: vlevo nálezy podle kategorií, vpravo vysvětlení vybraného nálezu."
 msgstr "Repo card: findings by category on the left, an explanation of the selected finding on the right."
 
@@ -1751,7 +1747,7 @@ msgstr "Trash – cleanup (6) moves things to the trash; only an explicit D afte
 msgid "KÓD"
 msgstr "CODE"
 
-#: repo_doctor/tui/helptext.py:144
+#: repo_doctor/tui/helptext.py:148
 msgid "L posune výchozí větev lokálně (jen fast-forward), U ji pak pošle na remote."
 msgstr "L moves the default branch locally (fast-forward only), U then pushes it to the remote."
 
@@ -1817,7 +1813,7 @@ msgstr "Treatment failed"
 msgid "Léčba zrušena – nic se nezměnilo."
 msgstr "Treatment cancelled – nothing changed."
 
-#: repo_doctor/tui/helptext.py:161
+#: repo_doctor/tui/helptext.py:165
 msgid "Léčba: výběr oprav a náhled změn dřív, než se cokoli stane."
 msgstr "Healing: pick fixes and preview the changes before anything happens."
 
@@ -1825,7 +1821,7 @@ msgstr "Healing: pick fixes and preview the changes before anything happens."
 msgid "MCP server pro AI asistenty"
 msgstr "MCP server for AI assistants"
 
-#: repo_doctor/tui/helptext.py:208
+#: repo_doctor/tui/helptext.py:212
 msgid "MCP server: co smí AI asistent (rozsah, síť, jednotlivé zápisy) a hotové připojení pro Claude."
 msgstr "MCP server: what the AI assistant may do (scope, network, individual writes) and a ready-made connection for Claude."
 
@@ -1837,7 +1833,7 @@ msgstr "Markdown (.md) – for issues or notes"
 msgid "Merge hotový"
 msgstr "Merge done"
 
-#: repo_doctor/tui/helptext.py:141
+#: repo_doctor/tui/helptext.py:145
 msgid "Merge jde jen po doběhnuté zelené CI; dokud běží, stránka se sama obnovuje, ctrl+r načte stav hned."
 msgstr "Merging is only possible once CI has finished green; while it runs the page refreshes itself, ctrl+r reloads the state right away."
 
@@ -1879,11 +1875,11 @@ msgstr "Only new commits in this repo change. The old history stays – repo-doc
 msgid "NA HOSTINGU"
 msgstr "ON HOSTING"
 
-#: repo_doctor/scoring.py:52
+#: repo_doctor/scoring.py:54
 msgid "NELZE ZKONTROLOVAT"
 msgstr "CANNOT BE CHECKED"
 
-#: repo_doctor/tui/screens/dashboard.py:403
+#: repo_doctor/tui/screens/dashboard.py:401
 msgid "NOTIFIKACE"
 msgstr "NOTIFICATIONS"
 
@@ -1933,7 +1929,7 @@ msgstr "Settings"
 msgid "Nastavení a tipy"
 msgstr "Settings and tips"
 
-#: repo_doctor/tui/helptext.py:204
+#: repo_doctor/tui/helptext.py:208
 msgid "Nastavení aplikace; změny se ukládají okamžitě."
 msgstr "Application settings; changes are saved immediately."
 
@@ -1973,7 +1969,7 @@ msgstr "Run git fetch first (updates remote-tracking refs only; off by default).
 msgid "Nejdřív přejdi (tab) na tabulku allowlistu."
 msgstr "Move to the allowlist table first (tab)."
 
-#: repo_doctor/tui/screens/dashboard.py:557
+#: repo_doctor/tui/screens/dashboard.py:555
 msgid "Nejdřív vyber repo."
 msgstr "Select a repo first."
 
@@ -2135,7 +2131,7 @@ msgstr "Nothing is selected."
 msgid "Nic se nepushne."
 msgstr "Nothing will be pushed."
 
-#: repo_doctor/tui/helptext.py:165
+#: repo_doctor/tui/helptext.py:169
 msgid "Nic se nepushuje – odeslání je samostatný krok na kartě repa."
 msgstr "Nothing is pushed – sending is a separate step on the repo card."
 
@@ -2195,7 +2191,7 @@ msgstr "Remote name (passed by git)."
 msgid "Název složky"
 msgstr "Folder name"
 
-#: repo_doctor/tui/screens/dashboard.py:372
+#: repo_doctor/tui/screens/dashboard.py:370
 msgid "OD VČEREJŠKA"
 msgstr "SINCE YESTERDAY"
 
@@ -2263,7 +2259,7 @@ msgstr "Cannot send"
 msgid "Odeslání oprav"
 msgstr "Publishing fixes"
 
-#: repo_doctor/tui/helptext.py:134
+#: repo_doctor/tui/helptext.py:138
 msgid "Odeslání oprav: kde je opravná větev na cestě ven – push, PR/MR, CI a merge na jednom místě."
 msgstr "Publishing fixes: where the fix branch is on its way out – push, PR/MR, CI and merge in one place."
 
@@ -2367,11 +2363,11 @@ msgstr "Validates the configuration (including key mapping)."
 msgid "Ověří připojení nastavených hostingů. Token nikdy nevypíše."
 msgstr "Tests the connection to configured hostings. Never prints the token."
 
-#: repo_doctor/tui/helptext.py:138
+#: repo_doctor/tui/helptext.py:142
 msgid "P pošle větev, C vytvoří PR/MR, M ho mergne – každý krok zvlášť a s potvrzením (výchozí Zrušit)."
 msgstr "P pushes the branch, C creates the PR/MR, M merges it – each step separately and with confirmation (default Cancel)."
 
-#: repo_doctor/tui/helptext.py:166
+#: repo_doctor/tui/helptext.py:170
 msgid "P vyléčí vybrané a na pozadí dotáhne push, PR, čekání na CI a po zelené CI merge; průběh je v Notifikacích na přehledu."
 msgstr "P heals the selected fixes and carries them through in the background: push, PR, waiting for CI and, after green CI, merge; progress is in Notifications on the overview."
 
@@ -2465,7 +2461,7 @@ msgstr "Scheduled run: saves the result, compares it with the previous one and n
 msgid "Plánovaný sken"
 msgstr "Scheduled scan"
 
-#: repo_doctor/tui/helptext.py:206
+#: repo_doctor/tui/helptext.py:210
 msgid "Plánovaný sken (denně / týdně) a test upozornění."
 msgstr "Scheduled scan (daily / weekly) and a notification test."
 
@@ -2657,7 +2653,7 @@ msgstr "CLI exit code threshold (fail-on)"
 msgid "Průvodce prvním spuštěním"
 msgstr "First-run wizard"
 
-#: repo_doctor/tui/helptext.py:247
+#: repo_doctor/tui/helptext.py:251
 msgid "Průvodce prvním spuštěním: výběr složek a případně hostingu."
 msgstr "First-run wizard: choose folders and optionally a hosting service."
 
@@ -2789,7 +2785,7 @@ msgstr "R scans all repositories, r only the selected one; x cancels a running s
 msgid "README.md pro {name}"
 msgstr "README.md for {name}"
 
-#: repo_doctor/tui/widgets/triage.py:45
+#: repo_doctor/tui/widgets/triage.py:53
 msgid "REPOZITÁŘ"
 msgstr "REPOSITORY"
 
@@ -2885,7 +2881,7 @@ msgstr "The repo belongs to another user – cannot create the SBOM."
 msgid "Repo patří jinému uživateli – repo-doctor ho nikdy nemění."
 msgstr "The repo belongs to another user – repo-doctor never changes it."
 
-#: repo_doctor/tui/screens/dashboard.py:451
+#: repo_doctor/tui/screens/dashboard.py:449
 msgid "Repo už není ve výsledcích skenu – spusť sken ({key})."
 msgstr "The repo is no longer in the scan results – run a scan ({key})."
 
@@ -2917,7 +2913,7 @@ msgstr "The repository has no .gitignore (ecosystem: {eco})."
 msgid "Repozitář nemá žádný remote – commity existují jen na tomto disku."
 msgstr "The repository has no remote – the commits exist only on this disk."
 
-#: repo_doctor/tui/helptext.py:194
+#: repo_doctor/tui/helptext.py:198
 msgid "Repozitáře na hostingu, které nemáš lokálně, a naopak."
 msgstr "Repositories on the hosting service that you do not have locally, and the other way round."
 
@@ -2985,7 +2981,7 @@ msgstr "SBOM saved: {output}"
 msgid "SBOM uložen: {out}"
 msgstr "SBOM saved: {out}"
 
-#: repo_doctor/tui/widgets/triage.py:43
+#: repo_doctor/tui/widgets/triage.py:51
 msgid "SKÓRE"
 msgstr "SCORE"
 
@@ -2993,11 +2989,7 @@ msgstr "SCORE"
 msgid "SKÓRE "
 msgstr "SCORE "
 
-#: repo_doctor/scoring.py:49
-msgid "SLEDOVAT"
-msgstr "WATCH"
-
-#: repo_doctor/tui/screens/dashboard.py:316
+#: repo_doctor/tui/screens/dashboard.py:314
 msgid "SLOŽKY"
 msgstr "FOLDERS"
 
@@ -3017,7 +3009,7 @@ msgstr "The server rejected the SSH key. Check that the key is added to your hos
 msgid "Server zatím neznáš. Připoj se k němu jednou ručně: `{target}` a potvrď otisk klíče. Pak to zkus znovu."
 msgstr "You do not know this server yet. Connect to it once by hand: `{target}` and confirm the key fingerprint. Then try again."
 
-#: repo_doctor/tui/helptext.py:211
+#: repo_doctor/tui/helptext.py:215
 msgid "Seznam skrytých nálezů (allowlist): d vybranou položku odebere."
 msgstr "List of hidden findings (allowlist): d removes the selected item."
 
@@ -3029,7 +3021,7 @@ msgstr "Scan finished: {len} repositories, {n} findings."
 msgid "Sken po spuštění aplikace"
 msgstr "Scan on application start"
 
-#: repo_doctor/tui/helptext.py:207
+#: repo_doctor/tui/helptext.py:211
 msgid "Sken po spuštění, jazyk a vzhled aplikace."
 msgstr "Scan on start, language and appearance of the application."
 
@@ -3060,6 +3052,10 @@ msgstr "The script has no set -e/-u (or pipefail), so a mid-script error passes 
 #: repo_doctor/reports/markdown.py:98
 msgid "Skryto allowlistem: {n}"
 msgstr "Hidden by the allowlist: {n}"
+
+#: repo_doctor/tui/helptext.py:116
+msgid "Skupiny HIGH / MED / LOW / BEZ NÁLEZŮ třídí repa podle nejzávažnějšího nálezu; uvnitř skupiny jdou repa podle skóre. Tep (commity za 30 dní) je jen sloupec vpravo."
+msgstr "The HIGH / MED / LOW / NO FINDINGS groups sort repos by their most severe finding; within a group repos are ordered by score. Pulse (commits in 30 days) is only a column on the right."
 
 #: repo_doctor/tui/screens/folders.py:71
 msgid "Sledované složky se ukládají do "
@@ -3101,7 +3097,7 @@ msgstr "Folders to scan (without them, folders from the configuration)."
 msgid "Složky s repy (bez nich složky z konfigurace)."
 msgstr "Folders with repos (without them, folders from the configuration)."
 
-#: repo_doctor/tui/helptext.py:173
+#: repo_doctor/tui/helptext.py:177
 msgid "Složky, ve kterých repo-doctor hledá repozitáře."
 msgstr "Folders where repo-doctor looks for repositories."
 
@@ -3259,15 +3255,15 @@ msgstr "Synchronization (7) only fast-forwards and never overwrites local work."
 msgid "Synchronizace zrušena – nic se nezměnilo."
 msgstr "Sync cancelled – nothing changed."
 
-#: repo_doctor/tui/helptext.py:237
+#: repo_doctor/tui/helptext.py:241
 msgid "Synchronizace: dohnání repozitářů za jejich remote."
 msgstr "Synchronization: catching repositories up with their remote."
 
-#: repo_doctor/tui/helptext.py:185
+#: repo_doctor/tui/helptext.py:189
 msgid "T otestuje připojení; výpadek hostingu nic neblokuje, kontroly se označí jako nedostupné."
 msgstr "T tests the connection; a hosting outage blocks nothing, the checks are just marked unavailable."
 
-#: repo_doctor/tui/widgets/triage.py:58
+#: repo_doctor/tui/widgets/triage.py:66
 msgid "TEP · 30 DNÍ"
 msgstr "PULSE · 30 DAYS"
 
@@ -3329,7 +3325,7 @@ msgid ""
 msgstr ""
 "The token is never shown or saved to config.toml.\n"
 
-#: repo_doctor/tui/helptext.py:188
+#: repo_doctor/tui/helptext.py:192
 msgid "Token se ukládá podle zvoleného zdroje (proměnná, příkaz, keyring), nikdy do reportů."
 msgstr "The token is stored according to the chosen source (variable, command, keyring), never in reports."
 
@@ -3429,7 +3425,7 @@ msgstr "There is no LICENSE (or COPYING) in the repository root."
 msgid "V kořeni repozitáře není README."
 msgstr "There is no README in the repository root."
 
-#: repo_doctor/tui/helptext.py:149
+#: repo_doctor/tui/helptext.py:153
 msgid "V průběhu šipky nebo j/k vybírají job, ⏎ rozbalí jeho kroky, w otevře job na webu; u tabulky ⏎ otevře kontrolu."
 msgstr "In the progress view the arrows or j/k select a job, ⏎ expands its steps, w opens the job on the web; in the table ⏎ opens the check."
 
@@ -3465,7 +3461,7 @@ msgstr "Public repo contains infrastructure configuration"
 msgid "Vlastní šablony oprav (složka, volitelné)"
 msgstr "Custom fix templates (folder, optional)"
 
-#: repo_doctor/tui/helptext.py:215
+#: repo_doctor/tui/helptext.py:219
 msgid "Volitelné externí nástroje (např. gitleaks), které kontroly umí využít."
 msgstr "Optional external tools (e.g. gitleaks) that the checks can use."
 
@@ -3485,7 +3481,7 @@ msgstr "Optional – repo-doctor works without them, with them it can do more. U
 msgid "Volání procesu přes shell=True (vstřikování příkazů)."
 msgstr "A process is called through shell=True (command injection)."
 
-#: repo_doctor/tui/helptext.py:224
+#: repo_doctor/tui/helptext.py:228
 msgid "Vyber formát (Markdown, JSON, HTML) a cestu, e report uloží."
 msgstr "Choose a format (Markdown, JSON, HTML) and a path; e saves the report."
 
@@ -3517,7 +3513,7 @@ msgstr "The selected fixes only change .git/ – nothing to publish, use {key}."
 msgid "Vybrané opravy nic nemění (už jsou nejspíš aplikované)."
 msgstr "The selected fixes change nothing (they are probably applied already)."
 
-#: repo_doctor/tui/helptext.py:249
+#: repo_doctor/tui/helptext.py:253
 msgid "Vybrané složky se uloží do konfigurace a hned se naskenují."
 msgstr "The chosen folders are saved to the configuration and scanned right away."
 
@@ -3723,10 +3719,6 @@ msgstr "The workflow ended without a result."
 msgid "Workflow tohoto repa už běží – průběh je v Notifikacích na přehledu."
 msgstr "A workflow for this repo is already running – progress is in Notifications on the overview."
 
-#: repo_doctor/scoring.py:51
-msgid "ZDRAVÉ"
-msgstr "HEALTHY"
-
 #: repo_doctor/tui/screens/export.py:107
 msgid "Zadej cestu."
 msgstr "Enter a path."
@@ -3783,7 +3775,7 @@ msgstr "No version has been released yet."
 msgid "Zatím není žádný PR/MR."
 msgstr "There is no PR/MR yet."
 
-#: repo_doctor/tui/screens/dashboard.py:245
+#: repo_doctor/tui/screens/dashboard.py:243
 msgid "Zatím žádný sken – stiskni {key} a repo-doctor zkontroluje všechna repa ve sledovaných složkách."
 msgstr "No scan yet – press {key} and repo-doctor checks all repos in the watched folders."
 
@@ -3889,7 +3881,7 @@ msgstr "`{key}` must be a table ([{key}])"
 msgid "a allowlist · skryje nález"
 msgstr "a allowlist · hides the finding"
 
-#: repo_doctor/tui/helptext.py:127
+#: repo_doctor/tui/helptext.py:131
 msgid "a skryje nález do allowlistu, o otevře soubor v editoru, w repo na webu, y zkopíruje cestu."
 msgstr "a hides the finding in the allowlist, o opens the file in an editor, w opens the repo on the web, y copies the path."
 
@@ -3945,7 +3937,7 @@ msgstr "alerts are not available (the hosting does not support them or the token
 msgid "ano"
 msgstr "yes"
 
-#: repo_doctor/tui/screens/remote.py:156 repo_doctor/tui/util.py:52 repo_doctor/tui/widgets/triage.py:83
+#: repo_doctor/tui/screens/remote.py:156 repo_doctor/tui/util.py:52 repo_doctor/tui/widgets/triage.py:91
 msgid "archiv"
 msgstr "archive"
 
@@ -4001,7 +3993,7 @@ msgstr "no commit for {age} days"
 msgid "bez opravné větve"
 msgstr "no fix branch"
 
-#: repo_doctor/tui/screens/remote.py:117 repo_doctor/tui/triage_model.py:143 repo_doctor/tui/util.py:50
+#: repo_doctor/tui/screens/remote.py:117 repo_doctor/tui/triage_model.py:134 repo_doctor/tui/util.py:50
 msgid "bez remote"
 msgstr "no remote"
 
@@ -4016,10 +4008,6 @@ msgstr "no tracked branch"
 #: repo_doctor/checks/docker.py:128
 msgid "bez tagu"
 msgstr "no tag"
-
-#: repo_doctor/tui/screens/dashboard.py:376
-msgid "bez tepu"
-msgstr "no pulse"
 
 #: repo_doctor/tui/screens/settings.py:37
 msgid "bez tepu (dní)"
@@ -4085,7 +4073,7 @@ msgstr "a process is running in it"
 msgid "běží – {running} z {n} kontrol ještě neskončilo"
 msgstr "running – {running} of {n} checks not finished yet"
 
-#: repo_doctor/tui/helptext.py:197
+#: repo_doctor/tui/helptext.py:201
 msgid "c naklonuje vybrané repo po potvrzení do vybrané složky; existující složku nikdy nepřepíše."
 msgstr "c clones the selected repo into the chosen folder after confirmation; an existing folder is never overwritten."
 
@@ -4149,7 +4137,7 @@ msgstr "missing {join}"
 msgid "cizí vlastník"
 msgstr "foreign owner"
 
-#: repo_doctor/tui/triage_model.py:130
+#: repo_doctor/tui/triage_model.py:124
 msgid "cizí vlastník – viz nález"
 msgstr "foreign owner – see finding"
 
@@ -4165,15 +4153,15 @@ msgstr "commits"
 msgid "commitů"
 msgstr "commits"
 
-#: repo_doctor/tui/helptext.py:200
+#: repo_doctor/tui/helptext.py:204
 msgid "ctrl+r načte seznam znovu."
 msgstr "ctrl+r reloads the list."
 
-#: repo_doctor/tui/helptext.py:257
+#: repo_doctor/tui/helptext.py:261
 msgid "ctrl+s formulář uloží, Esc ho zavře bez uložení."
 msgstr "ctrl+s saves the form, Esc closes it without saving."
 
-#: repo_doctor/tui/helptext.py:250
+#: repo_doctor/tui/helptext.py:254
 msgid "ctrl+s uloží a spustí sken, ctrl+n přidá hosting, Esc průvodce přeskočí."
 msgstr "ctrl+s saves and starts a scan, ctrl+n adds a hosting service, Esc skips the wizard."
 
@@ -4289,7 +4277,7 @@ msgstr "export SBOM (CycloneDX)"
 msgid "exportovat report"
 msgstr "export report"
 
-#: repo_doctor/tui/helptext.py:239
+#: repo_doctor/tui/helptext.py:243
 msgid "f stáhne novinky (fetch) a ukáže, která repa jsou pozadu."
 msgstr "f fetches updates and shows which repos are behind."
 
@@ -4429,7 +4417,7 @@ msgstr "http://{host} is not in allow_http_hosts – unencrypted connection refu
 msgid "i jiná repa podle cesty"
 msgstr "other repos by path too"
 
-#: repo_doctor/tui/helptext.py:217
+#: repo_doctor/tui/helptext.py:221
 msgid "i nainstaluje vybraný nástroj, I všechny chybějící."
 msgstr "i installs the selected tool, I all missing ones."
 
@@ -4457,7 +4445,7 @@ msgstr "issue"
 msgid "issues"
 msgstr "issues"
 
-#: repo_doctor/tui/helptext.py:125
+#: repo_doctor/tui/helptext.py:129
 msgid "j/k vybírají nález; vpravo je proč to vadí a postup, jak ho opravit."
 msgstr "j/k select a finding; on the right you see why it matters and how to fix it."
 
@@ -4521,7 +4509,7 @@ msgstr "repo card"
 msgid "karta · {name}"
 msgstr "card · {name}"
 
-#: repo_doctor/tui/screens/dashboard.py:368
+#: repo_doctor/tui/screens/dashboard.py:366
 msgid "kat.: {label}"
 msgstr "cat.: {label}"
 
@@ -4529,7 +4517,7 @@ msgstr "cat.: {label}"
 msgid "kategorie"
 msgstr "category"
 
-#: repo_doctor/tui/screens/dashboard.py:368
+#: repo_doctor/tui/screens/dashboard.py:366
 msgid "kategorie: vše"
 msgstr "category: all"
 
@@ -4777,11 +4765,11 @@ msgstr "it only has unpushed commits – nothing to catch up on"
 msgid "má necommitnuté nebo nepushnuté změny – nejdřív je přenes do {path}"
 msgstr "has uncommitted or unpushed changes – move them to {path} first"
 
-#: repo_doctor/tui/helptext.py:184
+#: repo_doctor/tui/helptext.py:188
 msgid "n přidá hosting, e ho upraví, d odebere."
 msgstr "n adds a hosting service, e edits it, d removes it."
 
-#: repo_doctor/tui/helptext.py:175
+#: repo_doctor/tui/helptext.py:179
 msgid "n přidá složku, e ji upraví, d odebere (soubory na disku se nemažou)."
 msgstr "n adds a folder, e edits it, d removes it (files on disk are not deleted)."
 
@@ -4995,7 +4983,7 @@ msgstr "your e-mail is unknown – set git config --global user.email or my_emai
 msgid "neznámá akce `{action_id}` (platné: {join})"
 msgstr "unknown action `{action_id}` (valid: {join})"
 
-#: repo_doctor/gitwrap.py:1064 repo_doctor/tui/triage_model.py:143
+#: repo_doctor/gitwrap.py:1064 repo_doctor/tui/triage_model.py:134
 msgid "neznámý remote"
 msgstr "unknown remote"
 
@@ -5107,7 +5095,7 @@ msgstr "tool"
 msgid "nástroje"
 msgstr "tools"
 
-#: repo_doctor/tui/screens/forges.py:114 repo_doctor/tui/triage_model.py:18
+#: repo_doctor/tui/screens/forges.py:114 repo_doctor/tui/triage_model.py:17
 msgid "název"
 msgstr "name"
 
@@ -5263,7 +5251,7 @@ msgstr "verified"
 msgid "ověřování TLS je vypnuté (verify_tls = false) – raději nastav ca_bundle"
 msgstr "TLS verification is turned off (verify_tls = false) – set ca_bundle instead"
 
-#: repo_doctor/tui/helptext.py:130
+#: repo_doctor/tui/helptext.py:134
 msgid "p otevře stránku Odeslání oprav: push, PR/MR, merge a stav CI opravné větve."
 msgstr "p opens the Publishing fixes page: push, PR/MR, merge and CI state of the fix branch."
 
@@ -5711,11 +5699,11 @@ msgstr "sendmail is not installed"
 msgid "seskupit: triáž / složka / hosting / remote"
 msgstr "group by: triage / folder / hosting / remote"
 
-#: repo_doctor/tui/screens/dashboard.py:362
+#: repo_doctor/tui/screens/dashboard.py:360
 msgid "severity ≥ {short}"
 msgstr "severity ≥ {short}"
 
-#: repo_doctor/tui/screens/dashboard.py:364
+#: repo_doctor/tui/screens/dashboard.py:362
 msgid "severity: vše"
 msgstr "severity: all"
 
@@ -5751,7 +5739,7 @@ msgstr "scan all repos"
 msgid "skrýt nález (allowlist)"
 msgstr "hide finding (allowlist)"
 
-#: repo_doctor/tui/triage_model.py:17
+#: repo_doctor/tui/triage_model.py:16
 msgid "skóre"
 msgstr "score"
 
@@ -5783,19 +5771,19 @@ msgstr "the files of version {version} do not match the lockfile – the format 
 msgid "souborů"
 msgstr "files"
 
-#: repo_doctor/tui/helptext.py:176
+#: repo_doctor/tui/helptext.py:180
 msgid "space složku dočasně vypne nebo zapne; po změně spusť nový sken (R)."
 msgstr "space turns a folder off or on temporarily; start a new scan (R) after changing it."
 
-#: repo_doctor/tui/helptext.py:163
+#: repo_doctor/tui/helptext.py:167
 msgid "space vybere nebo zruší opravu, A vybere vše; vpravo je náhled změn (diff)."
 msgstr "space selects or deselects a fix, A selects all; the change preview (diff) is on the right."
 
-#: repo_doctor/tui/helptext.py:231
+#: repo_doctor/tui/helptext.py:235
 msgid "space vybere repo, A vybere vše nebo nic; vidíš, kolik místa se uvolní."
 msgstr "space selects a repo, A selects all or none; you see how much space will be freed."
 
-#: repo_doctor/tui/helptext.py:240
+#: repo_doctor/tui/helptext.py:244
 msgid "space vybere repo, ⏎ dožene vybraná po potvrzení."
 msgstr "space selects a repo, ⏎ catches up the selected ones after confirmation."
 
@@ -5875,7 +5863,7 @@ msgstr "network data is not available"
 msgid "tab další pole · enter / {key} uložit · esc zrušit"
 msgstr "tab next field · enter / {key} save · esc cancel"
 
-#: repo_doctor/tui/helptext.py:256
+#: repo_doctor/tui/helptext.py:260
 msgid "tab přechází mezi poli; v poli cesty přijme návrh."
 msgstr "tab moves between fields; in a path field it accepts the suggestion."
 
@@ -5899,7 +5887,7 @@ msgstr "secrets before push"
 msgid "tempfile.mktemp() je náchylné na souběh, použij mkstemp()."
 msgstr "tempfile.mktemp() is prone to races, use mkstemp()."
 
-#: repo_doctor/tui/triage_model.py:24
+#: repo_doctor/tui/triage_model.py:23
 msgid "tep"
 msgstr "pulse"
 
@@ -5959,7 +5947,7 @@ msgstr "token_source = \"cmd\" requires token_cmd"
 msgid "token_source = \"env\" vyžaduje token_env (název proměnné)"
 msgstr "token_source = \"env\" requires token_env (the variable name)"
 
-#: repo_doctor/tui/triage_model.py:27
+#: repo_doctor/tui/triage_model.py:26
 msgid "triáž"
 msgstr "triage"
 
@@ -5987,7 +5975,7 @@ msgstr "weekly (Monday)"
 msgid "týdně v pondělí {time}"
 msgstr "weekly on Monday at {time}"
 
-#: repo_doctor/tui/helptext.py:218
+#: repo_doctor/tui/helptext.py:222
 msgid "u aktualizuje stažené nástroje, d vybraný odebere."
 msgstr "u updates downloaded tools, d removes the selected one."
 
@@ -6055,11 +6043,11 @@ msgstr "the trash already has too many items with the same name"
 msgid "v průběhu: rozbalit kroky jobu"
 msgstr "in the progress view: expand the steps of a job"
 
-#: repo_doctor/tui/helptext.py:145
+#: repo_doctor/tui/helptext.py:149
 msgid "v přepne tabulku kontrol na průběh CI: graf jobů jako na GitHub Actions (✓ prošel, ✗ selhal, točící se kolečko běží, ○ čeká, ⊘ přeskočen)."
 msgstr "v switches the table of checks to the CI progress: a job graph like GitHub Actions (✓ passed, ✗ failed, spinning circle running, ○ waiting, ⊘ skipped)."
 
-#: repo_doctor/tui/helptext.py:196
+#: repo_doctor/tui/helptext.py:200
 msgid "v přepíná pohled „chybí lokálně“ ↔ „jen lokálně“."
 msgstr "v switches the view “missing locally” ↔ “local only”."
 
@@ -6157,7 +6145,7 @@ msgstr "exclude patterns"
 msgid "vyléčit a dotáhnout: push, PR, po zelené CI merge"
 msgstr "heal and carry through: push, PR, merge after green CI"
 
-#: repo_doctor/tui/screens/dashboard.py:323 repo_doctor/tui/screens/folders.py:109
+#: repo_doctor/tui/screens/dashboard.py:321 repo_doctor/tui/screens/folders.py:109
 msgid "vyp."
 msgstr "off"
 
@@ -6257,7 +6245,7 @@ msgstr "all"
 msgid "všechny"
 msgstr "all"
 
-#: repo_doctor/tui/helptext.py:153
+#: repo_doctor/tui/helptext.py:157
 msgid "w mimo průběh otevře PR/MR na webu."
 msgstr "w outside the progress view opens the PR/MR on the web."
 
@@ -6753,7 +6741,7 @@ msgstr "Cleanup"
 msgid "Úklid hotový"
 msgstr "Cleanup done"
 
-#: repo_doctor/tui/helptext.py:229
+#: repo_doctor/tui/helptext.py:233
 msgid "Úklid místa: regenerovatelné složky (node_modules, .venv, target…) v repech."
 msgstr "Disk cleanup: regenerable folders (node_modules, .venv, target…) in repos."
 
@@ -6805,7 +6793,7 @@ msgstr "timeout while requesting {url}"
 msgid "čeština"
 msgstr "čeština"
 
-#: repo_doctor/tui/util.py:53 repo_doctor/tui/widgets/triage.py:83
+#: repo_doctor/tui/util.py:53 repo_doctor/tui/widgets/triage.py:91
 msgid "čisté"
 msgstr "clean"
 
@@ -6825,7 +6813,7 @@ msgstr "sorted: {v} {v2}"
 msgid "Široká oprávnění tokenu"
 msgstr "Broad token permissions"
 
-#: repo_doctor/tui/screens/dashboard.py:243
+#: repo_doctor/tui/screens/dashboard.py:241
 msgid "Žádná repa neodpovídají filtru."
 msgstr "No repos match the filter."
 
@@ -6865,10 +6853,6 @@ msgstr "none (no backup)"
 msgid "žádný PR/MR zatím není"
 msgstr "no PR/MR yet"
 
-#: repo_doctor/tui/triage_model.py:128
-msgid "žádný commit {no_pulse_days}+ dní"
-msgstr "no commit for {no_pulse_days}+ days"
-
 #: repo_doctor/tui/screens/forges.py:156
 msgid "žádný hosting – n přidá (volitelné)"
 msgstr "no hosting – n adds one (optional)"
@@ -6885,19 +6869,19 @@ msgstr "↳ after {need}"
 msgid "⏎ otevře kartu repa s nálezy, f rovnou léčbu (opravy) vybraného repa."
 msgstr "⏎ opens the repo card with findings, f goes straight to healing (fixes) for the selected repo."
 
-#: repo_doctor/tui/helptext.py:164
+#: repo_doctor/tui/helptext.py:168
 msgid "⏎ provede vybrané až po potvrzení. Změny vzniknou jen v nové větvi."
 msgstr "⏎ applies the selected fixes only after confirmation. Changes are made only in a new branch."
 
-#: repo_doctor/tui/helptext.py:232
+#: repo_doctor/tui/helptext.py:236
 msgid "⏎ přesune vybrané do koše po potvrzení (jde vrátit)."
 msgstr "⏎ moves the selection to the trash after confirmation (recoverable)."
 
-#: repo_doctor/tui/widgets/triage.py:135
+#: repo_doctor/tui/widgets/triage.py:134
 msgid "── NÁHLED "
 msgstr "── PREVIEW "
 
-#: repo_doctor/tui/widgets/triage.py:135
+#: repo_doctor/tui/widgets/triage.py:134
 msgid "── NÁHLED · {name} "
 msgstr "── PREVIEW · {name} "
 
@@ -6909,7 +6893,7 @@ msgstr "▲ HIGH / ◆ MED / ● LOW – finding severity; the repo score is der
 msgid "◉ veřejné"
 msgstr "◉ public"
 
-#: repo_doctor/tui/screens/dashboard.py:349
+#: repo_doctor/tui/screens/dashboard.py:347
 msgid "○ bez remote"
 msgstr "○ no remote"
 
@@ -6971,7 +6955,7 @@ msgid ""
 msgstr ""
 "✓ fixable automatically\n"
 
-#: repo_doctor/tui/helptext.py:126
+#: repo_doctor/tui/helptext.py:130
 msgid "✓ u nálezu znamená, že ho umí opravit léčba (f)."
 msgstr "✓ next to a finding means healing (f) can fix it."
 
