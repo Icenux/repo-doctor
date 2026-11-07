@@ -20,10 +20,7 @@ env:
 
 jobs:
   build:
-    # Pevná verze runneru, ne ubuntu-latest: setup-python v kontejneru použije Python z cache
-    # hostitele (/__t). Na ubuntu-26.04 vyžaduje novější glibc, než má kontejner, a spadne
-    # (GLIBC_2.38 not found). Na ubuntu-24.04 build prošel (0.4.0).
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     # glibc 2.35 – sestavená aplikace poběží na Ubuntu 22.04+, Debianu 12+, Fedoře…
     container: ubuntu:22.04
     steps:
@@ -32,6 +29,12 @@ jobs:
           apt-get update -qq
           DEBIAN_FRONTEND=noninteractive apt-get install -y -qq binutils ca-certificates curl git gnupg
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      # Hostitelský runner mapuje svou cache nástrojů do kontejneru jako /__t a setup-python z ní
+      # vezme hotový Python. Ten je sestavený pro novější glibc než 2.35 z kontejneru a hned při
+      # spuštění spadne (GLIBC_2.38 not found). Bez cache hostitele setup-python stáhne build
+      # pro Ubuntu 22.04 (ověřeno na ubuntu-latest i ubuntu-24.04).
+      - name: Python z cache hostitele nejde v kontejneru spustit, smazat
+        run: rm -rf /__t/Python
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
