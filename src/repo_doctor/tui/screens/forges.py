@@ -103,7 +103,9 @@ class ForgesScreen(BaseScreen):
     def refresh_table(self) -> None:
         p = self.rd.palette
         note = Text(
-            _("Připojení je volitelné a jen pro čtení – na hostingu repo-doctor nic nemění."),
+            _(
+                "Připojení je volitelné. Sken z hostingu jen čte, zapisuje se jen PR/MR a merge z Odeslání oprav po potvrzení."
+            ),
             style=Style(color=p.muted),
         )
         self.query_one("#forges-note", Static).update(note)

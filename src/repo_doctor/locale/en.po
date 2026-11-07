@@ -139,7 +139,7 @@ msgstr ""
 "\n"
 "Get newer versions of downloaded tools with: repo-doctor tools --update"
 
-#: repo_doctor/tui/screens/forges.py:273
+#: repo_doctor/tui/screens/forges.py:275
 msgid ""
 "\n"
 "Odebrat hosting {name} ({type})?\n"
@@ -277,7 +277,7 @@ msgstr ""
 "\n"
 "This run uses folders from the command line (nothing is saved): "
 
-#: repo_doctor/tui/screens/forges.py:266
+#: repo_doctor/tui/screens/forges.py:268
 msgid ""
 "\n"
 "Token v systémové klíčence se také smaže."
@@ -1549,11 +1549,11 @@ msgstr "Host {name} cannot be used: {why}"
 msgid "Hosting {name} nemá token – PR a merge vyžadují token s právem zápisu."
 msgstr "Host {name} has no token – PRs and merges need a token with write permission."
 
-#: repo_doctor/tui/screens/forges.py:263
+#: repo_doctor/tui/screens/forges.py:265
 msgid "Hosting {name} odebrán."
 msgstr "Hosting {name} removed."
 
-#: repo_doctor/tui/screens/forges.py:220
+#: repo_doctor/tui/screens/forges.py:222
 msgid "Hosting {name} uložen. T otestuje připojení."
 msgstr "Hosting {name} saved. T tests the connection."
 
@@ -2215,11 +2215,11 @@ msgstr "Only one fix variant can be selected per check."
 msgid "Odebere nástroj stažený repo-doctorem (např. gitleaks)."
 msgstr "Removes a tool downloaded by repo-doctor (e.g. gitleaks)."
 
-#: repo_doctor/tui/screens/folders.py:195 repo_doctor/tui/screens/forges.py:276 repo_doctor/tui/screens/settings.py:545
+#: repo_doctor/tui/screens/folders.py:195 repo_doctor/tui/screens/forges.py:278 repo_doctor/tui/screens/settings.py:545
 msgid "Odebrat"
 msgstr "Remove"
 
-#: repo_doctor/tui/screens/forges.py:272
+#: repo_doctor/tui/screens/forges.py:274
 msgid "Odebrat hosting"
 msgstr "Remove hosting"
 
@@ -2766,8 +2766,8 @@ msgid "Připojené git hostingy."
 msgstr "Connected git hostings."
 
 #: repo_doctor/tui/screens/forges.py:106
-msgid "Připojení je volitelné a jen pro čtení – na hostingu repo-doctor nic nemění."
-msgstr "Connecting is optional and read-only – repo-doctor changes nothing on the hosting."
+msgid "Připojení je volitelné. Sken z hostingu jen čte, zapisuje se jen PR/MR a merge z Odeslání oprav po potvrzení."
+msgstr "Connecting is optional. The scan only reads from the host; only a PR/MR and a merge from Publishing fixes write to it, after your confirmation."
 
 #: repo_doctor/tools.py:354
 msgid "Příkaz nejde spustit: {name}"
@@ -3017,13 +3017,13 @@ msgstr "List of hidden findings (allowlist): d removes the selected item."
 msgid "Sken dokončen: {len} repozitářů, {n} nálezů."
 msgstr "Scan finished: {len} repositories, {n} findings."
 
+#: repo_doctor/tui/helptext.py:211
+msgid "Sken po spuštění a jazyk aplikace."
+msgstr "Scan on start and the language of the application."
+
 #: repo_doctor/tui/screens/settings.py:96
 msgid "Sken po spuštění aplikace"
 msgstr "Scan on application start"
-
-#: repo_doctor/tui/helptext.py:211
-msgid "Sken po spuštění, jazyk a vzhled aplikace."
-msgstr "Scan on start, language and appearance of the application."
 
 #: repo_doctor/tui/app.py:203
 msgid "Sken tajemství bude rychlejší a přesnější s gitleaks – doinstaluješ ho na obrazovce Nástroje (klávesa {key})."
@@ -4109,7 +4109,7 @@ msgstr "chmod 777 gives everyone write access."
 msgid "chore(repo-doctor): automatické opravy ({n})"
 msgstr "chore(repo-doctor): automatic fixes ({n})"
 
-#: repo_doctor/sync.py:28 repo_doctor/tui/screens/forges.py:307
+#: repo_doctor/sync.py:28 repo_doctor/tui/screens/forges.py:309
 msgid "chyba"
 msgstr "error"
 
@@ -4923,7 +4923,7 @@ msgstr "not found (404) – {short}"
 msgid "není na větvi (detached HEAD)"
 msgstr "not on a branch (detached HEAD)"
 
-#: repo_doctor/tui/screens/forges.py:132
+#: repo_doctor/tui/screens/forges.py:134
 msgid "neotestováno (T)"
 msgstr "not tested (T)"
 
@@ -5095,7 +5095,7 @@ msgstr "tool"
 msgid "nástroje"
 msgstr "tools"
 
-#: repo_doctor/tui/screens/forges.py:114 repo_doctor/tui/triage_model.py:17
+#: repo_doctor/tui/screens/forges.py:116 repo_doctor/tui/triage_model.py:17
 msgid "název"
 msgstr "name"
 
@@ -5243,7 +5243,7 @@ msgstr "open on the web"
 msgid "otevřít v editoru"
 msgstr "open in editor"
 
-#: repo_doctor/tui/screens/forges.py:117
+#: repo_doctor/tui/screens/forges.py:119
 msgid "ověřeno"
 msgstr "verified"
 
@@ -5503,7 +5503,7 @@ msgstr "pins {count} to a SHA (the original tag stays in a comment)"
 msgid "připnutí akcí na commit SHA"
 msgstr "pin actions to commit SHAs"
 
-#: repo_doctor/tui/screens/forges.py:114
+#: repo_doctor/tui/screens/forges.py:116
 msgid "připojení"
 msgstr "connection"
 
@@ -5895,7 +5895,7 @@ msgstr "pulse"
 msgid "tep "
 msgstr "pulse "
 
-#: repo_doctor/tui/screens/forges.py:130
+#: repo_doctor/tui/screens/forges.py:132
 msgid "testuji…"
 msgstr "testing…"
 
@@ -5959,7 +5959,7 @@ msgstr "delete permanently"
 msgid "trvale smaže"
 msgstr "deletes permanently"
 
-#: repo_doctor/tui/screens/detail.py:271 repo_doctor/tui/screens/forges.py:114
+#: repo_doctor/tui/screens/detail.py:271 repo_doctor/tui/screens/forges.py:116
 msgid "typ"
 msgstr "type"
 
@@ -6019,7 +6019,7 @@ msgstr "it no longer exists or it is a symlink"
 msgid "uživatel"
 msgstr "user"
 
-#: repo_doctor/tui/screens/forges.py:114
+#: repo_doctor/tui/screens/forges.py:116
 msgid "uživatel / org"
 msgstr "user / org"
 
@@ -6095,7 +6095,7 @@ msgstr "visibility"
 msgid "viditelnost repa na hostingu neznámá"
 msgstr "repo visibility on the hosting is unknown"
 
-#: repo_doctor/tui/screens/forges.py:119
+#: repo_doctor/tui/screens/forges.py:121
 msgid "vlastní CA"
 msgstr "custom CA"
 
@@ -6421,7 +6421,7 @@ msgstr "{default} is {commits} behind {upstream} (as of the last fetch; for the 
 msgid "{default} má {commits}, které nejsou na {remote}"
 msgstr "{default} has {commits} that are not on {remote}"
 
-#: repo_doctor/tui/screens/forges.py:213
+#: repo_doctor/tui/screens/forges.py:215
 msgid "{err}. Použij raději token_env nebo token_cmd."
 msgstr "{err}. Prefer token_env or token_cmd."
 
@@ -6557,7 +6557,7 @@ msgstr "{name} {version} is not in the lockfile"
 msgid "{name} {version} v lockfilu není (nebo je ve více verzích)"
 msgstr "{name} {version} is not in the lockfile (or it is present in several versions)"
 
-#: repo_doctor/tui/screens/forges.py:298
+#: repo_doctor/tui/screens/forges.py:300
 msgid "{name}: připojeno jako {user}, vidí {repo_count} repozitářů."
 msgstr "{name}: connected as {user}, sees {repo_count} repositories."
 
@@ -6853,7 +6853,7 @@ msgstr "none (no backup)"
 msgid "žádný PR/MR zatím není"
 msgstr "no PR/MR yet"
 
-#: repo_doctor/tui/screens/forges.py:156
+#: repo_doctor/tui/screens/forges.py:158
 msgid "žádný hosting – n přidá (volitelné)"
 msgstr "no hosting – n adds one (optional)"
 
@@ -6925,11 +6925,11 @@ msgstr "◐ theme"
 msgid "⚠ Ověřování TLS je vypnuté – spojení jde odposlechnout. Raději nastav vlastní CA."
 msgstr "⚠ TLS verification is off – the connection can be eavesdropped. Better set a custom CA."
 
-#: repo_doctor/tui/screens/forges.py:124
+#: repo_doctor/tui/screens/forges.py:126
 msgid "⚠ http (povoleno)"
 msgstr "⚠ http (allowed)"
 
-#: repo_doctor/tui/screens/forges.py:121
+#: repo_doctor/tui/screens/forges.py:123
 msgid "⚠ vypnuto"
 msgstr "⚠ off"
 
@@ -6971,14 +6971,14 @@ msgstr "✓ {name} ({type}): user {v}, sees {repo_count} repositories"
 msgid "✓ {path} je platná ({len} složek, {len2} hostingů)."
 msgstr "✓ {path} is valid ({len} folders, {len2} hostings)."
 
-#: repo_doctor/tui/screens/forges.py:135
+#: repo_doctor/tui/screens/forges.py:137
 msgid "✓ {v} · {repo_count} rep"
 msgstr "✓ {v} · {repo_count} repos"
 
-#: repo_doctor/tui/screens/forges.py:141
+#: repo_doctor/tui/screens/forges.py:143
 msgid "✗ chyba"
 msgstr "✗ error"
 
-#: repo_doctor/tui/screens/forges.py:126
+#: repo_doctor/tui/screens/forges.py:128
 msgid "✗ http"
 msgstr "✗ http"
