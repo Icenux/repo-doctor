@@ -4,8 +4,6 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
-## [0.4.2] – 2026-11-07
-
 ### Přidáno
 - **Balíček pro Arch Linux:** vydání nově obsahuje `repo-doctor-VERZE-1-x86_64.pkg.tar.zst` pro pacman repozitář
   Icenux (`https://icenux.github.io/icenux/arch/$arch`). Instalace i aktualizace běží přes `pacman`; AUR
