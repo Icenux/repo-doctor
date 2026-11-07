@@ -537,6 +537,8 @@ fetch = false             # true = the scheduled scan first fetches news (git fe
 
 [mcp]
 network = false           # true = the MCP scan may also run network checks (OSV, hosts)
+restrict_to_roots = true  # false = tools may also scan repos outside the watched folders
+writes = []               # enabled write tools: "fix_branch" | "allowlist" | "sync" | "publish"
 
 [updates]
 check = true              # once a day the TUI checks GitHub Releases for a new version
@@ -628,7 +630,7 @@ the `o` key.
 
 - The scan (TUI, `repo-doctor scan`, scheduled scan), the repo card, reports, `repo-doctor sbom`
   (writes only the SBOM file you ask for), `repo-doctor guard`, the `clean`/`sync` previews
-  (`--dry-run`) and the **MCP server** (no tool fixes, fetches or clones anything).
+  (`--dry-run`) and the **MCP server** (by default no MCP tool fixes, fetches or clones anything; writes are opt-in, see below).
 - `--fetch`, `F` and `f` in Sync update only remote-tracking refs, and only on request.
 - Tool installation is run only by the distribution's package manager, visibly in the terminal and after
   confirmation. A `gitleaks` downloaded outside the distribution is accepted only with the SHA-256 recorded in repo-doctor.
@@ -693,10 +695,15 @@ repo-doctor schedule status | remove | test   # test sends a test notification
 ## MCP server for AI assistants
 
 `repo-doctor mcp` starts an [MCP](https://modelcontextprotocol.io) server over stdio, so
-Claude (or another client) can ask about the state of your repositories. The server is **read-only**:
-it fixes, fetches and clones nothing and by default doesn't even use the network (the scan is
-offline; network checks are enabled by `[mcp] network = true`). Secrets and e-mails are masked
-the same way as in reports.
+Claude (or another client) can ask about the state of your repositories. By default the server is
+**read-only**: it fixes, fetches and clones nothing and doesn't even use the network (the scan is
+offline; network checks are enabled by `[mcp] network = true`). It only sees repositories under your
+watched folders (`[mcp] restrict_to_roots = true`). Secrets and e-mails are masked the same way as
+in reports and this can't be turned off.
+
+The client starts `repo-doctor mcp` itself – you set what it may do in **Settings (4) → MCP server**
+(or in `[mcp]` in `config.toml`); the same screen copies the connection command for you. A change
+applies the next time the client starts the server.
 
 ```sh
 claude mcp add repo-doctor -- repo-doctor mcp          # Claude Code
@@ -711,6 +718,20 @@ Claude Desktop (`claude_desktop_config.json`):
 Tools: `list_repos` (filter by folder, state and score), `repo_status`, `repo_findings`,
 `search_findings`, `last_scan_summary`, `scan` (an offline scan of all repos or one, with a time
 limit) and `explain_check`. Outputs are structured and paginated (`offset`, `limit` ≤ 100).
+
+### Writes (off by default)
+
+Each write is enabled separately in `[mcp] writes` (or Settings). A tool whose write is disabled isn't
+registered at all, so the client doesn't even see it. Without `confirm=true` every write tool only
+returns a preview (diff or plan); writes never touch repositories outside the watched folders, never
+force-push, never merge and never touch uncommitted work.
+
+| `writes` | Tool | What it does |
+| --- | --- | --- |
+| `fix_branch` | `fix_branch` | Applies fixes into a new `repo-doctor/fixes-<date>` branch (like healing in the TUI); nothing is pushed. |
+| `allowlist` | `allowlist_add` | Hides one non-security finding by adding it to the allowlist in `config.toml`; the repo is untouched. Security findings (secrets) can only be allowlisted in the app. |
+| `sync` | `sync_ff` | Fast-forwards a clean, behind repo to what is already fetched (`git merge --ff-only`). |
+| `publish` | `publish_fix` | Pushes the fix branch (after the secret check) and opens a PR/MR. Uses the network and the forge token; never merges. |
 
 ## Use in CI
 

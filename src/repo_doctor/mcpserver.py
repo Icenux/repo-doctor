@@ -19,7 +19,7 @@ from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel, Field
 
-from repo_doctor import __version__, checkdocs, fixes, history, paths, publish, sync
+from repo_doctor import __version__, checkdocs, fixes, history, paths, publish, secrets_scan, sync
 from repo_doctor.checks import all_checks
 from repo_doctor.checks.base import RepoContext
 from repo_doctor.config import (
@@ -44,6 +44,22 @@ MAX_LIMIT = 100
 MAX_TEXT = 500
 MAX_PREVIEW = 8000
 StateFilter = Literal["all", "problems", "clean", "dirty", "unpushed", "unchecked"]
+
+
+def _safe_diff(diff: str) -> str:
+    """Náhled změn pro klienta: řádky, které vypadají jako tajemství (i kontextové), se schovají.
+
+    `redact` zná jen hodnoty, které už scanner našel; diff ale nese i okolní řádky souboru."""
+    out: list[str] = []
+    for line in diff.splitlines():
+        body = line[1:] if line[:1] in "+- " else line
+        if not line.startswith(("---", "+++", "@@")) and next(
+            secrets_scan.scan_line(body, "x.env", 0), None
+        ):
+            out.append(f"{line[:1]}[line hidden: possible secret]")
+        else:
+            out.append(line)
+    return "\n".join(out)
 
 
 def _text(value: str | None, limit: int = MAX_TEXT) -> str:
@@ -470,7 +486,7 @@ class RepoDoctorTools:
         if not selected:
             raise ValueError("No automatically fixable findings match (see `repo_findings`).")
         ids = ", ".join(p.check_id for p in selected)
-        preview = _text("\n".join(fixes.render_diff(p) for p in selected), MAX_PREVIEW)
+        preview = _text(_safe_diff("".join(fixes.render_diff(p) for p in selected)), MAX_PREVIEW)
         if not confirm:
             return WriteOut(
                 action="fix_branch",
@@ -497,6 +513,12 @@ class RepoDoctorTools:
         finding = next((f for f in r.findings if f.fingerprint(r.name) == fingerprint), None)
         if finding is None:
             raise ValueError("Unknown fingerprint – take it from `repo_findings`.")
+        if finding.category is Category.SECURITY:
+            # allowlist umlčí i pre-push hlídače, takže by šel řetězem obejít (allowlist → publish)
+            raise ValueError(
+                "Security findings can't be allowlisted over MCP – the user decides that "
+                "in the repo-doctor app (finding card, key a)."
+            )
         reason = _text(reason.strip(), 200)
         if not reason:
             raise ValueError("A reason is required.")
@@ -507,8 +529,12 @@ class RepoDoctorTools:
             )
         store = self._store or ConfigStore()
         try:
-            if self._store is None:
-                store.load()
+            # vždy znovu z disku: TUI nebo editor mohl config.toml mezitím změnit (a zápisy vypnout)
+            fresh = store.load()
+            if "allowlist" not in fresh.mcp.writes:
+                raise ValueError(
+                    "The write action 'allowlist' was disabled in the meantime (Settings → MCP)."
+                )
             saved = store.add_allow(
                 AllowEntry(hash=fingerprint, reason=reason, check=finding.check_id, repo=r.name)
             )
@@ -756,7 +782,11 @@ def build_server(tools: RepoDoctorTools) -> MCPServer:
 
     if "sync" in writes:
 
-        @server.tool(annotations=wr)
+        @server.tool(
+            annotations=ToolAnnotations(
+                readOnlyHint=False, destructiveHint=True, openWorldHint=False
+            )
+        )
         def sync_ff(repo: str, confirm: bool = False) -> WriteOut:
             """WRITE. Fast-forward a clean, behind repository to its upstream
             (`git merge --ff-only`; never a merge commit, rebase, reset or push). It does

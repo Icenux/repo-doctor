@@ -14,8 +14,8 @@ from textual.widgets.selection_list import Selection
 
 from repo_doctor import schedule
 from repo_doctor.checks import all_checks
-from repo_doctor.config import ConfigError, LimitsConfig
-from repo_doctor.i18n import _
+from repo_doctor.config import MCP_WRITES, ConfigError, LimitsConfig
+from repo_doctor.i18n import N_, _
 from repo_doctor.tui.bindings import bindings
 from repo_doctor.tui.screens.base import BaseScreen
 from repo_doctor.tui.screens.dialogs import ConfirmDialog
@@ -44,6 +44,18 @@ LIMIT_LABELS: dict[str, str] = {
     "max_file_kb": _("max. soubor pro sken tajemství (KB)"),
 }
 FLOAT_LIMITS = {"large_file_mb", "history_timeout_s", "git_timeout_s"}
+
+# MCP: zápisy, které jde asistentovi povolit (klíče z `config.MCP_WRITES`), a hotová připojení.
+MCP_WRITE_LABELS: dict[str, str] = {
+    "fix_branch": N_("opravná větev (fix_branch) – nic se nepushne"),
+    "allowlist": N_("výjimka do allowlistu (allowlist_add)"),
+    "sync": N_("dohnat repo fast-forwardem (sync_ff)"),
+    "publish": N_("push opravné větve a PR/MR (publish_fix) – použije síť"),
+}
+MCP_CLAUDE_CODE = "claude mcp add repo-doctor -- repo-doctor mcp"
+MCP_CLAUDE_DESKTOP = (
+    '{ "mcpServers": { "repo-doctor": { "command": "repo-doctor", "args": ["mcp"] } } }'
+)
 
 
 class SettingsScreen(BaseScreen):
@@ -204,6 +216,56 @@ class SettingsScreen(BaseScreen):
                 value=", ".join(cfg.allow_http_hosts),
                 placeholder="git.tailnet-name.ts.net, 100.64.0.0/10",
                 id="allow_http_hosts",
+            )
+            yield Label(_("MCP server pro AI asistenty"))
+            yield Static(
+                _(
+                    "Asistent (Claude Code, Claude Desktop…) si `repo-doctor mcp` spouští sám – tady jen nastavíš, "
+                    "co smí. Změna platí od příštího spuštění serveru (v klientovi ho restartuj)."
+                ),
+                classes="hint",
+            )
+            yield Select(
+                compact=True,
+                options=[
+                    (_("jen offline (výchozí)"), "off"),
+                    (_("i síťové kontroly (OSV, hostingy)"), "on"),
+                ],
+                value="on" if cfg.mcp.network else "off",
+                allow_blank=False,
+                id="mcp_network",
+            )
+            yield Select(
+                compact=True,
+                options=[
+                    (_("jen repa ve sledovaných složkách (výchozí)"), "on"),
+                    (_("i jiná repa podle cesty"), "off"),
+                ],
+                value="on" if cfg.mcp.restrict_to_roots else "off",
+                allow_blank=False,
+                id="mcp_restrict",
+            )
+            yield Static(
+                _(
+                    "Výchozí stav je jen čtení. Zapnutý zápis asistent nejdřív jen ukáže náhled a provede ho až "
+                    "s potvrzením; nikdy nepoužije force, nemerguje a zapisuje jen do sledovaných složek. "
+                    "Tajemství a e-maily jsou ve výstupu vždy maskované."
+                ),
+                classes="hint",
+            )
+            mcp_writes: list[Selection[str]] = [
+                Selection(_(MCP_WRITE_LABELS[w]), w, w in cfg.mcp.writes) for w in MCP_WRITES
+            ]
+            yield SelectionList[str](*mcp_writes, id="mcp_writes")
+            with Horizontal(classes="row"):
+                yield Button(
+                    _("Kopírovat příkaz pro Claude Code"), id="mcp-copy-code", compact=True
+                )
+                yield Button(
+                    _("Kopírovat JSON pro Claude Desktop"), id="mcp-copy-desktop", compact=True
+                )
+            yield Static(
+                f"{MCP_CLAUDE_CODE}\n{MCP_CLAUDE_DESKTOP}", classes="hint", id="mcp-snippets"
             )
             yield Label(_("Volitelné nástroje"))
             yield Static(
@@ -398,6 +460,10 @@ class SettingsScreen(BaseScreen):
             new = None if value == EDITOR_AUTO else str(value)
             if new != self.rd.config.ui.editor and self._save(store.set_value, "ui", "editor", new):
                 self._show_editor()
+        elif wid == "mcp_network" and (value == "on") != self.rd.config.mcp.network:
+            self._save(store.set_value, "mcp", "network", value == "on")
+        elif wid == "mcp_restrict" and (value == "on") != self.rd.config.mcp.restrict_to_roots:
+            self._save(store.set_value, "mcp", "restrict_to_roots", value == "on")
         elif wid == "fail_on" and value != self.rd.config.checks.fail_on.value:
             self._save(store.set_value, "checks", "fail_on", value)
         elif wid == "license" and value != self.rd.config.license:
@@ -434,6 +500,23 @@ class SettingsScreen(BaseScreen):
         disabled = sorted(c.id for c in all_checks() if c.id not in enabled)
         if disabled != sorted(self.rd.config.checks.disabled):
             self._save(self.rd.store.set_value, "checks", "disabled", disabled or None)
+
+    @on(SelectionList.SelectedChanged, "#mcp_writes")
+    def _mcp_writes(self, event: SelectionList.SelectedChanged[str]) -> None:
+        enabled = set(event.selection_list.selected)
+        writes = [w for w in MCP_WRITES if w in enabled]
+        if writes != list(self.rd.config.mcp.writes):
+            self._save(self.rd.store.set_value, "mcp", "writes", writes or None)
+
+    @on(Button.Pressed, "#mcp-copy-code")
+    def _mcp_copy_code(self) -> None:
+        self.app.copy_to_clipboard(MCP_CLAUDE_CODE)  # OSC 52
+        self.notify(_("Příkaz zkopírován – vlož ho do terminálu."))
+
+    @on(Button.Pressed, "#mcp-copy-desktop")
+    def _mcp_copy_desktop(self) -> None:
+        self.app.copy_to_clipboard(MCP_CLAUDE_DESKTOP)
+        self.notify(_("JSON zkopírován – vlož ho do claude_desktop_config.json."))
 
     def action_settings_allow_remove(self) -> None:
         table = self.query_one("#allowlist", DataTable)

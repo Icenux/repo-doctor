@@ -695,6 +695,35 @@ async def test_settings(tmp_path: Path) -> None:
     assert cfg.allowlist == []
 
 
+async def test_settings_mcp(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    app = make_app(tmp_path)
+    copied: list[str] = []
+    monkeypatch.setattr(app, "copy_to_clipboard", copied.append)
+    async with app.run_test(size=(100, 40)) as pilot:
+        await pilot.pause()
+        await pilot.press("4")
+        await pilot.pause()
+        screen = app.screen
+        assert app.config.mcp.restrict_to_roots and app.config.mcp.writes == []
+        screen.query_one("#mcp_network").value = "on"  # type: ignore[attr-defined]
+        screen.query_one("#mcp_restrict").value = "off"  # type: ignore[attr-defined]
+        writes = screen.query_one("#mcp_writes")
+        writes.select("sync")  # type: ignore[attr-defined]
+        writes.select("allowlist")  # type: ignore[attr-defined]
+        await pilot.pause()
+        assert app.config.mcp.writes == ["allowlist", "sync"]
+        screen.query_one("#mcp-copy-code").press()  # type: ignore[attr-defined]
+        screen.query_one("#mcp-copy-desktop").press()  # type: ignore[attr-defined]
+        await pilot.pause()
+        writes.deselect("sync")  # type: ignore[attr-defined]
+        await pilot.pause()
+    cfg = ConfigStore(tmp_path / "config.toml").load()
+    assert cfg.mcp.network is True and cfg.mcp.restrict_to_roots is False
+    assert cfg.mcp.writes == ["allowlist"]
+    assert copied[0] == "claude mcp add repo-doctor -- repo-doctor mcp"
+    assert '"command": "repo-doctor"' in copied[1]
+
+
 @respx.mock
 @pytest.mark.usefixtures("allow_file")
 async def test_remote_repos_and_clone(tmp_path: Path) -> None:

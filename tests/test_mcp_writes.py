@@ -122,7 +122,7 @@ async def test_only_enabled_write_tools_are_registered(tmp_path: Path) -> None:
         for t in listed:
             assert t.annotations is not None
             assert t.annotations.read_only_hint is (t.name in READ_TOOLS)
-            assert t.annotations.destructive_hint is False
+            assert t.annotations.destructive_hint is (t.name == "sync_ff")
 
 
 # ----------------------------------------------------------------- fix_branch
@@ -171,40 +171,86 @@ def test_writes_never_touch_repos_outside_roots(tmp_path: Path) -> None:
 
 
 # ----------------------------------------------------------------- allowlist_add
+def allowlist_tools(tmp_path: Path, root: Path, writes: str = '["allowlist"]') -> RepoDoctorTools:
+    store = ConfigStore(tmp_path / "cfg" / "config.toml")
+    store.path.parent.mkdir()
+    store.path.write_text(f"[mcp]\nwrites = {writes}\n", "utf-8")
+    tools = make_tools(root, writes=["allowlist"])
+    tools._store = store
+    return scanned(tools)
+
+
 def test_allowlist_add_previews_then_writes_config(tmp_path: Path) -> None:
     root = tmp_path / "projekty"
     env_repo(root)
-    store = ConfigStore(tmp_path / "cfg" / "config.toml")
-    store.path.parent.mkdir()
-    store.load()
-    tools = make_tools(root, writes=["allowlist"])
-    tools._store = store
-    scanned(tools)
-    finding = next(
-        f for f in tools.repo_findings("pokus").findings if f.check_id == "env-committed"
-    )
+    tools = allowlist_tools(tmp_path, root)
+    store = tools._store
+    assert store is not None
+    finding = next(f for f in tools.repo_findings("pokus").findings if f.check_id == "ci-missing")
     assert len(finding.fingerprint) == 16
+    before = store.path.read_text("utf-8")
 
     preview = tools.allowlist_add("pokus", finding.fingerprint, "testovací hodnota")
-    assert preview.applied is False and not store.path.exists()
+    assert preview.applied is False and store.path.read_text("utf-8") == before
 
     done = tools.allowlist_add("pokus", finding.fingerprint, "testovací hodnota", confirm=True)
     assert done.applied is True
     text = store.path.read_text("utf-8")
-    assert finding.fingerprint in text and "testovací hodnota" in text
+    assert finding.fingerprint in text and "testovací hodnota" in text and "writes" in text
     assert [a.hash for a in tools.config.allowlist] == [finding.fingerprint]
-    assert all(f.check_id != "env-committed" for f in tools.repo_findings("pokus").findings)
+    assert all(f.check_id != "ci-missing" for f in tools.repo_findings("pokus").findings)
 
 
 def test_allowlist_add_validates_input(tmp_path: Path) -> None:
     root = tmp_path / "projekty"
     env_repo(root)
-    tools = scanned(make_tools(root, writes=["allowlist"]))
+    tools = allowlist_tools(tmp_path, root)
     with pytest.raises(ValueError, match="Unknown fingerprint"):
         tools.allowlist_add("pokus", "0" * 16, "x", confirm=True)
-    fp = tools.repo_findings("pokus").findings[0].fingerprint
+    fp = next(f for f in tools.repo_findings("pokus").findings if f.category == "maintenance")
     with pytest.raises(ValueError, match="reason is required"):
-        tools.allowlist_add("pokus", fp, "   ", confirm=True)
+        tools.allowlist_add("pokus", fp.fingerprint, "   ", confirm=True)
+
+
+def test_allowlist_add_refuses_security_findings(tmp_path: Path) -> None:
+    """Jinak by šel řetěz allowlist → publish_fix obejít pre-push hlídače tajemství."""
+    root = tmp_path / "projekty"
+    env_repo(root)
+    tools = allowlist_tools(tmp_path, root)
+    secret = next(f for f in tools.repo_findings("pokus").findings if f.category == "security")
+    with pytest.raises(ValueError, match="Security findings"):
+        tools.allowlist_add("pokus", secret.fingerprint, "ať to zmizí", confirm=True)
+    assert tools.config.allowlist == []
+
+
+def test_allowlist_add_rereads_config_and_respects_disabled_write(tmp_path: Path) -> None:
+    root = tmp_path / "projekty"
+    env_repo(root)
+    tools = allowlist_tools(tmp_path, root)
+    store = tools._store
+    assert store is not None
+    fp = next(f for f in tools.repo_findings("pokus").findings if f.check_id == "ci-missing")
+    # uživatel mezitím v Nastavení zápis vypnul a přidal jinou volbu
+    store.path.write_text('[ui]\neditor = "nvim"\n', "utf-8")
+    with pytest.raises(ValueError, match="disabled in the meantime"):
+        tools.allowlist_add("pokus", fp.fingerprint, "x", confirm=True)
+    # a když zůstal zapnutý, zápis nepřepíše změny z disku
+    store.path.write_text('[mcp]\nwrites = ["allowlist"]\n[ui]\neditor = "nvim"\n', "utf-8")
+    tools.allowlist_add("pokus", fp.fingerprint, "x", confirm=True)
+    assert 'editor = "nvim"' in store.path.read_text("utf-8")
+
+
+def test_preview_diff_hides_secret_looking_lines() -> None:
+    from repo_doctor.mcpserver import _safe_diff
+
+    secret = fx.fake_aws_key(3)
+    diff = (
+        "--- a/Dockerfile\n+++ b/Dockerfile\n@@ -1,3 +1,3 @@\n"
+        f" ENV AWS_ACCESS_KEY_ID={secret}\n-USER root\n+USER app\n"
+    )
+    out = _safe_diff(diff)
+    assert secret not in out and "possible secret" in out
+    assert "+USER app" in out and "--- a/Dockerfile" in out
 
 
 # ----------------------------------------------------------------- sync_ff

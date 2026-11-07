@@ -200,6 +200,33 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
 - **Podpříkazy CLI** se zjišťují z registru typeru (`subcommands()`), ne z ručního seznamu –
   nový příkaz (`mcp`) by jinak skončil v TUI větvi a stdio server by vypsal nápovědu.
 
+## MCP: rozsah a zápisy (#38)
+
+- **Výchozí stav zůstává jen čtení.** Zápisy jsou čtyři a zapínají se po jednom v `[mcp] writes`
+  (Nastavení → MCP server): `fix_branch`, `allowlist`, `sync`, `publish`. Vypnutý zápis se vůbec
+  neregistruje (klient ho nevidí) a `RepoDoctorTools` ho navíc odmítne, i kdyby ho někdo zavolal přímo.
+- **Náhled a potvrzení v MCP:** každý zápisový nástroj má `confirm=false` = jen náhled (diff, plán,
+  commity k odeslání); provede se až s `confirm=true`. Odpovídá zásadě „výchozí je Zrušit“ z TUI;
+  potvrzuje navíc klient při schválení nástroje.
+- **Zápis jen do sledovaných složek,** vždy, i při `restrict_to_roots = false`. `restrict_to_roots`
+  (výchozí zapnuto) omezuje čtení: `scan` s cestou mimo složky se odmítne a repa mimo složky se
+  skryjí ve výpisech. Dřívější `scan(repo=<libovolná cesta s .git>)` byla mezera.
+- **Nad stávajícím jádrem, žádná nová logika:** `fixes.plan/apply` (jen nová větev), `store.add_allow`,
+  `sync.fast_forward` (bez fetch, takže dožene jen to, co už je staženo), `publish.plan_push/apply_push`
+  + `plan_pr/apply_pr`. Merge přes MCP není (ani lokální, ani na hostingu). Selže-li PR po úspěšném
+  pushi, nástroj to hlásí otevřeně (`applied=true`, zpráva).
+- **Maskování je pevné,** nedá se vypnout. `allowlist_add` bere otisk z `repo_findings` (`fingerprint`).
+  Náhled diffu z `fix_branch` navíc schová řádky, které vypadají jako tajemství (i kontextové): `redact`
+  zná jen hodnoty, které scanner už našel.
+- **`allowlist_add` odmítne nálezy kategorie security.** Allowlist umlčí i pre-push hlídače, takže by šel
+  řetězem `allowlist_add` → `publish_fix` obejít kontrolu tajemství. O výjimce pro bezpečnostní nález
+  rozhoduje člověk v aplikaci. Při zápisu se `config.toml` načte znovu z disku (TUI mezitím mohl soubor
+  změnit nebo zápis vypnout) a zápis se jinak odmítne.
+- **Potvrzení není vázané tokenem na náhled:** model by náhled i potvrzení zavolal sám, takže token nic
+  nechrání. Skutečnou bránou je schválení nástroje v klientovi; `sync_ff` má navíc `destructiveHint`
+  (mění pracovní strom).
+- **Mimo #38:** širší rozsah po přidání správy Git repozitářů řeší #96.
+
 ## Pre-push hlídač (0.2.0)
 
 - **Dva směry hooků:** repo-doctor při *svých* voláních gitu hooky nikdy nespouští
