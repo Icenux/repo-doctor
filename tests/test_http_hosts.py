@@ -163,7 +163,7 @@ def test_fetch_over_http_refused_without_allowlist(
     assert server.requests == []  # nic neodešlo
     msg = explain_ssh_error(exc.value.stderr)
     assert msg is not None and "nepovolený protokol http" in msg
-    assert "přidej ho do `allow_http_hosts`" in msg
+    assert "allow_http_hosts" in msg and "bez portu a bez http://" in msg
 
 
 def test_second_remote_on_other_host_disables_http(
@@ -282,6 +282,11 @@ def test_insecure_forge_is_unavailable(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("TEST_FORGE_TOKEN", "tok-" + "x" * 20)
     fc = _forgejo("http://git.tailnet.ts.net:3000")
     assert insecure_reason(fc) is not None
+    # návod nese klávesu z keymapu a hodnotu k vložení (#68), bez klávesy odkazuje na config.toml
+    with_key = insecure_reason(fc, "4")
+    assert with_key is not None and "v Nastavení (klávesa 4)" in with_key
+    assert "host git.tailnet.ts.net" in with_key and "git.tailnet.ts.net:3000" not in with_key
+    assert "v Nastavení nebo v config.toml" in (insecure_reason(fc) or "")
     mgr = ForgeManager.from_config(Config(forges=[fc]))
     assert "allow_http_hosts" in mgr.unavailable["domaci"]
     netpolicy.configure(["*.ts.net"])
@@ -393,6 +398,7 @@ async def test_wizard_offers_http_allow_with_risk_explanation(tmp_path: Path) ->
 
 
 async def test_forges_screen_rejects_unlisted_http_and_notes_allowed(tmp_path: Path) -> None:
+    from repo_doctor.tui.screens.dialogs import ConfirmDialog
     from repo_doctor.tui.screens.forms import ForgeDialog
     from tests.tui_helpers import make_app
 
@@ -409,10 +415,18 @@ async def test_forges_screen_rejects_unlisted_http_and_notes_allowed(tmp_path: P
         await pilot.pause()
         dialog.action_save()
         await pilot.pause()
-        assert app.screen is dialog  # neuloženo
-        assert "allow_http_hosts" in str(dialog.query_one("#error").render())
+        assert isinstance(app.screen, ConfirmDialog)  # i tady nabídka povolit host (#68)
+        await pilot.press("enter")  # výchozí volba je Zrušit
+        await pilot.pause()
+        assert app.screen_stack[-1] is dialog  # neuloženo
+        error = str(dialog.query_one("#error").render())
+        # návod: kde (klávesa z keymapu), jak se pole jmenuje v UI i v configu a co vložit
+        assert "allow_http_hosts" in error and "Hosty s povoleným nešifrovaným http" in error
+        assert f"(klávesa {app.key('screen_settings')})" in error
+        assert "host git.tailnet.ts.net" in error and "bez portu" in error
         await pilot.press("escape")
     assert app.config.forges == []
+    assert app.config.allow_http_hosts == []
 
     cfg = (
         'allow_http_hosts = ["*.ts.net"]\n'
@@ -425,6 +439,39 @@ async def test_forges_screen_rejects_unlisted_http_and_notes_allowed(tmp_path: P
         await pilot.pause()
         detail = str(app.screen.query_one("#forge-detail").render())
         assert "nešifrované spojení, povoleno v allow_http_hosts" in detail
+
+
+async def test_forges_screen_add_dialog_allows_http_host_after_confirmation(
+    tmp_path: Path,
+) -> None:
+    from repo_doctor.config import ConfigStore
+    from repo_doctor.tui.screens.dialogs import ConfirmDialog
+    from repo_doctor.tui.screens.forms import ForgeDialog
+    from tests.tui_helpers import make_app
+
+    app = make_app(tmp_path, config="")
+    async with app.run_test(size=(140, 40)) as pilot:
+        await pilot.pause()
+        await pilot.press("2")
+        await pilot.press("n")
+        await pilot.pause()
+        dialog = app.screen
+        assert isinstance(dialog, ForgeDialog)
+        dialog.query_one("#type").value = "forgejo"  # type: ignore[attr-defined]
+        dialog.query_one("#name").value = "domaci"  # type: ignore[attr-defined]
+        dialog.query_one("#url").value = "http://100.101.102.103:3000"  # type: ignore[attr-defined]
+        await pilot.pause()
+        dialog.action_save()
+        await pilot.pause()
+        assert isinstance(app.screen, ConfirmDialog)
+        await pilot.press("tab", "enter")  # Povolit http pro tento host
+        await pilot.pause()
+        assert not isinstance(app.screen, ForgeDialog)
+    assert app.config.allow_http_hosts == ["100.101.102.103"]  # jen host, bez portu
+    assert [f.name for f in app.config.forges] == ["domaci"]
+    assert netpolicy.policy().allows_host("100.101.102.103")
+    cfg = ConfigStore(tmp_path / "config.toml").load()
+    assert cfg.allow_http_hosts == ["100.101.102.103"]
 
 
 async def test_settings_validates_allow_http_hosts(tmp_path: Path) -> None:

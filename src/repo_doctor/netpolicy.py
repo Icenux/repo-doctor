@@ -197,3 +197,21 @@ def http_allowed_for(urls: Iterable[str]) -> bool:
     pol = policy()
     http_urls = [u for u in urls if is_http(u)]
     return bool(http_urls) and all(pol.allows_http_url(u) for u in http_urls)
+
+
+def http_allow_advice(host: str | None = None, settings_key: str | None = None) -> str:
+    """Jednotný návod, jak povolit nešifrovaný http pro host (hlášky `insecure_reason` a SSH/git).
+
+    `host` je hodnota k vložení (bez portu a bez `http://`), `settings_key` klávesa obrazovky
+    Nastavení z keymapu (CLI ji nezná, pak se odkazuje na `config.toml`).
+    """
+    what = _("host {host}").format(host=host) if host else _("jeho host")
+    where = (
+        _("v Nastavení (klávesa {key})").format(key=settings_key)
+        if settings_key
+        else _("v Nastavení nebo v config.toml")
+    )
+    return _(
+        "Pokud je server v důvěryhodné síti (Tailscale), přidej {what} do pole „Hosty s povoleným "
+        "nešifrovaným http“ (allow_http_hosts) {where}. Zadej jen host, bez portu a bez http://."
+    ).format(what=what, where=where)

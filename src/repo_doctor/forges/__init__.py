@@ -31,17 +31,22 @@ __all__ = [
 HTTP_NOTE = N_("nešifrované spojení, povoleno v allow_http_hosts")
 
 
-def insecure_reason(config: ForgeConfig) -> str | None:
-    """Chyba pro hosting s `http://` URL, jehož host není v `allow_http_hosts` (jinak None)."""
+def insecure_reason(config: ForgeConfig, settings_key: str | None = None) -> str | None:
+    """Chyba pro hosting s `http://` URL, jehož host není v `allow_http_hosts` (jinak None).
+
+    `settings_key` je klávesa obrazovky Nastavení z keymapu (TUI ji dosadí do návodu).
+    """
+    from urllib.parse import urlsplit
+
     from repo_doctor import netpolicy
 
     url = config.base_url
     if not netpolicy.is_http(url) or netpolicy.policy().allows_http_url(url):
         return None
-    return _(
-        "URL instance používá nešifrovaný http:// – token by šel po síti v otevřené podobě. "
-        "Pokud je server v důvěryhodné síti (Tailscale), přidej jeho host do allow_http_hosts "
-        "(Nastavení, 7)."
+    return (
+        _("URL instance používá nešifrovaný http:// – token by šel po síti v otevřené podobě.")
+        + " "
+        + netpolicy.http_allow_advice(urlsplit(url).hostname, settings_key)
     )
 
 

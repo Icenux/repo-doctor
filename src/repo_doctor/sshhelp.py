@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 from repo_doctor.forges.urls import parse_remote
 from repo_doctor.i18n import N_, _
 from repo_doctor.masking import redact
+from repo_doctor.netpolicy import http_allow_advice
 
 if TYPE_CHECKING:
     from repo_doctor.config import ForgeConfig
@@ -32,9 +33,6 @@ _SAFE_USER = re.compile(r"^[A-Za-z0-9._-]{1,32}$")
 PUBLICKEY_MSG = N_(
     "Server odmítl SSH klíč. Zkontroluj, že je klíč přidaný v účtu na hostingu, "
     "případně `core.sshCommand` / `~/.ssh/config`."
-)
-HTTP_ADVICE = N_(
-    " Pokud je server v důvěryhodné síti (Tailscale), přidej ho do `allow_http_hosts`."
 )
 UNREACHABLE_MSG = N_("Server není dostupný (síť, VPN/Tailscale, port).")
 
@@ -62,7 +60,9 @@ def explain_ssh_error(stderr: str, url: str | None = None) -> str | None:
             "Remote používá nepovolený protokol {protocol}, repo-doctor ho z bezpečnostních důvodů nefetchuje (povolené jsou https a ssh)."
         ).format(protocol=m.group(1))
         if m.group(1) == "http":
-            msg += _(HTTP_ADVICE)
+            remote = parse_remote(url) if url else None
+            host = remote.host if remote and remote.host and _SAFE_HOST.match(remote.host) else None
+            msg += " " + http_allow_advice(host)
         return msg
     if _HOST_KEY.search(stderr):
         return _(

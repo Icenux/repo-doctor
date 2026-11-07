@@ -4,11 +4,6 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
-### Opraveno
-- **Falešné nálezy tajemství u testovacích hodnot (#90):** filtr „zjevně vymyšlená hodnota“ už nezřeďuje
-  řadu znaků pevným prefixem klíče. Hodnoty typu `sk-ant-api03-AbCdEfGh…`, `glpat-AbCd…` či
-  `xoxb-1234567890-abcdefghij` v testech se proto přestanou hlásit jako tajemství.
-
 ### Změněno
 - **UI (#89):** jediné téma s černým pozadím a zelenými (`#00aa00`) obrysy a texty; zrušen přepínač
   světlého/tmavého tématu (`t`) i volba Vzhled v Nastavení. Přehled už při návratu do okna nešedne.
@@ -43,6 +38,16 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
   obnovuje, `ctrl+r` ji načte hned, `w` otevře PR/MR na webu a `⏎` na řádku CI detail kontroly.
 
 ### Opraveno
+- **Nápověda k `allow_http_hosts` (#68):** hláška u `http://` hostingu už neposílá na neexistující „Nastavení, 7“,
+  ale uvádí klávesu Nastavení z aktuálního mapování, název pole „Hosty s povoleným nešifrovaným http
+  (allow_http_hosts)“ a hodnotu k vložení (jen host, bez portu a bez `http://`). Stejný text používá i chyba
+  gitu u `http://` remotu. Dialogy *Přidat hosting* a *Upravit hosting* na obrazovce Hostingy nově nabídnou
+  povolení http pro host na místě (dřív jen průvodce). Pole v Nastavení nese `allow_http_hosts` a příklad s IP.
+- **Dialog sledované složky (závod při hledání návrhu hloubky):** pozdní výsledek pro rozepsanou cestu už
+  nepřepíše návrh hloubky pro cestu celou (na pomalém běhu CI padal `test_folders_crud`).
+- **Falešné nálezy tajemství u testovacích hodnot (#90):** filtr „zjevně vymyšlená hodnota“ už nezřeďuje
+  řadu znaků pevným prefixem klíče. Hodnoty typu `sk-ant-api03-AbCdEfGh…`, `glpat-AbCd…` či
+  `xoxb-1234567890-abcdefghij` v testech se proto přestanou hlásit jako tajemství.
 - **Bez `uv` ve vývoji, CI i vydání (#86):** zámky jsou `requirements-dev.txt` a `requirements-build.txt` s hashi
   (`pip install --require-hashes`), CI a sestavení běží přes `pip`, `uv.lock` je pryč. `dev` a `build` jsou
   `[project.optional-dependencies]`. Šablona CI pro Python generuje `pip` místo `uv`. Podpora `uv.lock`

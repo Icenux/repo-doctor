@@ -43,12 +43,14 @@ SOURCE_LABELS = {
 
 
 async def test_forge(
-    config: ForgeConfig, transport: httpx.AsyncBaseTransport | None = None
+    config: ForgeConfig,
+    transport: httpx.AsyncBaseTransport | None = None,
+    settings_key: str | None = None,
 ) -> ConnectionReport:
     """Otestuje připojení (token se řeší ve vlákně, protože může spouštět příkaz)."""
     import asyncio
 
-    if reason := insecure_reason(config):
+    if reason := insecure_reason(config, settings_key):
         return ConnectionReport(False, error=reason)
     try:
         token = await asyncio.to_thread(resolve_token, config)
@@ -169,7 +171,7 @@ class ForgesScreen(BaseScreen):
         if idx is not None:
             f = self.rd.config.forges[idx]
             if netpolicy.is_http(f.base_url):
-                reason = insecure_reason(f)
+                reason = insecure_reason(f, self.rd.key("screen_settings"))
                 text.append(
                     f"! {_(HTTP_NOTE)}\n" if reason is None else f"✗ {reason}\n",
                     style=Style(color=p.med if reason is None else p.high),
@@ -195,6 +197,10 @@ class ForgesScreen(BaseScreen):
 
     def _saved(self, result: ForgeFormResult, index: int | None) -> None:
         try:
+            if result.allow_http_host:  # potvrzeno v dialogu (#68), stejně jako v průvodci
+                current = list(self.rd.store.config.allow_http_hosts)
+                if result.allow_http_host not in current:
+                    self.rd.store.set_top("allow_http_hosts", [*current, result.allow_http_host])
             config = self.rd.store.upsert_forge(result.config, index)
         except ConfigError as err:
             self.notify(str(err), severity="error", timeout=10)
@@ -221,7 +227,7 @@ class ForgesScreen(BaseScreen):
             if result is not None:
                 self._saved(result, None)
 
-        self.app.push_screen(ForgeDialog(None, names), done)
+        self.app.push_screen(ForgeDialog(None, names, offer_http_allow=True), done)
 
     def action_forge_edit(self) -> None:
         idx = self._index()
@@ -233,7 +239,9 @@ class ForgesScreen(BaseScreen):
             if result is not None:
                 self._saved(result, idx)
 
-        self.app.push_screen(ForgeDialog(self.rd.config.forges[idx], names), done)
+        self.app.push_screen(
+            ForgeDialog(self.rd.config.forges[idx], names, offer_http_allow=True), done
+        )
 
     def action_forge_delete(self) -> None:
         idx = self._index()
@@ -282,7 +290,7 @@ class ForgesScreen(BaseScreen):
 
     @work(exclusive=False, group="forge-test")
     async def run_test(self, forge: ForgeConfig) -> None:
-        report = await test_forge(forge, self.rd.forge_transport)
+        report = await test_forge(forge, self.rd.forge_transport, self.rd.key("screen_settings"))
         self.reports[forge.name] = report
         self.refresh_table()
         if report.ok:

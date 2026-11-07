@@ -16,6 +16,7 @@ from repo_doctor.tui.screens.export import ExportScreen
 from repo_doctor.tui.screens.fix import FixScreen
 from repo_doctor.tui.screens.folders import FoldersScreen
 from repo_doctor.tui.screens.forges import ForgesScreen
+from repo_doctor.tui.screens.forms import RootDialog
 from repo_doctor.tui.screens.help import HelpScreen
 from repo_doctor.tui.screens.remote import RemoteScreen
 from repo_doctor.tui.screens.settings import SettingsScreen
@@ -425,6 +426,24 @@ async def test_export(tmp_path: Path) -> None:
     data = json.loads(target.read_text())
     assert data["schema_version"] == 1
     assert "AKIA…(20 znaků)" in target.read_text()
+
+
+async def test_root_dialog_ignores_stale_depth_probe(tmp_path: Path) -> None:
+    """Pozdní výsledek pro rozepsanou cestu nesmí přepsat návrh hloubky pro celou cestu."""
+    app = make_app(tmp_path)
+    async with app.run_test(size=(100, 31)) as pilot:
+        await pilot.pause()
+        await pilot.press("1")
+        await pilot.press("n")
+        await pilot.pause()
+        dialog = app.screen
+        assert isinstance(dialog, RootDialog)
+        dialog.query_one("#path").value = str(tmp_path / "cela")  # type: ignore[attr-defined]
+        depth = dialog.query_one("#depth")
+        dialog._probed(str(tmp_path / "cela"), "hotovo", 1, 2)
+        assert depth.value == "1"  # type: ignore[attr-defined]
+        dialog._probed(str(tmp_path), "pozdní", 5, 9)  # výsledek pro kratší cestu
+        assert depth.value == "1"  # type: ignore[attr-defined]
 
 
 async def test_folders_crud(tmp_path: Path) -> None:

@@ -103,9 +103,12 @@ class RootDialog(ModalScreen[RootConfig | None]):
             if count
             else _("zatím žádné git repozitáře (do hloubky 5)")
         )
-        self.app.call_from_thread(self._probed, text, depth, count)
+        self.app.call_from_thread(self._probed, value, text, depth, count)
 
-    def _probed(self, text: str, depth: int, count: int) -> None:
+    def _probed(self, value: str, text: str, depth: int, count: int) -> None:
+        # vlákno jde zrušit až po doběhnutí: pozdní výsledek pro rozepsanou cestu nesmí přepsat aktuální
+        if value != self.query_one("#path", Input).value:
+            return
         self.query_one("#found", Static).update(text)
         depth_in = self.query_one("#depth", Input)
         # u nové složky pole předvyplníme návrhem, ale uživatelovu hodnotu nepřepisujeme
@@ -201,7 +204,7 @@ class ForgeDialog(ModalScreen[ForgeFormResult | None]):
         super().__init__()
         self.forge = forge
         self.existing = (existing_names or set()) - ({forge.name} if forge else set())
-        # průvodce: u http:// URL mimo allow_http_hosts nabídne přidání hosta (jinak chyba)
+        # u http:// URL mimo allow_http_hosts nabídne přidání hosta (jinak jen chyba s návodem)
         self.offer_http_allow = offer_http_allow
 
     def compose(self) -> ComposeResult:
@@ -360,7 +363,9 @@ class ForgeDialog(ModalScreen[ForgeFormResult | None]):
         result = self._build()
         if result is None:
             return
-        reason = insecure_reason(result.config)
+        reason = insecure_reason(
+            result.config, getattr(self.app, "key", lambda _id: None)("screen_settings")
+        )
         if reason is None:
             self.dismiss(result)
             return
