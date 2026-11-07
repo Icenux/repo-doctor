@@ -256,9 +256,19 @@ class ScheduleConfig(_Model):
     fetch: bool = False  # plánovaný sken s `git fetch` (jinak jen lokální stav)
 
 
+# Zápisy, které MCP server smí nabídnout (každý se zapíná zvlášť; výchozí je jen čtení).
+MCPWrite = Literal["fix_branch", "allowlist", "sync", "publish"]
+MCP_WRITES: tuple[MCPWrite, ...] = ("fix_branch", "allowlist", "sync", "publish")
+
+
 class MCPConfig(_Model):
     # false (výchozí) = MCP server skenuje jen offline; true = i síťové kontroly (OSV, hostingy)
     network: bool = False
+    # true (výchozí) = nástroje vidí a skenují jen repa pod sledovanými složkami
+    restrict_to_roots: bool = True
+    # povolené zápisové nástroje; prázdné = server je jen pro čtení. Zápisy platí vždy
+    # jen pro repa pod sledovanými složkami, i když je restrict_to_roots vypnuté.
+    writes: list[MCPWrite] = Field(default_factory=list)
 
 
 class UpdatesConfig(_Model):

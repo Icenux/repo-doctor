@@ -5,6 +5,8 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 ## [Nevydáno]
 
 ### Změněno
+- **MCP vidí jen sledované složky (#38):** `[mcp] restrict_to_roots` (výchozí zapnuto) zavírá `scan` repa podle
+  libovolné cesty a skrývá v nástrojích repa mimo sledované složky. Dřívější chování vrátí `false`.
 - **UI (#89):** jediné téma s černým pozadím a zelenými (`#00aa00`) obrysy a texty; zrušen přepínač
   světlého/tmavého tématu (`t`) i volba Vzhled v Nastavení. Přehled už při návratu do okna nešedne.
   Zrušena klávesa `b` pro skrytí levého panelu (panel se dál sám schová na úzkém terminálu).
@@ -12,6 +14,13 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
   ukazuje i Nastavení. Klíče `ui.theme` a `ui.show_sidebar` ve starých konfiguracích se ignorují.
 
 ### Přidáno
+- **Nastavení MCP serveru v TUI (#38):** v Nastavení (`4`) je sekce „MCP server pro AI asistenty“ – síť
+  (`[mcp] network`), omezení na sledované složky (`restrict_to_roots`), jednotlivé zápisy (`writes`) a tlačítka
+  pro zkopírování připojení do Claude Code / Claude Desktop. Nápověda a `repo-doctor mcp --help` říkají, kde
+  se MCP nastavuje.
+- **Zápisy přes MCP (#38), vypnuté ve výchozím stavu:** `fix_branch` (opravná větev), `allowlist_add`,
+  `sync_ff` (jen fast-forward) a `publish_fix` (push opravné větve + PR/MR). Každý se zapíná zvlášť, vypnutý
+  se vůbec neregistruje, bez `confirm=true` vrací jen náhled; nikdy force, merge ani zápis mimo sledované složky.
 - **Vyléčit a dotáhnout do mergi (#70):** v léčbě `P` místo `⏎` vyléčí vybrané problémy repa a na pozadí
   aplikace dotáhne push → PR → čekání na CI → merge, a to **jen po zelené CI**. Při chybě CI, nespuštěné CI,
   konfliktu nebo odmítnutí hostingu se workflow zastaví; větev i PR zůstanou a `A` na stránce Odeslání

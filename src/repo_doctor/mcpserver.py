@@ -1,25 +1,40 @@
-"""Režim MCP serveru (`repo-doctor mcp`) – jen pro čtení, nad stejným jádrem jako TUI a CLI.
+"""Režim MCP serveru (`repo-doctor mcp`) – nad stejným jádrem jako TUI a CLI.
 
-Server nic neopravuje, nefetchuje, neklonuje a ve výchozím stavu nepoužívá síť (`[mcp]
-network = false` → sken je offline). Výstupy jsou strukturované (pydantic), stránkované
-a omezené velikostí; tajemství a e-maily v nich jsou maskované stejně jako v reportech
-(nálezy je nesou už maskované, navíc vše prochází redakčním registrem).
+Výchozí stav je jen čtení: server nic neopravuje, nefetchuje, neklonuje a nepoužívá síť
+(`[mcp] network = false` → sken je offline). Nástroje vidí jen repa pod sledovanými složkami
+(`[mcp] restrict_to_roots`). Zápisové nástroje (`[mcp] writes`: opravná větev, allowlist,
+fast-forward, push + PR) se zapínají po jednom; vypnutý se vůbec neregistruje. Každý má
+`confirm=false` = jen náhled. Výstupy jsou strukturované (pydantic), stránkované a omezené
+velikostí; tajemství a e-maily v nich jsou maskované stejně jako v reportech (nálezy je nesou
+už maskované, navíc vše prochází redakčním registrem).
 """
 
 from __future__ import annotations
 
 import asyncio
+import contextlib
 from collections.abc import Callable
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel, Field
 
-from repo_doctor import __version__, checkdocs, history
+from repo_doctor import __version__, checkdocs, fixes, history, paths, publish, secrets_scan, sync
 from repo_doctor.checks import all_checks
-from repo_doctor.config import Config, RootConfig
+from repo_doctor.checks.base import RepoContext
+from repo_doctor.config import (
+    AllowEntry,
+    Config,
+    ConfigError,
+    ConfigStore,
+    MCPWrite,
+    RootConfig,
+    effective_for_repo,
+    load_repo_overrides,
+)
+from repo_doctor.gitwrap import Git, GitError
 from repo_doctor.masking import redact
-from repo_doctor.models import Category, Finding, RepoResult, ScanResult, Severity
+from repo_doctor.models import Category, Finding, Patch, RepoResult, ScanResult, Severity
 from repo_doctor.scoring import band
 
 if TYPE_CHECKING:
@@ -27,7 +42,24 @@ if TYPE_CHECKING:
 
 MAX_LIMIT = 100
 MAX_TEXT = 500
+MAX_PREVIEW = 8000
 StateFilter = Literal["all", "problems", "clean", "dirty", "unpushed", "unchecked"]
+
+
+def _safe_diff(diff: str) -> str:
+    """Náhled změn pro klienta: řádky, které vypadají jako tajemství (i kontextové), se schovají.
+
+    `redact` zná jen hodnoty, které už scanner našel; diff ale nese i okolní řádky souboru."""
+    out: list[str] = []
+    for line in diff.splitlines():
+        # kontroluje se tělo každého řádku, i „hlavičkového“: odstraněný řádek `-- KEY=…` vypadá
+        # v diffu jako `---…` a při rozlišování hlaviček by se přeskočil
+        body = line[1:] if line[:1] in "+- " else line
+        if next(secrets_scan.scan_line(body, "x.env", 0), None):
+            out.append(f"{line[:1]}[line hidden: possible secret]")
+        else:
+            out.append(line)
+    return "\n".join(out)
 
 
 def _text(value: str | None, limit: int = MAX_TEXT) -> str:
@@ -95,6 +127,16 @@ class FindingOut(BaseModel):
     location: str | None = None
     snippet: str | None = Field(None, description="Already masked excerpt (never the raw secret).")
     fixable: bool
+    fingerprint: str = Field(description="Stable id of the finding; pass it to `allowlist_add`.")
+
+
+class WriteOut(BaseModel):
+    action: str
+    applied: bool = Field(description="false = preview only; repeat the call with confirm=true.")
+    summary: str
+    preview: str = Field("", description="Diff or plan of what the action does (masked).")
+    branch: str | None = None
+    pull_request: str | None = None
 
 
 class FindingList(BaseModel):
@@ -161,6 +203,7 @@ def _finding(repo: RepoResult, f: Finding) -> FindingOut:
         location=_text(where, 300) or None,
         snippet=_text(f.snippet, 200) or None,
         fixable=f.fixable,
+        fingerprint=f.fingerprint(repo.name),
     )
 
 
@@ -177,8 +220,10 @@ class RepoDoctorTools:
         *,
         load: Callable[[], ScanResult | None] = history.load_last_scan,
         save: Callable[[ScanResult], object] | None = history.save_last_scan,
+        store: ConfigStore | None = None,
     ) -> None:
         self.config = config
+        self._store = store
         self._load = load
         self._save = save
         self._result: ScanResult | None = None
@@ -195,9 +240,23 @@ class RepoDoctorTools:
             raise ValueError("No scan result yet – call the `scan` tool first.")
         return result
 
+    def _under_roots(self, path: str | Path) -> bool:
+        """Je cesta ve sledované složce (nebo je to ta složka)? Symlinky se rozbalí."""
+        target = Path(path).expanduser().resolve()
+        return any(
+            target.is_relative_to(paths.expand_path(root.path).resolve())
+            for root in self.config.roots
+            if root.enabled
+        )
+
+    def _visible(self) -> list[RepoResult]:
+        repos = list(self._require().repos)
+        if self.config.mcp.restrict_to_roots:
+            repos = [r for r in repos if self._under_roots(r.path)]
+        return repos
+
     def _repo(self, repo: str) -> RepoResult:
-        result = self._require()
-        matches = [r for r in result.repos if repo in (r.name, r.path)]
+        matches = [r for r in self._visible() if repo in (r.name, r.path)]
         if not matches:
             raise ValueError(f"Unknown repository {repo!r} – use `list_repos` to see names.")
         if len(matches) > 1:
@@ -214,7 +273,7 @@ class RepoDoctorTools:
         offset: int = 0,
         limit: int = 25,
     ) -> RepoList:
-        repos = list(self._require().repos)
+        repos = self._visible()
         if root:
             repos = [
                 r for r in repos if r.root == root or r.path.startswith(root.rstrip("/") + "/")
@@ -278,7 +337,7 @@ class RepoDoctorTools:
         offset: int = 0,
         limit: int = 25,
     ) -> FindingList:
-        pairs = [(r, f) for r in self._require().repos for f in r.findings]
+        pairs = [(r, f) for r in self._visible() for f in r.findings]
         if check_id:
             pairs = [(r, f) for r, f in pairs if f.check_id == check_id]
         if text:
@@ -341,6 +400,11 @@ class RepoDoctorTools:
                 None,
             )
             path = Path(known.path if known else repo).expanduser()
+            if self.config.mcp.restrict_to_roots and not self._under_roots(path):
+                raise ValueError(
+                    f"{repo!r} is outside the watched folders. Add its folder in "
+                    "repo-doctor first, or turn off [mcp] restrict_to_roots."
+                )
             if not (path / ".git").exists():
                 raise ValueError(
                     f"{repo!r} is not a known repository or a path to a git repository."
@@ -383,14 +447,198 @@ class RepoDoctorTools:
             text=doc.text,
         )
 
+    # -- zápisy (každý jde zapnout zvlášť v `[mcp] writes`; bez confirm=true jen náhled)
+    def _write_target(self, action: MCPWrite, repo: str) -> RepoResult:
+        if action not in self.config.mcp.writes:
+            raise ValueError(
+                f"The write action {action!r} is disabled. The user can enable it in "
+                "repo-doctor Settings (MCP) or in `[mcp] writes`."
+            )
+        r = self._repo(repo)
+        if not self._under_roots(r.path):  # zápis nikdy mimo sledované složky
+            raise ValueError(f"{repo!r} is outside the watched folders; refusing to change it.")
+        return r
+
+    def _repo_context(self, r: RepoResult) -> RepoContext:
+        path = Path(r.path)
+        config = self.config
+        with contextlib.suppress(ConfigError):
+            config = effective_for_repo(config, load_repo_overrides(path))
+        return RepoContext(
+            path=path, name=r.name, root=r.root, config=config, git=Git(path), offline=True
+        )
+
+    def fix_branch(
+        self, repo: str, check_ids: list[str] | None = None, confirm: bool = False
+    ) -> WriteOut:
+        r = self._write_target("fix_branch", repo)
+        ctx = self._repo_context(r)
+        try:
+            patches = fixes.plan(ctx, [f for f in r.findings if f.fixable])
+        except (GitError, OSError) as err:
+            raise ValueError(f"Fixes cannot be prepared: {_text(str(err), 300)}") from err
+        selected: list[Patch] = []
+        for patch in patches:  # od každé kontroly první varianta, jako výchozí volba v TUI
+            if (not check_ids or patch.check_id in check_ids) and all(
+                patch.check_id != p.check_id for p in selected
+            ):
+                selected.append(patch)
+        if not selected:
+            raise ValueError("No automatically fixable findings match (see `repo_findings`).")
+        ids = ", ".join(p.check_id for p in selected)
+        preview = _text(_safe_diff("".join(fixes.render_diff(p) for p in selected)), MAX_PREVIEW)
+        if not confirm:
+            return WriteOut(
+                action="fix_branch",
+                applied=False,
+                summary=f"Would apply fixes for: {ids}. Nothing changed; use confirm=true.",
+                preview=preview,
+            )
+        try:
+            result = fixes.apply(ctx.git, selected)
+        except (fixes.FixRefused, GitError) as err:
+            raise ValueError(_text(str(err), 400)) from err
+        return WriteOut(
+            action="fix_branch",
+            applied=True,
+            summary=f"Fixes applied: {ids}. Nothing was pushed.",
+            preview=preview,
+            branch=result.branch,
+        )
+
+    def allowlist_add(
+        self, repo: str, fingerprint: str, reason: str, confirm: bool = False
+    ) -> WriteOut:
+        r = self._write_target("allowlist", repo)
+        finding = next((f for f in r.findings if f.fingerprint(r.name) == fingerprint), None)
+        if finding is None:
+            raise ValueError("Unknown fingerprint – take it from `repo_findings`.")
+        if finding.category is Category.SECURITY:
+            # allowlist umlčí i pre-push hlídače, takže by šel řetězem obejít (allowlist → publish)
+            raise ValueError(
+                "Security findings can't be allowlisted over MCP – the user decides that "
+                "in the repo-doctor app (finding card, key a)."
+            )
+        reason = _text(reason.strip(), 200)
+        if not reason:
+            raise ValueError("A reason is required.")
+        summary = f"Would hide {finding.check_id} in {r.name} (reason: {reason})."
+        if not confirm:
+            return WriteOut(
+                action="allowlist", applied=False, summary=summary + " Use confirm=true."
+            )
+        store = self._store or ConfigStore()
+        try:
+            # vždy znovu z disku: TUI nebo editor mohl config.toml mezitím změnit (a zápisy vypnout)
+            fresh = store.load()
+            if "allowlist" not in fresh.mcp.writes:
+                raise ValueError(
+                    "The write action 'allowlist' was disabled in the meantime (Settings → MCP)."
+                )
+            saved = store.add_allow(
+                AllowEntry(hash=fingerprint, reason=reason, check=finding.check_id, repo=r.name)
+            )
+            self.config = self.config.model_copy(update={"allowlist": saved.allowlist})
+        except ConfigError as err:
+            raise ValueError(_text(str(err), 300)) from err
+        r.findings = [f for f in r.findings if f.fingerprint(r.name) != fingerprint]
+        r.allowlisted += 1
+        if self._save is not None and self._result is not None:
+            self._save(self._result)
+        return WriteOut(action="allowlist", applied=True, summary=summary.replace("Would", "Did"))
+
+    def sync_ff(self, repo: str, confirm: bool = False) -> WriteOut:
+        r = self._write_target("sync", repo)
+        path = Path(r.path)
+        st = sync.status(path)  # bez fetch: jen to, co už je staženo
+        if not st.can_fast_forward:
+            raise ValueError(
+                _text(st.reason or f"Nothing to fast-forward (state: {st.state}).", 300)
+            )
+        files = ", ".join(st.files[:20])
+        summary = f"Fast-forward of {st.branch} by {st.behind} commit(s)."
+        if not confirm:
+            return WriteOut(
+                action="sync",
+                applied=False,
+                summary=summary + " Nothing changed; use confirm=true.",
+                preview=_text(f"Changes files: {files}", MAX_PREVIEW),
+            )
+        result = sync.fast_forward([path])
+        if result.skipped:
+            raise ValueError(_text(result.skipped[0][1], 300))
+        return WriteOut(
+            action="sync",
+            applied=True,
+            summary=summary + " Nothing was pushed.",
+            branch=st.branch,
+        )
+
+    async def publish_fix(
+        self, repo: str, branch: str | None = None, confirm: bool = False
+    ) -> WriteOut:
+        r = self._write_target("publish", repo)
+        git = Git(Path(r.path))
+        try:
+            plan = await asyncio.to_thread(publish.plan_push, git, self.config, branch)
+            lines = [f"{c.short} {c.subject}" for c in plan.commits]
+            preview = _text(
+                f"push {plan.branch} -> {plan.remote} ({plan.remote_url})\n" + "\n".join(lines),
+                MAX_PREVIEW,
+            )
+            if not confirm:
+                return WriteOut(
+                    action="publish",
+                    applied=False,
+                    summary="Would push the fix branch and open a PR/MR. Use confirm=true.",
+                    preview=preview,
+                    branch=plan.branch,
+                )
+            await asyncio.to_thread(publish.apply_push, git, plan, self.config)
+            try:
+                url = await self._open_pr(git, plan.branch)
+            except publish.PublishRefused as err:
+                return WriteOut(
+                    action="publish",
+                    applied=True,
+                    summary=f"Branch pushed, but the PR was not created: {_text(str(err), 300)}",
+                    preview=preview,
+                    branch=plan.branch,
+                )
+        except publish.PublishRefused as err:
+            raise ValueError(_text(str(err), 500)) from err
+        return WriteOut(
+            action="publish",
+            applied=True,
+            summary="Branch pushed and PR/MR created. Nothing was merged.",
+            preview=preview,
+            branch=plan.branch,
+            pull_request=url,
+        )
+
+    async def _open_pr(self, git: Git, branch: str) -> str:
+        async def work(hosting: publish.Hosting) -> str:
+            pr_plan = await publish.plan_pr(git, hosting, self.config, branch)
+            pr = await publish.apply_pr(git, hosting, self.config, pr_plan)
+            return pr.url
+
+        return await publish.with_hosting(git, self.config, work)
+
 
 # ------------------------------------------------------------------ MCP vrstva
 INSTRUCTIONS = """\
 repo-doctor audits the user's local git repositories (secrets, hygiene, git state, hosting).
-This server is strictly read-only: it never modifies repositories, never fetches, clones or
-pushes, and runs offline unless the user enabled `[mcp] network = true`. Secrets and e-mail
-addresses are always masked. Start with `last_scan_summary`; if no scan is available, call
-`scan`. Then use `list_repos`, `repo_findings` and `explain_check`.
+It only sees repositories under the folders the user watches. By default this server is
+read-only: it never modifies repositories, never fetches or clones, and runs offline unless
+the user enabled `[mcp] network = true`. Secrets and e-mail addresses are always masked.
+Start with `last_scan_summary`; if no scan is available, call `scan`. Then use `list_repos`,
+`repo_findings` and `explain_check`.
+"""
+
+WRITE_INSTRUCTIONS = """\
+The user also enabled these write tools: {tools}. Each one only previews what it would do
+until you call it again with confirm=true – show the preview to the user first and ask.
+Writes never force-push, never merge and never touch uncommitted work.
 """
 
 
@@ -398,8 +646,19 @@ def build_server(tools: RepoDoctorTools) -> MCPServer:
     from mcp.server.mcpserver import MCPServer
     from mcp_types import ToolAnnotations
 
-    server = MCPServer(name="repo-doctor", version=__version__, instructions=INSTRUCTIONS)
+    writes = tools.config.mcp.writes
+    names = {
+        "fix_branch": "fix_branch",
+        "allowlist": "allowlist_add",
+        "sync": "sync_ff",
+        "publish": "publish_fix",
+    }
+    instructions = INSTRUCTIONS
+    if writes:
+        instructions += WRITE_INSTRUCTIONS.format(tools=", ".join(names[w] for w in writes))
+    server = MCPServer(name="repo-doctor", version=__version__, instructions=instructions)
     ro = ToolAnnotations(readOnlyHint=True, destructiveHint=False, openWorldHint=False)
+    wr = ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False)
 
     @server.tool(annotations=ro)
     def list_repos(
@@ -490,9 +749,76 @@ def build_server(tools: RepoDoctorTools) -> MCPServer:
         """
         return tools.explain_check(check_id)
 
+    if "fix_branch" in writes:
+
+        @server.tool(annotations=wr)
+        def fix_branch(
+            repo: str, check_ids: list[str] | None = None, confirm: bool = False
+        ) -> WriteOut:
+            """WRITE. Apply automatic fixes of a repository into a NEW branch
+            `repo-doctor/fixes-<date>` (working tree, index and current branch stay untouched;
+            nothing is pushed). Without `confirm=true` it only returns the diff.
+
+            `check_ids` limits the fixes (default: all fixable findings). The repo must have
+            no uncommitted changes. Some fixes also edit `.git/config` or hooks locally.
+            Example: fix_branch(repo="api-gateway", check_ids=["env-committed"])
+            """
+            return tools.fix_branch(repo, check_ids, confirm)
+
+    if "allowlist" in writes:
+
+        @server.tool(annotations=wr)
+        def allowlist_add(
+            repo: str, fingerprint: str, reason: str, confirm: bool = False
+        ) -> WriteOut:
+            """WRITE. Hide one finding by adding it to repo-doctor's allowlist (config.toml
+            only; the repository is not touched). Use the `fingerprint` from `repo_findings`
+            and a short `reason`. Without `confirm=true` it only previews.
+
+            Example: allowlist_add(repo="infra-notes", fingerprint="0123456789abcdef",
+            reason="test fixture", confirm=true)
+            """
+            return tools.allowlist_add(repo, fingerprint, reason, confirm)
+
+    if "sync" in writes:
+
+        @server.tool(
+            annotations=ToolAnnotations(
+                readOnlyHint=False, destructiveHint=True, openWorldHint=False
+            )
+        )
+        def sync_ff(repo: str, confirm: bool = False) -> WriteOut:
+            """WRITE. Fast-forward a clean, behind repository to its upstream
+            (`git merge --ff-only`; never a merge commit, rebase, reset or push). It does
+            not fetch, so it only catches up to what is already downloaded. Without
+            `confirm=true` it only previews.
+
+            Example: sync_ff(repo="api-gateway", confirm=true)
+            """
+            return tools.sync_ff(repo, confirm)
+
+    if "publish" in writes:
+
+        @server.tool(
+            annotations=ToolAnnotations(
+                readOnlyHint=False, destructiveHint=False, openWorldHint=True
+            )
+        )
+        async def publish_fix(
+            repo: str, branch: str | None = None, confirm: bool = False
+        ) -> WriteOut:
+            """WRITE, uses the network. Push the repo-doctor fix branch (default: the newest
+            `repo-doctor/fixes-*`) to its remote and open a PR/MR. Never forces, never merges;
+            a secret scan runs before the push. Without `confirm=true` it only previews the
+            commits that would be sent.
+
+            Example: publish_fix(repo="api-gateway", confirm=true)
+            """
+            return await tools.publish_fix(repo, branch, confirm)
+
     return server
 
 
-def run(config: Config) -> None:
-    server = build_server(RepoDoctorTools(config))
+def run(config: Config, store: ConfigStore | None = None) -> None:
+    server = build_server(RepoDoctorTools(config, store=store))
     asyncio.run(server.run_stdio_async())

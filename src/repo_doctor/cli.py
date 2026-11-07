@@ -722,13 +722,21 @@ def sbom_cmd(
 @app.command(
     "mcp",
     help=_(
-        "Spustí MCP server (stdio) jen pro čtení – pro Claude Code, Claude Desktop apod.\n\nNic neopravuje, nefetchuje ani neklonuje; bez `[mcp] network = true` skenuje offline."
+        "Spustí MCP server (stdio) – pro Claude Code, Claude Desktop apod.\n\nVe výchozím stavu je jen pro čtení: nic neopravuje, nefetchuje ani neklonuje a bez `[mcp] network = true` skenuje offline. Vidí jen repa ve sledovaných složkách. Zápisy (`[mcp] writes`) se zapínají po jednom v Nastavení."
     ),
 )
 def mcp_server() -> None:
     from repo_doctor.mcpserver import run
 
-    run(_load_config())
+    store = ConfigStore()
+    try:
+        config = store.load()
+    except ConfigError as err:
+        _err(str(err))
+        raise typer.Exit(2) from None
+    configure_ssh(batch_mode=config.ssh_batch_mode)
+    netpolicy.configure(config.allow_http_hosts)
+    run(config, store)
 
 
 @app.command(

@@ -205,6 +205,9 @@ PAGES: dict[str, Page] = {
         (
             N_("Plánovaný sken (denně / týdně) a test upozornění."),
             N_("Sken po spuštění, jazyk a vzhled aplikace."),
+            N_(
+                "MCP server: co smí AI asistent (rozsah, síť, jednotlivé zápisy) a hotové připojení pro Claude."
+            ),
             N_("Seznam skrytých nálezů (allowlist): d vybranou položku odebere."),
         ),
     ),
