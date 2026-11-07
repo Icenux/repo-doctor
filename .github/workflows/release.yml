@@ -151,3 +151,10 @@ jobs:
             dist/release/repo-doctor_amd64.deb dist/release/repo-doctor.x86_64.rpm \
             dist/release/repo-doctor-linux-x86_64.tar.gz dist/release/PKGBUILD \
             dist/release/SHA256SUMS dist/release/SHA256SUMS.asc
+
+      - name: Notify the Icenux site
+        # The site (Icenux/icenux.github.io) rebuilds on this event and picks up the new version.
+        continue-on-error: true
+        run: gh api repos/Icenux/icenux.github.io/dispatches -f event_type=app-released
+        env:
+          GH_TOKEN: ${{ secrets.SITE_DISPATCH_TOKEN }}
