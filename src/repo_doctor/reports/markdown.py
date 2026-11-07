@@ -61,7 +61,7 @@ def render(result: ScanResult, *, no_pulse_days: int = 90, now: datetime | None 
         vis = visibility_label(r.visibility)
         host = f"{r.forge or '—'} {vis}".strip()
         lines.append(
-            f"| {score_label(r.score)} {gauge(r.score)} | `{_cell(r.name)}` | {band(r, no_pulse_days, now).label} | "
+            f"| {score_label(r.score)} {gauge(r.score)} | `{_cell(r.name)}` | {band(r).label} | "
             f"{_counts(r)} | {_cell(host)} |"
         )
     lines.append("")

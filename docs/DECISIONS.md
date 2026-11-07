@@ -118,8 +118,12 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
 - **Skóre:** 100 − 25 za HIGH, 9 za MED, 3 za LOW, s limitem na kontrolu (max 50 / 18 / 6),
   aby deset nálezů jedné kontroly nesrazilo repo na nulu. Kalibrováno podle wireframu.
   Pod 30 body se skóre jen blíží nule, viz „Skóre bez nul“ (#37).
-- **Pásma triáže mají prioritu** KRITICKÉ > SLEDOVAT > BEZ TEPU > ZDRAVÉ: repo s HIGH
-  nálezem, které je zároveň bez tepu, patří mezi kritická.
+- **Skupiny triáže podle nejzávažnějšího nálezu (#73):** HIGH / MED / LOW / BEZ NÁLEZŮ
+  (+ NELZE ZKONTROLOVAT). Dřívější pásma KRITICKÉ / SLEDOVAT / BEZ TEPU / ZDRAVÉ míchala dvě osy
+  (závažnost a aktivitu repa) a barva skóre u nich neodpovídala skupině. Tep zůstává jen jako sloupec
+  a v hlavičce; `limits.no_pulse_days` se už nepoužívá k seskupení, jen k souhrnu `no_pulse` v reportech.
+  Barva skóre a proužku repa je barva jeho skupiny. `repos[].band` v JSON reportu má nové hodnoty
+  (`high`/`medium`/`low`/`none`/`unchecked`), proto `schema_version` 2.
 
 ## Kontroly
 

@@ -214,9 +214,7 @@ class DashboardScreen(NavMixin, Screen[Any]):
         lst = self.query_one(TriageList)
         previous = app.selected_path
         prev_index = lst.highlighted
-        groups = build_groups(
-            app.result, self.state, no_pulse_days=app.config.limits.no_pulse_days, now=app.now()
-        )
+        groups = build_groups(app.result, self.state)
         options: list[Option] = []
         self._row_paths, self._row_groups = [], []
         key = app.keymap_ids.get("collapse_band", "z")
@@ -373,11 +371,11 @@ class DashboardScreen(NavMixin, Screen[Any]):
         delta = app.history_delta
         if not delta:
             opts.append(Option(Text(_("  beze změny"), style=Style(color=p.muted)), disabled=True))
-        labels = {"high": "HIGH", "medium": "MED", "low": "LOW", "no_pulse": _("bez tepu")}
-        for key in ("high", "medium", "low", "no_pulse"):
+        labels = {"high": "HIGH", "medium": "MED", "low": "LOW"}
+        for key in ("high", "medium", "low"):
             if key in delta:
                 v = delta[key]
-                color = (p.high if v > 0 else p.ok) if key != "no_pulse" else p.muted
+                color = p.high if v > 0 else p.ok
                 sign = "+" if v > 0 else "−"
                 opts.append(
                     Option(
@@ -544,8 +542,8 @@ class DashboardScreen(NavMixin, Screen[Any]):
         idx = self.query_one(TriageList).highlighted
         if idx is not None and idx < len(self._row_groups) and self._row_groups[idx]:
             self._toggle_group(self._row_groups[idx])  # type: ignore[arg-type]
-        elif Band.HEALTHY.value in self.state.collapsed:
-            self._toggle_group(Band.HEALTHY.value)
+        elif Band.NONE.value in self.state.collapsed:
+            self._toggle_group(Band.NONE.value)
 
     def action_open_card(self) -> None:
         if self.rd.selected_repo is not None:

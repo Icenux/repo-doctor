@@ -114,6 +114,10 @@ PAGES: dict[str, Page] = {
             N_("z sbalí nebo rozbalí skupinu, alt+g přepíná seskupení (triáž / složka / hosting)."),
             N_("S řadí podle sloupce, s obrátí řazení."),
             N_(
+                "Skupiny HIGH / MED / LOW / BEZ NÁLEZŮ třídí repa podle nejzávažnějšího nálezu; "
+                "uvnitř skupiny jdou repa podle skóre. Tep (commity za 30 dní) je jen sloupec vpravo."
+            ),
+            N_(
                 "Blok Notifikace v levém panelu ukazuje průběh a výsledky léčby s odesláním; "
                 "⏎ otevře stránku Odeslání daného repa, N označí vše jako přečtené."
             ),

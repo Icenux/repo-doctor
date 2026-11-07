@@ -106,6 +106,6 @@ def test_untrusted_and_triage_grouping() -> None:
     result = ScanResult(repos=[r("/a", "github.com"), r("/b", "github.com", True), r("/c", None)])
     assert duplicate_groups(result) == []  # cizí vlastník se nepočítá
     state = TriageState(group_by="remote")
-    groups = build_groups(result, state, no_pulse_days=90, now=NOW)
+    groups = build_groups(result, state)
     labels = sorted(g.label for g in groups)
     assert labels == ["bez remote", "github.com/ja/p"]

@@ -10,7 +10,7 @@ push them, open a PR/MR and merge it.
 
 📖 **[User guide (wiki)](https://github.com/Icenux/repo-doctor/wiki)**: all screens with screenshots, checks, configuration and FAQ.
 
-- **Triage instead of a list:** repositories sorted into the bands CRITICAL / WATCH / NO PULSE / HEALTHY,
+- **Triage instead of a list:** all repositories grouped by their most severe finding (HIGH / MED / LOW / NO FINDINGS),
   a 0–100 score, pulse (commits in the last 30 days), git state and visibility on the host.
 - **Repo card** with a diagnosis of every finding, an explanation and manual fix steps.
 - **Treatment:** colored diff of the proposed fixes, selection with checkboxes and confirmation in a dialog.
@@ -502,7 +502,7 @@ fail_on = "high"          # CLI exit code threshold
 large_file_mb = 5
 stale_branch_days = 90
 stash_days = 30
-no_pulse_days = 90        # the NO PULSE band
+no_pulse_days = 90        # days without a commit counted as "no pulse" in report summaries
 stale_pr_days = 30
 history_timeout_s = 60    # then a scan-incomplete finding
 history_size = 30

@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime
 from typing import Literal
 
 from repo_doctor.checks.duplicates import remote_key
 from repo_doctor.i18n import _
 from repo_doctor.models import Category, RepoResult, ScanResult, Severity
-from repo_doctor.scoring import Band, band, is_no_pulse, sort_score
+from repo_doctor.scoring import Band, band, sort_score
 from repo_doctor.tui.util import git_state
 
 SORT_COLUMNS: tuple[str, ...] = ("score", "name", "high", "medium", "low", "git", "forge", "pulse")
@@ -62,7 +61,7 @@ class TriageState:
     reverse: bool = False
     group_by: GroupBy = "triage"
     filters: Filters = field(default_factory=Filters)
-    collapsed: set[str] = field(default_factory=lambda: {Band.HEALTHY.value})
+    collapsed: set[str] = field(default_factory=set)
 
 
 def forge_key(repo: RepoResult) -> str:
@@ -116,24 +115,16 @@ def sort_key(repo: RepoResult, column: str) -> tuple[object, ...]:
     )
 
 
-def build_groups(
-    result: ScanResult, state: TriageState, *, no_pulse_days: int, now: datetime
-) -> list[Group]:
+def build_groups(result: ScanResult, state: TriageState) -> list[Group]:
     repos = [r for r in result.repos if matches(r, state.filters)]
     repos.sort(key=lambda r: sort_key(r, state.sort), reverse=state.reverse)
     groups: dict[str, Group] = {}
     if state.group_by == "triage":
         for b in Band:
-            note = (
-                _("žádný commit {no_pulse_days}+ dní").format(no_pulse_days=no_pulse_days)
-                if b is Band.NO_PULSE
-                else _("cizí vlastník – viz nález")
-                if b is Band.UNCHECKED
-                else ""
-            )
+            note = _("cizí vlastník – viz nález") if b is Band.UNCHECKED else ""
             groups[b.value] = Group(b.value, b.label, [], note, b)
         for r in repos:
-            groups[band(r, no_pulse_days, now).value].repos.append(r)
+            groups[band(r).value].repos.append(r)
         return [g for g in groups.values() if g.repos]
     for r in repos:
         if state.group_by == "remote":
@@ -145,7 +136,3 @@ def build_groups(
             key, Group(key, label.upper() if state.group_by == "forge" else label, [])
         ).repos.append(r)
     return sorted(groups.values(), key=lambda g: g.label.lower())
-
-
-def no_pulse_count(result: ScanResult, days: int, now: datetime) -> int:
-    return sum(1 for r in result.repos if is_no_pulse(r, days, now))

@@ -4,7 +4,7 @@ import pytest
 
 from repo_doctor.forges.urls import host_label
 from repo_doctor.models import Category, Finding, Severity
-from repo_doctor.scoring import penalty, score
+from repo_doctor.scoring import Band, band, penalty, score
 from repo_doctor.tui.triage_model import sort_key
 from tests.sample import repo
 
@@ -84,3 +84,17 @@ def test_same_score_sorted_by_severity() -> None:
 )
 def test_host_label(host: str, label: str) -> None:
     assert host_label(host) == label
+
+
+def test_band_follows_worst_finding_not_score_or_activity() -> None:
+    """Skupina v triáži je dána nejzávažnějším nálezem; stáří repa ani skóre ji nemění (#73)."""
+    many_low = _f("a", Severity.LOW) + _f("b", Severity.LOW) + _f("c", Severity.LOW)
+    cases = [
+        (_f("x", Severity.HIGH) + many_low, Band.HIGH),
+        (_f("x", Severity.MEDIUM) + many_low, Band.MEDIUM),
+        (many_low, Band.LOW),
+        ([], Band.NONE),
+    ]
+    for findings, expected in cases:
+        assert band(repo("r", "p", findings)) is expected
+        assert band(repo("r", "p", findings, last_days=400)) is expected  # starý commit nevadí

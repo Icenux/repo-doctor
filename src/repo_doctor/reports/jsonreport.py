@@ -13,7 +13,7 @@ from repo_doctor import __version__
 from repo_doctor.models import Finding, RepoDetails, RepoResult, ScanResult, Severity
 from repo_doctor.scoring import band
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2  # 2: `repos[].band` je podle nejzávažnějšího nálezu (#73)
 
 
 class JLocation(BaseModel):
@@ -121,7 +121,7 @@ def build(result: ScanResult, *, no_pulse_days: int = 90, now: datetime | None =
                 root=r.root,
                 score=r.score,
                 untrusted_owner=r.untrusted_owner,
-                band=band(r, no_pulse_days, now).value,
+                band=band(r).value,
                 forge=r.forge,
                 visibility=r.visibility,
                 archived=r.archived,

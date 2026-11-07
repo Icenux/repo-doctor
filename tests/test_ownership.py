@@ -122,7 +122,7 @@ def test_markdown_and_helpers_show_dash() -> None:
 def test_triage_puts_unchecked_group_last() -> None:
     result = sample_result()
     result.repos.insert(0, _untrusted())
-    groups = build_groups(result, TriageState(), no_pulse_days=90, now=NOW)
+    groups = build_groups(result, TriageState())
     assert groups[-1].band is Band.UNCHECKED
     assert [r.name for r in groups[-1].repos] == ["cizi"]
     health = result.summary(now=NOW).health
