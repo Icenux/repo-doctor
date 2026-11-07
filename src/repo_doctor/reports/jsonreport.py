@@ -66,6 +66,10 @@ class JRepo(BaseModel):
     counts: dict[str, int]
     findings: list[JFinding]
     allowlisted: int
+    hidden_fakes: int = Field(
+        default=0,
+        description="Obviously made-up secret values reported by gitleaks and hidden (config hide_fake_secrets)",
+    )
     skipped: dict[str, str]
     errors: dict[str, str]
     details: RepoDetails = Field(
@@ -142,6 +146,7 @@ def build(result: ScanResult, *, no_pulse_days: int = 90, now: datetime | None =
                     for f in sorted(r.findings, key=lambda f: (-f.severity.rank, f.check_id))
                 ],
                 allowlisted=r.allowlisted,
+                hidden_fakes=r.hidden_fakes,
                 skipped=r.skipped,
                 errors=r.errors,
                 details=r.details,

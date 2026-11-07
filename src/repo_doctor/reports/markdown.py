@@ -96,6 +96,8 @@ def render(result: ScanResult, *, no_pulse_days: int = 90, now: datetime | None 
             lines.append("")
         if r.allowlisted:
             lines += [_("Skryto allowlistem: {n}").format(n=r.allowlisted), ""]
+        if r.hidden_fakes:
+            lines += [_("Skryto jako zjevně vymyšlené hodnoty: {n}").format(n=r.hidden_fakes), ""]
     if clean:
         lines += [_("## Bez nálezů ✓"), "", ", ".join(f"`{_cell(r.name)}`" for r in clean), ""]
     lines += ["---", _("✓ = opravitelné automaticky v TUI (`repo-doctor`, obrazovka Léčba)."), ""]

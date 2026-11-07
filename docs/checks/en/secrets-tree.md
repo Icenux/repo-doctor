@@ -4,7 +4,7 @@
 
 ## What the check looks for
 
-Goes through tracked and untracked (not ignored) files and looks for API keys (AWS, GitHub, GitLab, Slack, OpenAI, Anthropic), private SSH/PGP keys, JWTs, connection strings with a password and generic high-entropy secrets. If `gitleaks` is installed, its detection is used. Lockfiles and test fixtures (`fixtures/`, `testdata/`, `__snapshots__/`) are skipped, as are lines marked `gitleaks:allow` or `repo-doctor:allow`.
+Goes through tracked and untracked (not ignored) files and looks for API keys (AWS, GitHub, GitLab, Slack, OpenAI, Anthropic), private SSH/PGP keys, JWTs, connection strings with a password and generic high-entropy secrets. If `gitleaks` is installed, its detection is used. Lockfiles and test fixtures (`fixtures/`, `testdata/`, `__snapshots__/`) are skipped, as are lines marked `gitleaks:allow` or `repo-doctor:allow`. Obviously made-up values (`abcdef…`, `123456…`, `9f8e7d6c5b4a`, truncated `abc...xyz`) are not reported, including those found by `gitleaks`; the report shows how many were hidden (`Hidden as obviously made-up values`) and the filter can be turned off with `hide_fake_secrets = false` in `config.toml`. A real weak password such as `Company123456` is still reported.
 
 ## Why it matters
 

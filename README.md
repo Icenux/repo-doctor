@@ -545,6 +545,7 @@ check = true              # once a day the TUI checks GitHub Releases for a new 
 
 my_emails = ["me@proton.me"]   # your other addresses for the email-exposure check
 ssh_batch_mode = true     # false = don't add `-o BatchMode=yes` (custom SSH wrapper)
+hide_fake_secrets = true  # false = also report obviously made-up values (abcdef…, 123456…) found by gitleaks
 
 [ui]
 scan_on_start = false     # true = scan right after the TUI starts

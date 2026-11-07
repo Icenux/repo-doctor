@@ -4,7 +4,7 @@
 
 ## Co kontrola hledá
 
-Projde celou historii (`git log --all -p`) a skenuje přidané řádky stejnými pravidly jako `secrets-tree`. Nález ukazuje commit, který tajemství přidal. U obřích repozitářů sken skončí po časovém limitu (`limits.history_timeout_s`) s nálezem `scan-incomplete`.
+Projde celou historii (`git log --all -p`) a skenuje přidané řádky stejnými pravidly jako `secrets-tree`. Nález ukazuje commit, který tajemství přidal. U obřích repozitářů sken skončí po časovém limitu (`limits.history_timeout_s`) s nálezem `scan-incomplete`. Zjevně vymyšlené hodnoty se skrývají stejně jako u `secrets-tree` (volba `hide_fake_secrets`).
 
 ## Proč to vadí
 

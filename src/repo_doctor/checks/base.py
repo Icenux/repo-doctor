@@ -45,6 +45,8 @@ class RepoContext:
     deps_status: str | None = None
     noreply_email: str | None = None  # noreply adresa uživatele na hostingu (z API)
     action_shas: dict[str, str] = field(default_factory=dict)  # "owner/repo@ref" → commit SHA
+    # otisky vymyšlených hodnot od gitleaksu, které se nehlásí (počítají se v reportu)
+    hidden_fakes: set[str] = field(default_factory=set)
 
     # -- soubory --------------------------------------------------------
     @cached_property

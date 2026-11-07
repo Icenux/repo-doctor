@@ -516,6 +516,7 @@ class Scanner:
         allowed = {a.hash for a in ctx.config.allowlist}
         kept = [f for f in findings if f.fingerprint(repo.name) not in allowed]
         res.allowlisted = len(findings) - len(kept)
+        res.hidden_fakes = len(ctx.hidden_fakes)
         res.findings = kept
         res.score = score(kept)
         res.duration_ms = int((time.monotonic() - started) * 1000)
