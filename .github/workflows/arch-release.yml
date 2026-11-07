@@ -1,0 +1,115 @@
+name: Arch package for a release
+# Spouští se ručně (Actions → "Arch package for a release" → Run workflow, vstup `tag`, např. 0.4.1).
+# Doplní balíček pro Arch Linux (repo-doctor-VERZE-1-x86_64.pkg.tar.zst) do UŽ VYDANÉHO vydání bez nového tagu:
+# vezme z vydání tarball aplikace (stejná binárka jako v .deb a .rpm), sestaví z něj balíček podle aktuálního
+# packaging/nfpm.yaml, otestuje ho v kontejneru Arch Linuxu, připíše ho do SHA256SUMS a ten znovu podepíše klíčem
+# vydání (secret RELEASE_SIGNING_KEY, stejně jako Release). Ostatní soubory vydání se nemění. Společný repozitář
+# Icenux (github.com/Icenux/icenux) si balíček vezme sám při dalším buildu.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Značka existujícího vydání (např. 0.4.1)"
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: release
+  cancel-in-progress: false
+defaults:
+  run:
+    shell: bash
+env:
+  NFPM_VERSION: "2.47.0"
+  NFPM_SHA256: "0660ca602b2d2d2ae4781a06c692b3eeb9d437ffea05b831d76e41f4a3188783"
+  TAG: ${{ inputs.tag }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: značka musí být číslo verze
+        run: |
+          [[ "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Neplatná značka '$TAG'"; exit 1; }
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: nfpm
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "v${NFPM_VERSION}" --repo goreleaser/nfpm \
+            --pattern "nfpm_${NFPM_VERSION}_Linux_x86_64.tar.gz" --output /tmp/nfpm.tgz
+          echo "${NFPM_SHA256}  /tmp/nfpm.tgz" | sha256sum -c -
+          sudo tar -xzf /tmp/nfpm.tgz -C /usr/local/bin nfpm
+      - name: vydání a jeho tarball
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p rel dist
+          gh release download "$TAG" --pattern SHA256SUMS --pattern repo-doctor-linux-x86_64.tar.gz --dir rel
+          (cd rel && grep -E ' \*?repo-doctor-linux-x86_64\.tar\.gz$' SHA256SUMS | sha256sum -c -)
+          tar -xzf rel/repo-doctor-linux-x86_64.tar.gz -C dist
+          # strom aplikace bez instalačního skriptu a bez značky tarballu (značku `pacman` přidá nfpm)
+          rm -f dist/repo-doctor/install.sh dist/repo-doctor/install-kind
+          test "$(dist/repo-doctor/repo-doctor --version | cut -d' ' -f2)" = "$TAG"
+      - name: balíček pro Arch
+        run: |
+          mkdir -p out
+          config=$(mktemp --suffix=.yaml)
+          sed '/^  signature:/,$d' packaging/nfpm.yaml > "$config"   # RPM se tu nepodepisuje
+          VERSION="$TAG" nfpm package --config "$config" --packager archlinux --target out/
+          ls -l out
+          cp rel/SHA256SUMS out/SHA256SUMS.old
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: arch
+          path: out/
+          if-no-files-found: error
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: arch
+          path: out
+      - name: instalace
+        run: |
+          pacman -Syu --noconfirm
+          pacman -U --noconfirm "$PWD"/out/repo-doctor-*-x86_64.pkg.tar.zst
+      - name: aplikace běží
+        run: |
+          repo-doctor --version
+          repo-doctor checks
+          test "$(cat /usr/lib/repo-doctor/install-kind)" = pacman
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: arch
+          path: out
+      - name: SHA256SUMS s novým balíčkem, podpis a nahrání
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
+        run: |
+          mkdir -p dist/release
+          pkg=$(basename out/repo-doctor-*-x86_64.pkg.tar.zst)
+          grep -v "$pkg" out/SHA256SUMS.old > dist/release/SHA256SUMS || true
+          (cd out && sha256sum "$pkg") >> dist/release/SHA256SUMS
+          cat dist/release/SHA256SUMS
+          export GNUPGHOME="$RUNNER_TEMP/gnupg"
+          install -d -m 700 "$GNUPGHOME"
+          printf '%s\n' "$RELEASE_SIGNING_KEY" | gpg --batch --quiet --import
+          packaging/sign.sh
+          gh release upload "$TAG" --clobber "out/$pkg" dist/release/SHA256SUMS dist/release/SHA256SUMS.asc
