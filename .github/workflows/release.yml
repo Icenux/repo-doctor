@@ -85,6 +85,7 @@ jobs:
           - { image: "ubuntu:24.04", kind: deb }
           - { image: "fedora:42", kind: rpm }
           - { image: "archlinux:latest", kind: aur }
+          - { image: "archlinux:latest", kind: archpkg }
           - { image: "ubuntu:22.04", kind: tarball }
     container: ${{ matrix.image }}
     steps:
@@ -114,6 +115,9 @@ jobs:
               chown -R builder /build
               su builder -c "cd /build && makepkg --noconfirm"
               pacman -U --noconfirm /build/*.pkg.tar.zst ;;
+            archpkg)
+              pacman -Syu --noconfirm
+              pacman -U --noconfirm rel/repo-doctor-*-x86_64.pkg.tar.zst ;;
             tarball)
               apt-get update -qq && apt-get install -y -qq git
               useradd -m user
@@ -128,7 +132,9 @@ jobs:
           repo-doctor checks
           repo-doctor explain secrets-history > /dev/null
           installed=$(cat "$(dirname "$(readlink -f "$(command -v repo-doctor)")")/install-kind")
-          test "$installed" = "${KIND/aur/pacman}"
+          expected=${KIND/aur/pacman}
+          expected=${expected/archpkg/pacman}
+          test "$installed" = "$expected"
 
   publish:
     needs: test-install
@@ -149,6 +155,7 @@ jobs:
           awk -v v="${TAG#v}" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md > notes.md
           gh release create "$TAG" --title "repo-doctor ${TAG#v}" --notes-file notes.md \
             dist/release/repo-doctor_amd64.deb dist/release/repo-doctor.x86_64.rpm \
+            dist/release/repo-doctor-*-x86_64.pkg.tar.zst \
             dist/release/repo-doctor-linux-x86_64.tar.gz dist/release/PKGBUILD \
             dist/release/SHA256SUMS dist/release/SHA256SUMS.asc
 
