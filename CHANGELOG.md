@@ -4,6 +4,8 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+## [0.4.1] – 2026-11-07
+
 ### Změněno
 - **Triáž podle nejzávažnějšího nálezu (#73):** přehled ukazuje všechna repa ve skupinách HIGH / MED / LOW /
   BEZ NÁLEZŮ. Skupina „Bez tepu“ zrušena, tep je jen sloupec vpravo a v hlavičce. Barva skóre odpovídá skupině.
