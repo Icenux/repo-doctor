@@ -103,9 +103,12 @@ class RootDialog(ModalScreen[RootConfig | None]):
             if count
             else _("zatím žádné git repozitáře (do hloubky 5)")
         )
-        self.app.call_from_thread(self._probed, text, depth, count)
+        self.app.call_from_thread(self._probed, value, text, depth, count)
 
-    def _probed(self, text: str, depth: int, count: int) -> None:
+    def _probed(self, value: str, text: str, depth: int, count: int) -> None:
+        # vlákno jde zrušit až po doběhnutí: pozdní výsledek pro rozepsanou cestu nesmí přepsat aktuální
+        if value != self.query_one("#path", Input).value:
+            return
         self.query_one("#found", Static).update(text)
         depth_in = self.query_one("#depth", Input)
         # u nové složky pole předvyplníme návrhem, ale uživatelovu hodnotu nepřepisujeme
