@@ -20,7 +20,10 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Pevná verze runneru, ne ubuntu-latest: setup-python v kontejneru použije Python z cache
+    # hostitele (/__t). Na ubuntu-26.04 vyžaduje novější glibc, než má kontejner, a spadne
+    # (GLIBC_2.38 not found). Na ubuntu-24.04 build prošel (0.4.0).
+    runs-on: ubuntu-24.04
     # glibc 2.35 – sestavená aplikace poběží na Ubuntu 22.04+, Debianu 12+, Fedoře…
     container: ubuntu:22.04
     steps:
