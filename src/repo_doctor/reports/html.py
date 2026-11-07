@@ -128,6 +128,12 @@ def _repo(r: RepoResult) -> str:
             + escape(", ".join(f"{k}: {v}" for k, v in sorted(r.errors.items())))
             + "</p>"
         )
+    if r.hidden_fakes:
+        extra += (
+            "<p class=muted>"
+            + escape(_("Skryto jako zjevně vymyšlené hodnoty: {n}").format(n=r.hidden_fakes))
+            + "</p>"
+        )
     return (
         f'<details class="panel repo stripe {cls}" data-repo="{escape(r.name)}" {"open" if r.findings else ""}>'
         f"{head}<p class=muted>{escape(r.path)}</p>{body}{extra}</details>"

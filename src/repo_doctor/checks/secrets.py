@@ -41,6 +41,14 @@ def _to_finding(check: Check, m: SecretMatch, *, history: bool) -> Finding:
     )
 
 
+def _drop_fakes(repo: RepoContext, matches: list[SecretMatch]) -> list[SecretMatch]:
+    """Odřízne zjevně vymyšlené hodnoty od gitleaksu; jejich otisky si zapamatuje pro report."""
+    if not repo.config.hide_fake_secrets:
+        return matches
+    repo.hidden_fakes.update(m.fingerprint for m in matches if m.fake)
+    return [m for m in matches if not m.fake]
+
+
 @register
 class SecretsTree(Check):
     id = "secrets-tree"
@@ -57,7 +65,7 @@ class SecretsTree(Check):
             except subprocess.TimeoutExpired:
                 return [self.incomplete(_("gitleaks nestihl proběhnout v časovém limitu"))]
             allowed = set(repo.all_files)
-            matches = [m for m in matches if m.path in allowed]
+            matches = _drop_fakes(repo, [m for m in matches if m.path in allowed])
         else:
             matches = []
             for rel in repo.all_files:
@@ -91,6 +99,7 @@ class SecretsHistory(Check):
                 matches = run_gitleaks(repo.path, history=True, timeout=timeout)
             except subprocess.TimeoutExpired:
                 return [self.incomplete(_("gitleaks nestihl projít historii v časovém limitu"))]
+            matches = _drop_fakes(repo, matches)
         else:
             matches = []
             try:

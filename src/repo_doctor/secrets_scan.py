@@ -186,6 +186,7 @@ class SecretMatch:
     line: int
     commit: str | None = None
     commit_ts: int | None = None
+    fake: bool = False  # gitleaks: hodnota je zjevně vymyšlená (řada, perioda, zkrácený příklad)
 
 
 def entropy(value: str) -> float:
@@ -210,7 +211,7 @@ TRUNCATED_EXAMPLE = re.compile(r"[A-Za-z0-9_-]{0,12}(?:\.\.\.|…)[A-Za-z0-9_-]{
 # Jen známé vendorské prefixy; obecné `Company_` či `Prod-` se neodřezává (skrylo by skutečné heslo).
 KEY_PREFIX = re.compile(
     r"sk-ant-api\d+-|sk-(?:proj|svcacct|admin)-|sk-|github_pat_|gh[pousr]_"
-    r"|gl(?:pat|dt|rt|ptt|cbt)-|xox[abposr]-"
+    r"|gl(?:pat|dt|rt|ptt|cbt)-|xox[abposr]-|(?:sk|pk|rk)_(?:live|test)_|AIza"
 )
 
 
@@ -240,6 +241,13 @@ def _sequence_share(value: str) -> float:
     return sum(covered) / n
 
 
+def _is_interleaved(value: str) -> bool:
+    """Dvě řady přes sebe: `9f8e7d6c5b4a` (9876…) a (fedc…) na sudých a lichých místech."""
+    if len(value) < 2 * SEQUENCE_RUN:
+        return False
+    return all(_sequence_share(half) >= SEQUENCE_SHARE for half in (value[0::2], value[1::2]))
+
+
 def _is_periodic(value: str) -> bool:
     n = len(value)
     if n < 2 * MAX_PERIOD:
@@ -250,8 +258,8 @@ def _is_periodic(value: str) -> bool:
     return False
 
 
-def _is_obvious_fake(value: str) -> bool:
-    """Celá hodnota je zjevně vymyšlená: `sk-abc...xyz`, `1234567890`, `abcdefgh`, `zxyxzxyx`.
+def is_obvious_fake(value: str) -> bool:
+    """Celá hodnota je zjevně vymyšlená: `sk-abc...xyz`, `1234567890`, `abcdefgh`, `zxyxzxyx`, `9f8e7d6c5b4a`.
 
     Posuzuje se hodnota jako celek, ne podřetězec: reálné heslo `Company123456` se dál hlásí.
     Řada či perioda se hledá i v těle za známým vendorským prefixem (`sk-ant-api03-AbCdEf…`), jinak
@@ -261,7 +269,10 @@ def _is_obvious_fake(value: str) -> bool:
         return True
     prefix = KEY_PREFIX.match(value)
     bodies = (value, value[prefix.end() :]) if prefix else (value,)
-    return any(_sequence_share(b) >= SEQUENCE_SHARE or _is_periodic(b) for b in bodies)
+    return any(
+        _sequence_share(b) >= SEQUENCE_SHARE or _is_periodic(b) or _is_interleaved(b)
+        for b in bodies
+    )
 
 
 def _looks_placeholder(value: str) -> bool:
@@ -315,7 +326,7 @@ def _first_match(rule: Rule, line: str) -> str | None:
         value = m.group(rule.group)
         if rule.id in PLACEHOLDER_RULES and _looks_placeholder(value):
             continue
-        if rule.id not in NO_FAKE_FILTER and _is_obvious_fake(value):
+        if rule.id not in NO_FAKE_FILTER and is_obvious_fake(value):
             continue
         if rule.id == "connection-string" and value.lower() in DEFAULT_DB_PASSWORDS:
             continue
@@ -464,6 +475,7 @@ def run_gitleaks(repo: Path, *, history: bool, timeout: float) -> list[SecretMat
     matches = []
     for item in data if isinstance(data, list) else []:
         secret = str(item.get("Secret") or item.get("Match") or "")
+        rule_id = str(item.get("RuleID", "gitleaks"))
         date = str(item.get("Date") or "")
         ts: int | None = None
         if date:
@@ -478,7 +490,7 @@ def run_gitleaks(repo: Path, *, history: bool, timeout: float) -> list[SecretMat
             file = file[len(str(repo)) :].lstrip("/")
         matches.append(
             SecretMatch(
-                rule=str(item.get("RuleID", "gitleaks")),
+                rule=rule_id,
                 kind=str(item.get("Description") or item.get("RuleID") or _("tajemství")),
                 masked=mask(secret),
                 fingerprint=fingerprint(secret),
@@ -486,6 +498,7 @@ def run_gitleaks(repo: Path, *, history: bool, timeout: float) -> list[SecretMat
                 line=int(item.get("StartLine") or 0),
                 commit=str(item.get("Commit")) if item.get("Commit") else None,
                 commit_ts=ts,
+                fake=rule_id not in NO_FAKE_FILTER and is_obvious_fake(secret),
             )
         )
         del secret

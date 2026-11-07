@@ -8,14 +8,18 @@ from typing import Any
 import pytest
 
 from repo_doctor import secrets_scan
-from repo_doctor.checks import SkipCheck
+from repo_doctor.checks import SkipCheck, get_check
 from repo_doctor.checks.secrets import is_sensitive_file
-from repo_doctor.config import Config, LimitsConfig
+from repo_doctor.config import Config, ConfigError, LimitsConfig, RootConfig, load_repo_overrides
+from repo_doctor.forges.urls import SshConfig
 from repo_doctor.gitwrap import Git, GitTimeout
+from repo_doctor.reports import html, jsonreport, markdown
+from repo_doctor.scanner import Scanner, ScanOptions
 from repo_doctor.secrets_scan import entropy, is_excluded_path, parse_log_patch, scan_text
 from tests import factory as fx
 from tests.factory import RepoBuilder
 from tests.helpers import ctx, run
+from tests.sample import NOW
 
 ALL_FAKES = {
     "aws-access-key": lambda: f"key = {fx.fake_aws_key()}",
@@ -62,6 +66,39 @@ SEQ_DIGITS = "".join(str(i) for i in range(10))
 SEQ_UP = "abcdefghijklmnopqrstuvwxyz"
 SEQ_DOWN = SEQ_UP[::-1]
 SEQ_MIXED = "".join(c.upper() if i % 2 == 0 else c for i, c in enumerate(SEQ_UP))  # AbCdEf…
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "sk_" + "live_" + SEQ_MIXED[:18],  # Stripe: prefix nesmí ředit řadu
+        "AI" + "zaSyA-" + SEQ_DIGITS + SEQ_UP[:21],
+        "gl" + "pat-" + SEQ_MIXED[:20],
+        "abcdef123456",
+        "9f8e7d6c5b4a",  # dvě řady přes sebe (9876… a fedc…)
+        "0a1b2c3d4e5f",
+        "z" * 10,
+        "abc...xyz",
+    ],
+)
+def test_is_obvious_fake_recognizes_made_up_values(value: str) -> None:
+    assert secrets_scan.is_obvious_fake(value)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "Company123456",  # skutečné slabé heslo s řadou na konci
+        "hunter2secret",
+        "wrong-key-that-does-not-match",
+        "a3F9kQ2xZ7mP4wL8",
+        "sk_" + "live_" + "q8W3e7R2t5Y9u1I4o6P0",
+        fx.fake_github_token(),
+        fx.fake_generic_secret(),
+    ],
+)
+def test_is_obvious_fake_keeps_real_looking_values(value: str) -> None:
+    assert not secrets_scan.is_obvious_fake(value)
 
 
 @pytest.mark.parametrize(
@@ -251,6 +288,90 @@ def test_gitleaks_integration(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -
     assert len(hist) == 1  # deduplikace podle otisku
     assert "--no-git" not in calls[1]
     assert secret not in json.dumps([f.model_dump(mode="json") for f in tree + hist])
+
+
+def _leak(rule: str, secret: str, rb: RepoBuilder, line: int = 3, **extra: Any) -> dict[str, Any]:
+    return {
+        "RuleID": rule,
+        "Description": rule,
+        "File": str(rb.path) + "/app.env",
+        "StartLine": line,
+        "Secret": secret,
+        "Commit": "abc1234",
+        "Date": "2026-03-14T10:00:00Z",
+        **extra,
+    }
+
+
+def _fakes_report(rb: RepoBuilder) -> tuple[list[Any], str]:
+    real = fx.fake_github_token()
+    report = [
+        _leak("stripe-access-token", "sk_" + "live_" + SEQ_MIXED[:18], rb, 1),
+        _leak("gcp-api-key", "AI" + "zaSyA-" + SEQ_DIGITS + SEQ_UP[:21], rb, 2),
+        _leak("gitlab-pat", "gl" + "pat-" + SEQ_MIXED[:20], rb, 3),
+        _leak("generic-api-key", "9f8e7d6c5b4a", rb, 4),
+        _leak("generic-api-key", "Company123456", rb, 5),  # skutečné slabé heslo zůstává
+        _leak("github-pat", real, rb, 6),
+    ]
+    return report, real
+
+
+def test_gitleaks_obvious_fakes_are_hidden_and_counted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rb = RepoBuilder.create(tmp_path / "r")
+    rb.write("app.env", "x").commit()
+    report, _real = _fakes_report(rb)
+    _fake_gitleaks(monkeypatch, report)
+    c = ctx(rb.path)
+    tree = get_check("secrets-tree").run(c)  # type: ignore[union-attr]
+    hist = get_check("secrets-history").run(c)  # type: ignore[union-attr]
+    # zůstalo slabé heslo a náhodný token; čtyři vymyšlené hodnoty zmizely
+    assert sorted(f.location.line or 0 for f in tree) == [5, 6]
+    assert sorted(f.location.line or 0 for f in hist) == [5, 6]
+    # strom i historie hlásí tytéž hodnoty – počítají se jednou
+    assert len(c.hidden_fakes) == 4
+
+
+def test_gitleaks_private_key_is_never_judged_as_fake(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rb = RepoBuilder.create(tmp_path / "r")
+    rb.write("app.env", "x").commit()
+    _fake_gitleaks(monkeypatch, [_leak("private-key", "z" * 40, rb)])
+    assert len(run("secrets-tree", rb.path)) == 1
+
+
+def test_gitleaks_fakes_stay_when_filter_is_off(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rb = RepoBuilder.create(tmp_path / "r")
+    rb.write("app.env", "x").commit()
+    report, _real = _fakes_report(rb)
+    _fake_gitleaks(monkeypatch, report)
+    c = ctx(rb.path, Config(hide_fake_secrets=False))
+    assert len(get_check("secrets-tree").run(c)) == 6  # type: ignore[union-attr]
+    assert c.hidden_fakes == set()
+
+
+def test_repo_config_cannot_turn_the_filter_on_or_off(tmp_path: Path) -> None:
+    (tmp_path / ".repo-doctor.toml").write_text("hide_fake_secrets = false\n")
+    with pytest.raises(ConfigError):
+        load_repo_overrides(tmp_path)
+
+
+async def test_scan_reports_hidden_fakes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    rb = RepoBuilder.create(tmp_path / "projekty" / "r")
+    rb.write("app.env", "x").commit()
+    report, _real = _fakes_report(rb)
+    _fake_gitleaks(monkeypatch, report)
+    cfg = Config(roots=[RootConfig(path=str(tmp_path / "projekty"))])
+    result = await Scanner(cfg, ScanOptions(offline=True, now=NOW), ssh_config=SshConfig()).run()
+    (repo,) = result.repos
+    assert repo.hidden_fakes == 4
+    assert "vymyšlené hodnoty: 4" in markdown.render(result)
+    assert "vymyšlené hodnoty: 4" in html.render(result)
+    assert json.loads(jsonreport.render(result))["repos"][0]["hidden_fakes"] == 4
 
 
 def test_gitleaks_timeout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

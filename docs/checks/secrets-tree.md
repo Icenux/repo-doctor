@@ -4,7 +4,7 @@
 
 ## Co kontrola hledá
 
-Prochází sledované i nesledované (neignorované) soubory a hledá API klíče (AWS, GitHub, GitLab, Slack, OpenAI, Anthropic), privátní SSH/PGP klíče, JWT, connection stringy s heslem a obecná tajemství s vysokou entropií. Pokud je nainstalovaný `gitleaks`, použije se jeho detekce. Lockfily a testovací fixtury (`fixtures/`, `testdata/`, `__snapshots__/`) se přeskakují, stejně jako řádky označené `gitleaks:allow` nebo `repo-doctor:allow`.
+Prochází sledované i nesledované (neignorované) soubory a hledá API klíče (AWS, GitHub, GitLab, Slack, OpenAI, Anthropic), privátní SSH/PGP klíče, JWT, connection stringy s heslem a obecná tajemství s vysokou entropií. Pokud je nainstalovaný `gitleaks`, použije se jeho detekce. Lockfily a testovací fixtury (`fixtures/`, `testdata/`, `__snapshots__/`) se přeskakují, stejně jako řádky označené `gitleaks:allow` nebo `repo-doctor:allow`. Zjevně vymyšlené hodnoty (`abcdef…`, `123456…`, `9f8e7d6c5b4a`, zkrácené `abc...xyz`) se nehlásí ani u nálezů z `gitleaks`; jejich počet je v reportu (`Skryto jako zjevně vymyšlené hodnoty`) a filtr jde vypnout volbou `hide_fake_secrets = false` v `config.toml`. Skutečné slabé heslo jako `Company123456` se hlásí dál.
 
 ## Proč to vadí
 

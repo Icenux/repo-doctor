@@ -4,7 +4,7 @@
 
 ## What the check looks for
 
-Goes through the whole history (`git log --all -p`) and scans added lines with the same rules as `secrets-tree`. The finding shows the commit that added the secret. On huge repositories the scan stops after the time limit (`limits.history_timeout_s`) with a `scan-incomplete` finding.
+Goes through the whole history (`git log --all -p`) and scans added lines with the same rules as `secrets-tree`. The finding shows the commit that added the secret. On huge repositories the scan stops after the time limit (`limits.history_timeout_s`) with a `scan-incomplete` finding. Obviously made-up values are hidden the same way as in `secrets-tree` (option `hide_fake_secrets`).
 
 ## Why it matters
 

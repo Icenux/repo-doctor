@@ -346,6 +346,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -578,6 +579,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -767,6 +769,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -936,6 +939,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1089,6 +1093,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1240,6 +1245,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1391,6 +1397,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1500,6 +1507,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1615,6 +1623,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1694,6 +1703,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1754,6 +1764,7 @@
         },
         "findings": [],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1833,6 +1844,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1893,6 +1905,7 @@
         },
         "findings": [],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
@@ -1972,6 +1985,7 @@
           }
         ],
         "allowlisted": 0,
+        "hidden_fakes": 0,
         "skipped": {},
         "errors": {},
         "details": {
