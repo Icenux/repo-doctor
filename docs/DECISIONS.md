@@ -733,3 +733,25 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
 - **Vědomě neděláme:** nevylučujeme složku `tests/`; skutečné klíče se do testů dostávají omylem a vyloučení by je
   skrylo celé. Skutečné, ale triviální heslo ve tvaru řady (`abcdef123456`) se skryje (stejně jako dosud ve
   vestavěném skeneru).
+
+## my-repo: správa repozitářů (#81)
+
+- **Změna směru:** repo-doctor se přejmenuje na **my-repo**. Hlavní funkcí je přehled o stavu repozitářů a práce
+  s nimi; léčba a nálezy jsou jedna z funkcí. Plán a rozkouskování na issues milestonu 0.5.0 jsou v
+  [`docs/design/sprava-repozitaru.md`](design/sprava-repozitaru.md).
+- **Rozsah 0.5.0:** prohlížeč repa, editace souborů, issues, PR, Actions, větve a tagy, vydání. Mimo rozsah:
+  nastavení repa, zakládání a mazání repozitářů, vestavěný editor.
+- **Menu:** levé menu podle funkcí (Přehled, Repa, Issues, Pull requesty, Actions, Léčba, Nastavení); Enter na repu
+  otevře záložky repa.
+- **Vzdálená repa:** čtení i editace přes API hostingu, editace vždy na novou větev (volitelně s PR).
+- **Editace lokálně:** přes `$VISUAL` / `$EDITOR`, pak diff a commit na pracovní větev.
+- **Zásady zůstávají:** náhled a potvrzení s výchozí volbou „Zrušit“, žádný force push, merge jen po zelené CI,
+  do výchozí a chráněné větve se přímo nezapisuje, „stačí git“ platí i dál.
+- **Přejmenování:** celé najednou; příkaz `repo-doctor` dočasně jako alias, konfigurace a data se přenesou, nové
+  balíčky nahradí staré.
+- **Editor (#120):** řetěz volba `editor` v nastavení, `core.editor`, `$VISUAL`, `$EDITOR`, `editor`, `sensible-editor`,
+  `vi`, `nano`; bez nálezu hláška s návodem, nic se neinstaluje ani nespouští, vestavěný editor není.
+- **Audit log (#122):** JSONL v `~/.local/state/my-repo/audit.jsonl` (práva 600), čas, rozhraní (u MCP i klient),
+  akce, repo, cíl a výsledek; bez obsahu souborů, diffů a tajemství. Rotace 1 MB × 5 souborů.
+- **Hostingy (#111, #118, #121):** každý deklaruje schopnosti, chybějící UI skryje s vysvětlením; GitHub, Forgejo/Gitea
+  i GitLab mají ve 0.5.0 stejný rozsah včetně editace přes API a logů CI (GitLab pipelines jako Actions).
