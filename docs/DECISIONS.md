@@ -733,3 +733,9 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   do výchozí a chráněné větve se přímo nezapisuje, „stačí git“ platí i dál.
 - **Přejmenování:** celé najednou; příkaz `repo-doctor` dočasně jako alias, konfigurace a data se přenesou, nové
   balíčky nahradí staré.
+- **Editor (#120):** řetěz volba `editor` v nastavení, `core.editor`, `$VISUAL`, `$EDITOR`, `editor`, `sensible-editor`,
+  `vi`, `nano`; bez nálezu hláška s návodem, nic se neinstaluje ani nespouští, vestavěný editor není.
+- **Audit log (#122):** JSONL v `~/.local/state/my-repo/audit.jsonl` (práva 600), čas, rozhraní (u MCP i klient),
+  akce, repo, cíl a výsledek; bez obsahu souborů, diffů a tajemství. Rotace 1 MB × 5 souborů.
+- **Hostingy (#111, #118, #121):** každý deklaruje schopnosti, chybějící UI skryje s vysvětlením; GitHub, Forgejo/Gitea
+  i GitLab mají ve 0.5.0 stejný rozsah včetně editace přes API a logů CI (GitLab pipelines jako Actions).

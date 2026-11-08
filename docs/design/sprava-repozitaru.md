@@ -98,8 +98,30 @@ Zkratky zůstávají jen v `keymap.py`.
 | #123 | MCP: nové nástroje a úrovně oprávnění (#96) | čtecí funkce |
 | #124 | Dokumentace, nápověda, zkratky, překlady | průběžně |
 
-## Otevřené otázky
+## Dořešená rozhodnutí
 
-- Chování editace bez nastaveného `$EDITOR` (záložní postup bez doporučování instalace).
-- Kam do audit logu ukládat a jak dlouho (řeší #122).
-- Rozdíly API hostingů u editace a Actions (řeší #121, #118).
+### Editor, když žádný není (#120)
+
+Pořadí hledání: volba `editor` v nastavení my-repo, `core.editor` z gitu, `$VISUAL`, `$EDITOR`, `editor`
+(Debian/Ubuntu alternativy), `sensible-editor`, `vi`, `nano`. První nalezený se použije. Nenajde-li se nic,
+zobrazí se hláška s návodem nastavit `editor` v Nastavení nebo `$EDITOR`. Nic se nespouští, neinstaluje
+a neradí „nainstaluj X“. Vestavěný editor se nedělá.
+
+### Audit log (#122)
+
+- Soubor `~/.local/state/my-repo/audit.jsonl` (XDG state; respektuje `XDG_STATE_HOME`), práva `600`.
+- Jeden řádek JSON na každý zápis: čas, rozhraní (`tui` / `cli` / `mcp`, u MCP i jméno klienta), akce, repo,
+  cíl (větev, číslo issue nebo PR, tag), výsledek (`ok` / `zrušeno` / `chyba`).
+- Nikdy se nezapisuje obsah souborů, diffy, texty komentářů ani tajemství; e-maily se maskují.
+- Rotace při 1 MB, uchová se 5 souborů. Prohlížeč v TUI (sekce Nastavení) a příkaz `my-repo audit`.
+- Zápis do logu nesmí shodit samotný zápis: selže-li, ukáže se varování.
+
+### Rozdíly hostingů (#111, #118, #121)
+
+- Každý hosting deklaruje své **schopnosti** (např. `read_tree`, `edit_files`, `ci_logs`, `ci_rerun`,
+  `ci_dispatch`, `releases`). Verze Forgejo/Gitea, které Actions nemají, se pozná podle odpovědi API.
+- Chybějící schopnost UI skryje nebo zašedí s vysvětlením, nikdy nespadne.
+- GitHub, Forgejo/Gitea i GitLab mají ve 0.5.0 **stejný rozsah**, včetně editace přes API a logů CI.
+  GitLab pipelines se zobrazují jako Actions.
+- Rozdíly (SHA souboru, konflikty, názvy polí) řeší adaptér hostingu v `forges/`, ne UI. Každý je pokrytý
+  testy s `respx`.
