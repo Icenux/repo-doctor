@@ -717,3 +717,19 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   jen když existuje `pyproject.toml`/`setup.py`), pak `ruff` a `pytest`.
 - **Zůstává (funkce produktu):** rozpoznávání `uv.lock` v cizích projektech, jeho přepis při opravě
   zranitelných závislostí (`lockfiles/pypi.py`) a zmínky `uv` v dokumentaci kontrol jako příklady.
+
+## my-repo: správa repozitářů (#81)
+
+- **Změna směru:** repo-doctor se přejmenuje na **my-repo**. Hlavní funkcí je přehled o stavu repozitářů a práce
+  s nimi; léčba a nálezy jsou jedna z funkcí. Plán a rozkouskování na issues milestonu 0.5.0 jsou v
+  [`docs/design/sprava-repozitaru.md`](design/sprava-repozitaru.md).
+- **Rozsah 0.5.0:** prohlížeč repa, editace souborů, issues, PR, Actions, větve a tagy, vydání. Mimo rozsah:
+  nastavení repa, zakládání a mazání repozitářů, vestavěný editor.
+- **Menu:** levé menu podle funkcí (Přehled, Repa, Issues, Pull requesty, Actions, Léčba, Nastavení); Enter na repu
+  otevře záložky repa.
+- **Vzdálená repa:** čtení i editace přes API hostingu, editace vždy na novou větev (volitelně s PR).
+- **Editace lokálně:** přes `$VISUAL` / `$EDITOR`, pak diff a commit na pracovní větev.
+- **Zásady zůstávají:** náhled a potvrzení s výchozí volbou „Zrušit“, žádný force push, merge jen po zelené CI,
+  do výchozí a chráněné větve se přímo nezapisuje, „stačí git“ platí i dál.
+- **Přejmenování:** celé najednou; příkaz `repo-doctor` dočasně jako alias, konfigurace a data se přenesou, nové
+  balíčky nahradí staré.
