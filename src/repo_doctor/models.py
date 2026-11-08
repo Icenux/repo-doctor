@@ -174,6 +174,7 @@ class RepoResult(BaseModel):
     state: RepoState = Field(default_factory=RepoState)
     findings: list[Finding] = Field(default_factory=list)
     allowlisted: int = 0
+    hidden_fakes: int = 0  # zjevně vymyšlené hodnoty od gitleaksu, které se nehlásí
     skipped: dict[str, str] = Field(default_factory=dict)  # check_id → důvod
     errors: dict[str, str] = Field(default_factory=dict)
     forge_info: dict[str, str | int | bool | None] = Field(default_factory=dict)

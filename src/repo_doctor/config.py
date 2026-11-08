@@ -289,6 +289,10 @@ class Config(_Model):
     templates_dir: str | None = None
     # false = nepřipojovat `-o BatchMode=yes` (pro wrapper v core.sshCommand, který argumenty nepředá)
     ssh_batch_mode: bool = True
+    # Gitleaks hlásí i zjevně vymyšlené hodnoty (řady abcdef…/123456…, zkrácené příklady). Vestavěný
+    # skener je zahazuje vždy; tady se stejný filtr použije i na nálezy gitleaksu (počet viz report).
+    # Jen globálně – `.repo-doctor.toml` cizího repa si nálezy skrýt nemůže.
+    hide_fake_secrets: bool = True
     # Hosty, pro které je povolený nešifrovaný http (např. Forgejo za Tailscale). Jen v globální
     # konfiguraci – `.repo-doctor.toml` cizího repa si http povolit nemůže.
     allow_http_hosts: list[str] = Field(default_factory=list)

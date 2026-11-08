@@ -4,6 +4,21 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Přidáno
+- **Balíček pro Arch Linux:** vydání nově obsahuje `repo-doctor-VERZE-1-x86_64.pkg.tar.zst` pro pacman repozitář
+  Icenux (`https://icenux.github.io/icenux/arch/$arch`). Instalace i aktualizace běží přes `pacman`; AUR
+  (`repo-doctor-bin`) zůstává. Release workflow ho zkouší nainstalovat v kontejneru Arch Linuxu.
+
+### Opraveno
+- **Falešné nálezy tajemství od gitleaksu:** s nainstalovaným `gitleaks` se hlásily i zjevně vymyšlené hodnoty
+  (`sk_live_AbCdEf…`, `glpat-AbCdEf…`, `AIzaSyA-1234…`, `api_key: 9f8e7d6c5b4a`), které vestavěný skener zahazoval.
+  Stejný filtr se teď použije i na nálezy gitleaksu (jen tvar hodnoty: řady, střídavé řady, periody, zkrácené
+  příklady; skutečné slabé heslo jako `Company123456` a privátní klíče se hlásí dál). Report ukazuje počet skrytých
+  hodnot, vypnout filtr jde volbou `hide_fake_secrets = false` (jen v globální konfiguraci).
+- **Zastaralé texty v aplikaci a README:** obrazovka Hostingy už netvrdí, že repo-doctor na hostingu nic nemění
+  (PR/MR a merge z Odeslání oprav zapisují, po potvrzení). Nápověda Nastavení nezmiňuje zrušený vzhled.
+  README už neuvádí zrušenou klávesu `b` pro levý panel (panel se zobrazí od šířky 100 sloupců).
+
 ## [0.4.1] – 2026-11-07
 
 ### Změněno

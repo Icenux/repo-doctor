@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Ze sestavené aplikace (dist/repo-doctor, viz packaging/build.sh) vyrobí soubory vydání
 # do dist/release/:
-#   repo-doctor_amd64.deb, repo-doctor.x86_64.rpm, repo-doctor-linux-x86_64.tar.gz,
+#   repo-doctor_amd64.deb, repo-doctor.x86_64.rpm, repo-doctor-VERZE-1-x86_64.pkg.tar.zst (Arch),
+#   repo-doctor-linux-x86_64.tar.gz,
 #   PKGBUILD (AUR repo-doctor-bin) a SHA256SUMS.
 #
 # Volání: packaging/package.sh [VERZE]     (výchozí verze z pyproject.toml; potřebuje nfpm v PATH)
@@ -28,6 +29,7 @@ if [ -z "$NFPM_RPM_KEY_FILE" ]; then
 fi
 nfpm package --config "$config" --packager deb --target "$out/repo-doctor_amd64.deb"
 nfpm package --config "$config" --packager rpm --target "$out/repo-doctor.x86_64.rpm"
+nfpm package --config "$config" --packager archlinux --target "$out/"   # repo-doctor-VERZE-1-x86_64.pkg.tar.zst
 
 # tarball: aplikace + značka instalace + instalační skript
 stage=$(mktemp -d)
@@ -42,6 +44,6 @@ rm -rf "$stage"
 sha=$(sha256sum "$out/repo-doctor-linux-x86_64.tar.gz" | cut -d' ' -f1)
 sed -e "s/@VERSION@/$VERSION/" -e "s/@SHA256@/$sha/" packaging/aur/PKGBUILD.in > "$out/PKGBUILD"
 
-(cd "$out" && sha256sum repo-doctor_amd64.deb repo-doctor.x86_64.rpm \
+(cd "$out" && sha256sum repo-doctor_amd64.deb repo-doctor.x86_64.rpm repo-doctor-*-x86_64.pkg.tar.zst \
     repo-doctor-linux-x86_64.tar.gz PKGBUILD > SHA256SUMS)
 ls -la "$out"

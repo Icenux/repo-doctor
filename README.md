@@ -545,6 +545,7 @@ check = true              # once a day the TUI checks GitHub Releases for a new 
 
 my_emails = ["me@proton.me"]   # your other addresses for the email-exposure check
 ssh_batch_mode = true     # false = don't add `-o BatchMode=yes` (custom SSH wrapper)
+hide_fake_secrets = true  # false = also report obviously made-up values (abcdef…, 123456…) found by gitleaks
 
 [ui]
 scan_on_start = false     # true = scan right after the TUI starts
@@ -611,7 +612,7 @@ the host refuses a step, or when you quit the application. The branch and the PR
 the Publishing fixes page to continue from where it stopped (steps that are done are skipped).
 
 **Notifications** (a block under *Folders* in the left panel of the overview, shown when the panel is visible –
-`b`, or a terminal at least 100 columns wide) list the running workflows (`⟳`) and the last five events
+a terminal at least 100 columns wide) list the running workflows (`⟳`) and the last five events
 (`●` unread, `✓` ok, `!` warning, `✗` error). `⏎` or a click opens the Publishing fixes page of that repo and marks the
 notification as read; `N` marks all as read. They are kept in `inbox.json` in the data directory (the last
 100). A failure also raises a desktop notification when `[notify] desktop` is on. Only one workflow runs per repo,

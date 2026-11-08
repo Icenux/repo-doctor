@@ -718,6 +718,22 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
 - **Zůstává (funkce produktu):** rozpoznávání `uv.lock` v cizích projektech, jeho přepis při opravě
   zranitelných závislostí (`lockfiles/pypi.py`) a zmínky `uv` v dokumentaci kontrol jako příklady.
 
+## Zjevně vymyšlené hodnoty i u gitleaksu
+
+- **Příčina:** s nainstalovaným `gitleaks` kontroly `secrets-tree` a `secrets-history` bral výsledky jen od něj
+  a filtr vymyšlených hodnot (`is_obvious_fake`) byl jen ve vestavěném skeneru. Testovací klíče typu
+  `sk_live_AbCdEf…` se proto hlásily jen na strojích s gitleaksem (výsledek závisel na tom, co je nainstalováno).
+- **Rozhodnutí:** `run_gitleaks` označí každou shodu (`SecretMatch.fake`) podle hodnoty `Secret` a kontrola ji
+  vynechá. Posuzuje se jen tvar celé hodnoty (řada, střídavé řady, perioda, zkrácený příklad). Placeholder slova
+  (`example`, `fake`…) se u gitleaksu **nepoužívají**, protože jeho pravidla mají pevné prefixy a slovo ve skutečném
+  hesle by nález skrylo. Privátní klíče se nefiltrují nikdy.
+- **Průhlednost:** počet skrytých hodnot (podle otisku, strom i historie dohromady) je v `RepoResult.hidden_fakes`,
+  v Markdown, HTML i JSON reportu. Filtr jde vypnout `hide_fake_secrets = false`; volba je jen globální, takže
+  `.repo-doctor.toml` cizího repa ji nezmění.
+- **Vědomě neděláme:** nevylučujeme složku `tests/`; skutečné klíče se do testů dostávají omylem a vyloučení by je
+  skrylo celé. Skutečné, ale triviální heslo ve tvaru řady (`abcdef123456`) se skryje (stejně jako dosud ve
+  vestavěném skeneru).
+
 ## my-repo: správa repozitářů (#81)
 
 - **Změna směru:** repo-doctor se přejmenuje na **my-repo**. Hlavní funkcí je přehled o stavu repozitářů a práce

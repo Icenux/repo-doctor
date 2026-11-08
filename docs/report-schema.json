@@ -298,6 +298,12 @@
           "title": "Allowlisted",
           "type": "integer"
         },
+        "hidden_fakes": {
+          "default": 0,
+          "description": "Obviously made-up secret values reported by gitleaks and hidden (config hide_fake_secrets)",
+          "title": "Hidden Fakes",
+          "type": "integer"
+        },
         "skipped": {
           "additionalProperties": {
             "type": "string"

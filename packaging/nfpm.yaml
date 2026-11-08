@@ -1,4 +1,4 @@
-# Balíčky .deb a .rpm ze sestavené aplikace (dist/repo-doctor) – volá packaging/package.sh.
+# Balíčky .deb, .rpm a .pkg.tar.zst (Arch, pacman repozitář Icenux) ze sestavené aplikace (dist/repo-doctor) – volá packaging/package.sh.
 # Balíček kromě aplikace při instalaci přidá společný repozitář Icenux a jeho podpisový klíč
 # (postinst.sh), takže další verze už přicházejí běžnou aktualizací systému.
 name: repo-doctor
@@ -46,6 +46,9 @@ contents:
   - src: packaging/files/install-kind.rpm
     dst: /usr/lib/repo-doctor/install-kind
     packager: rpm
+  - src: packaging/files/install-kind.pacman
+    dst: /usr/lib/repo-doctor/install-kind
+    packager: archlinux
 
   # zdroj balíčků Icenux: soubory leží vedle aplikace, na místo je dá packaging/scripts/postinst.sh
   - src: packaging/files/icenux.asc
@@ -68,6 +71,9 @@ contents:
   - src: LICENSE
     dst: /usr/share/licenses/repo-doctor/LICENSE
     packager: rpm
+  - src: LICENSE
+    dst: /usr/share/licenses/repo-doctor/LICENSE
+    packager: archlinux
 
 rpm:
   summary: TUI pro audit a údržbu lokálních git repozitářů
