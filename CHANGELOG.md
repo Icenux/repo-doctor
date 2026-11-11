@@ -4,6 +4,8 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+## [0.4.2] – 2026-11-11
+
 ### Přidáno
 - **Balíček pro Arch Linux:** vydání nově obsahuje `repo-doctor-VERZE-1-x86_64.pkg.tar.zst` pro pacman repozitář
   Icenux (`https://icenux.github.io/icenux/arch/$arch`). Instalace i aktualizace běží přes `pacman`; AUR
@@ -18,6 +20,15 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 - **Zastaralé texty v aplikaci a README:** obrazovka Hostingy už netvrdí, že repo-doctor na hostingu nic nemění
   (PR/MR a merge z Odeslání oprav zapisují, po potvrzení). Nápověda Nastavení nezmiňuje zrušený vzhled.
   README už neuvádí zrušenou klávesu `b` pro levý panel (panel se zobrazí od šířky 100 sloupců).
+- **Repo card keeps the selected finding after the editor closes (#127):** redrawing the card on resize or
+  theme change always selected the first finding and expanded every category. It now remembers the selected
+  finding (by fingerprint) and which categories are collapsed.
+- **Settings no longer freeze or burn CPU (#126):** the `*:focus`, `*:hover` and `*:focus-within` CSS rules made
+  Textual recompute the styles of the whole screen on every focus change and mouse move (~290 recalculations
+  per tab press). They were replaced by targeted selectors.
+- **MCP server sees the allowlist and app scans without a restart (#128):** the long-running server now watches
+  `config.toml` and the last scan result and reloads them when the app (TUI) changes them; an invalid,
+  half-written config keeps the last valid settings.
 
 ## [0.4.1] – 2026-11-07
 
