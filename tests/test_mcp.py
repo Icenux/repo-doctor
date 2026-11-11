@@ -199,3 +199,22 @@ async def test_stdio_server_lists_tools(tmp_path: Path) -> None:
             "health": None,
             "warnings": [],
         }
+
+
+def test_watch_picks_up_changes_made_by_the_app(tmp_path: Path) -> None:
+    """Server běží dlouho; allowlist a sken z aplikace (TUI) musí vidět bez restartu (#128)."""
+    from repo_doctor.config import AllowEntry, ConfigStore
+    from repo_doctor.models import ScanResult
+
+    store = ConfigStore()
+    store.load()
+    store.save()
+    tools = RepoDoctorTools(store.config, store=store, watch=True)
+    assert tools.result() is None
+    assert tools.config.allowlist == []
+
+    history.save_last_scan(ScanResult())
+    assert tools.result() is not None
+
+    ConfigStore().add_allow(AllowEntry(hash="0123456789abcdef", reason="test", check="x", repo="r"))
+    assert [a.hash for a in tools.config.allowlist] == ["0123456789abcdef"]

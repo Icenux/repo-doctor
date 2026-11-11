@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -15,6 +16,7 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.events import Resize
 from textual.widgets import Static, Tree
 
+from repo_doctor import history
 from repo_doctor.checkdocs import load as load_doc
 from repo_doctor.cleanup import human
 from repo_doctor.config import AllowEntry, ConfigError
@@ -441,6 +443,9 @@ class DetailScreen(BaseScreen):
                 return
             repo.findings = [f for f in repo.findings if f.fingerprint(repo.name) != fp]
             repo.allowlisted += 1
+            # MCP server (jiný proces) čte poslední sken z disku, ať vidí i tuhle výjimku
+            with contextlib.suppress(OSError):
+                history.save_last_scan(self.rd.result)
             self.rd.config_changed(config)
             self.notify(_("{check_id} přidán do allowlistu.").format(check_id=finding.check_id))
             self.render_all()
