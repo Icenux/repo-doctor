@@ -221,15 +221,51 @@ class RepoDoctorTools:
         load: Callable[[], ScanResult | None] = history.load_last_scan,
         save: Callable[[ScanResult], object] | None = history.save_last_scan,
         store: ConfigStore | None = None,
+        watch: bool = False,
     ) -> None:
-        self.config = config
+        self._config = config
         self._store = store
         self._load = load
         self._save = save
         self._result: ScanResult | None = None
+        # watch: dlouho běžící server hlídá změny souborů, které mezitím udělala aplikace (TUI)
+        self._watch = watch
+        self._config_stamp = self._stamp(store.path) if watch and store else None
+        self._result_stamp: tuple[int, int] | None = None
+
+    @staticmethod
+    def _stamp(file: Path) -> tuple[int, int] | None:
+        try:
+            st = file.stat()
+        except OSError:
+            return None
+        return (st.st_mtime_ns, st.st_size)
+
+    @property
+    def config(self) -> Config:
+        """Aktuální nastavení; změnil-li `config.toml` někdo jiný (TUI), načte se znovu."""
+        if self._watch and self._store is not None:
+            stamp = self._stamp(self._store.path)
+            if stamp != self._config_stamp:
+                self._config_stamp = stamp
+                # neplatný soubor (rozepsaná úprava) = zůstane poslední platné nastavení
+                with contextlib.suppress(ConfigError):
+                    self._config = self._store.load()
+        return self._config
+
+    @config.setter
+    def config(self, value: Config) -> None:
+        self._config = value
+        if self._watch and self._store is not None:
+            self._config_stamp = self._stamp(self._store.path)
 
     # -- data
     def result(self) -> ScanResult | None:
+        if self._watch:
+            stamp = self._stamp(paths.last_scan_file())
+            if stamp != self._result_stamp:
+                self._result_stamp = stamp
+                self._result = self._load()
         if self._result is None:
             self._result = self._load()
         return self._result
@@ -428,9 +464,15 @@ class RepoDoctorTools:
             current.repos = [updated.pop(r.path, r) for r in current.repos] + list(updated.values())
             fresh = current
         self._result = fresh
-        if self._save is not None:
-            self._save(fresh)
+        self._persist(fresh)
         return self.last_scan_summary()
+
+    def _persist(self, result: ScanResult) -> None:
+        if self._save is None:
+            return
+        self._save(result)
+        if self._watch:
+            self._result_stamp = self._stamp(paths.last_scan_file())
 
     def explain_check(self, check_id: str) -> CheckExplanation:
         check = next((c for c in all_checks() if c.id == check_id), None)
@@ -542,8 +584,8 @@ class RepoDoctorTools:
             raise ValueError(_text(str(err), 300)) from err
         r.findings = [f for f in r.findings if f.fingerprint(r.name) != fingerprint]
         r.allowlisted += 1
-        if self._save is not None and self._result is not None:
-            self._save(self._result)
+        if self._result is not None:
+            self._persist(self._result)
         return WriteOut(action="allowlist", applied=True, summary=summary.replace("Would", "Did"))
 
     def sync_ff(self, repo: str, confirm: bool = False) -> WriteOut:
@@ -819,5 +861,6 @@ def build_server(tools: RepoDoctorTools) -> MCPServer:
 
 
 def run(config: Config, store: ConfigStore | None = None) -> None:
-    server = build_server(RepoDoctorTools(config, store=store))
+    store = store or ConfigStore()
+    server = build_server(RepoDoctorTools(config, store=store, watch=True))
     asyncio.run(server.run_stdio_async())
