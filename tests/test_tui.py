@@ -648,6 +648,32 @@ async def test_command_palette_open_repo(tmp_path: Path) -> None:
         assert app.screen.path.endswith("blog")
 
 
+async def test_settings_focus_restyles_few_nodes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#126: změna fokusu v Nastavení nesmí přepočítat styly celé obrazovky (sekání, vysoké CPU)."""
+    from textual.css.stylesheet import Stylesheet
+
+    app = make_app(tmp_path)
+    async with app.run_test(size=(100, 40)) as pilot:
+        await pilot.pause()
+        await pilot.press("4")
+        await pilot.pause()
+        applied = 0
+        original = Stylesheet.apply
+
+        def counting(self: Stylesheet, *args: Any, **kwargs: Any) -> Any:
+            nonlocal applied
+            applied += 1
+            return original(self, *args, **kwargs)
+
+        monkeypatch.setattr(Stylesheet, "apply", counting)
+        for _ in range(10):
+            await pilot.press("tab")
+            await pilot.pause()
+        assert applied < 500, applied
+
+
 async def test_settings(tmp_path: Path) -> None:
     app = make_app(
         tmp_path,
