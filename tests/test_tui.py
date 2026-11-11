@@ -229,6 +229,24 @@ async def test_detail_actions(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -
         assert isinstance(app.screen, FixScreen)
 
 
+async def test_detail_keeps_selected_finding_on_rerender(tmp_path: Path) -> None:
+    """Po zavření editoru (Resize) zůstane vybraný nález, ne první (#127)."""
+    app = make_app(tmp_path)
+    async with app.run_test(size=(100, 31)) as pilot:
+        await pilot.pause()
+        await pilot.press("enter")
+        detail = app.screen
+        assert isinstance(detail, DetailScreen)
+        await pilot.press("j", "j")
+        chosen = detail.current
+        assert chosen is not None
+        name = detail.repo.name  # type: ignore[union-attr]
+        detail.render_all()
+        await pilot.pause()
+        assert detail.current is not None
+        assert detail.current.fingerprint(name) == chosen.fingerprint(name)
+
+
 async def test_detail_without_fixable(tmp_path: Path) -> None:
     result = sample_result()
     app = make_app(tmp_path, result=result)

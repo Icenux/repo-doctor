@@ -367,10 +367,17 @@ class DetailScreen(BaseScreen):
         split_title(header, _("karta · {name}").format(name=repo.name), home_path(repo.path))
         header.update(card_header(repo, app, self.app.size.width))
         tree = self.query_one(Tree)
+        keep = self.current.fingerprint(repo.name) if self.current else None
+        collapsed = {
+            str(n.label)[:20].strip()
+            for n in tree.root.children
+            if not n.is_expanded and n.children
+        }
         tree.clear()
         panel = self.query_one("#findings-panel")
         panel.border_title = _(" NÁLEZY · {len} ").format(len=len(repo.findings))
         first = None
+        kept = None
         for cat in CATEGORY_ORDER:
             items = sorted(
                 (f for f in repo.findings if f.category is cat),
@@ -378,7 +385,9 @@ class DetailScreen(BaseScreen):
             )
             label = Text(f"{cat.label:<20}", style=Style(color=p.text, bold=True))
             label.append(f"{len(items):>3}", style=Style(color=p.muted))
-            node = tree.root.add(label, data=None, expand=bool(items))
+            node = tree.root.add(
+                label, data=None, expand=bool(items) and cat.label not in collapsed
+            )
             for f in items:
                 leaf = Text(f"{f.severity.symbol} ", style=Style(color=p.severity(f.severity)))
                 leaf.append(f"{f.check_id:<22}", style=Style(color=p.text))
@@ -387,13 +396,18 @@ class DetailScreen(BaseScreen):
                 n = node.add_leaf(leaf, data=f)
                 if first is None:
                     first = n
+                if keep is not None and f.fingerprint(repo.name) == keep:
+                    kept = n
         hint = Text(_("✓ opravitelné automaticky\n"), style=Style(color=p.ok))
         hint.append(_("a allowlist · skryje nález"), style=Style(color=p.muted))
         self.query_one("#findings-hint", Static).update(hint)
         self.query_one("#diagnosis").border_title = _(" DIAGNÓZA ")
-        if first is not None:
-            tree.move_cursor(first)
-            self.current = first.data
+        target = kept or first
+        if target is not None:
+            if target.parent is not None:
+                target.parent.expand()
+            tree.move_cursor(target)
+            self.current = target.data
         else:
             self.current = None
         self._show()
