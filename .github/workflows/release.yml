@@ -26,8 +26,16 @@ jobs:
     steps:
       - name: systémové nástroje
         run: |
-          apt-get update -qq
-          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq binutils ca-certificates curl git gnupg
+          # Síť v kontejneru občas na chvíli neumí DNS (0.4.2: „Could not resolve archive.ubuntu.com“,
+          # apt-get update jen varuje a až install skončí kódem 100) – proto opakování celé dvojice.
+          echo 'Acquire::Retries "5";' > /etc/apt/apt.conf.d/80-retries
+          for pokus in 1 2 3 4 5; do
+            apt-get update -qq \
+              && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq binutils ca-certificates curl git gnupg \
+              && exit 0
+            echo "apt selhal (pokus $pokus/5), čekám…"; sleep $((pokus * 10))
+          done
+          exit 1
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       # Hostitelský runner mapuje svou cache nástrojů do kontejneru jako /__t a setup-python z ní
       # vezme hotový Python. Ten je sestavený pro novější glibc než 2.35 z kontejneru a hned při
@@ -99,8 +107,8 @@ jobs:
         run: |
           case "$KIND" in
             deb)
-              apt-get update -qq
-              DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "$PWD/rel/repo-doctor_amd64.deb"
+              apt-get -o Acquire::Retries=5 update -qq
+              DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=5 install -y -qq "$PWD/rel/repo-doctor_amd64.deb"
               test -f /etc/apt/sources.list.d/icenux.list
               test -f /usr/share/keyrings/icenux.asc ;;
             rpm)
@@ -119,7 +127,7 @@ jobs:
               pacman -Syu --noconfirm
               pacman -U --noconfirm rel/repo-doctor-*-x86_64.pkg.tar.zst ;;
             tarball)
-              apt-get update -qq && apt-get install -y -qq git
+              apt-get -o Acquire::Retries=5 update -qq && apt-get -o Acquire::Retries=5 install -y -qq git
               useradd -m user
               su user -c "cd ~ && tar xzf $PWD/rel/repo-doctor-linux-x86_64.tar.gz && ./repo-doctor/install.sh"
               ln -s /home/user/.local/bin/repo-doctor /usr/local/bin/repo-doctor ;;
