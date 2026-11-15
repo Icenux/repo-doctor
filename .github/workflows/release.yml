@@ -173,3 +173,10 @@ jobs:
         run: gh api repos/Icenux/icenux.github.io/dispatches -f event_type=app-released
         env:
           GH_TOKEN: ${{ secrets.SITE_DISPATCH_TOKEN }}
+
+      - name: Notify the Icenux package repositories
+        # The shared APT/RPM/pacman repository (Icenux/icenux) otherwise waits for its next scheduled run.
+        continue-on-error: true
+        run: gh api repos/Icenux/icenux/dispatches -f event_type=app-released
+        env:
+          GH_TOKEN: ${{ secrets.SITE_DISPATCH_TOKEN }}
