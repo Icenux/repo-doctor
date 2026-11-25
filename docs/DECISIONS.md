@@ -764,6 +764,9 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   `pip-compile` zámky s hashi z `pyproject.toml` nezvládá.
 - **Akce GitHub Actions:** Dependabot (`.github/dependabot.yml`), pondělí 06:00 Praha, jedna skupina; SHA zůstávají
   připnuté s verzí v komentáři.
+- **Oddělená oprávnění:** job `update` (pip-compile, pytest = kód ze závislostí) běží jen s `contents: read`, bez
+  secretů a bez uložených přihlašovacích údajů; zámky předá artefaktem. Job `pr` kód ze závislostí nespouští, jen
+  pushne a otevře PR; PAT dostane jen v tomto jobu (fine-grained, jen toto repo).
 - **CI na PR z workflow:** PR vytvořený `GITHUB_TOKENEM` CI nespouští. Pro plnou CI je potřeba secret
   `DEPENDENCY_PR_TOKEN` (PAT); bez něj je výsledek testů v popisu PR a CI jde spustit ručně.
 - **Nastavení repa:** Settings → Actions → General → „Allow GitHub Actions to create and approve pull requests“.

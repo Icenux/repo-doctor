@@ -3,7 +3,10 @@ name: Týdenní aktualizace závislostí
 # ověří je (ruff, mypy, pytest) a otevře PR `chore/weekly-dependency-update`. Nic nového = nic se nevytvoří.
 # Akce GitHub Actions hlídá Dependabot (.github/dependabot.yml, také v pondělí).
 #
-# Aby na PR běžela i CI, přidej secret DEPENDENCY_PR_TOKEN (PAT s právy contents + pull requests).
+# Dva joby: `update` spouští kód ze závislostí (pip-compile, pytest), proto nemá žádné secrety ani právo zápisu;
+# `pr` jen vezme hotové zámky z artefaktu, pushne a otevře PR a žádný kód ze závislostí nespouští.
+# Aby na PR běžela i CI, přidej secret DEPENDENCY_PR_TOKEN (fine-grained PAT jen pro toto repo, contents +
+# pull requests: write).
 # PR vytvořený výchozím GITHUB_TOKENEM CI nespouští – výsledek testů je pak v popisu PR.
 # Ruční spuštění: Actions → "Týdenní aktualizace závislostí" → Run workflow.
 on:
@@ -11,8 +14,7 @@ on:
     - cron: "0 5 * * 1" # pondělí 05:00 UTC
   workflow_dispatch:
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 concurrency:
   group: dependency-updates
   cancel-in-progress: false
@@ -21,10 +23,13 @@ env:
 jobs:
   update:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+      verify: ${{ steps.verify.outcome }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          token: ${{ secrets.DEPENDENCY_PR_TOKEN || github.token }}
+          persist-credentials: false
       # Zámky jsou generované Pythonem 3.12 (viz docs/DECISIONS.md), stejná verze musí běžet i tady.
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
@@ -46,7 +51,8 @@ jobs:
       - name: seznam změn verzí
         if: steps.diff.outputs.changed == 'true'
         run: |
-          python - <<'PY' > "$RUNNER_TEMP/changes.md"
+          mkdir -p out
+          python - <<'PY' > out/changes.md
           import re, subprocess
           def pins(text):
               return dict(re.findall(r"^([A-Za-z0-9_.\-]+)==([^\s\\]+)", text, re.M))
@@ -58,7 +64,8 @@ jobs:
               print("\n".join(rows) or "- beze změny")
               print()
           PY
-          cat "$RUNNER_TEMP/changes.md"
+          cat out/changes.md
+          cp requirements-dev.txt requirements-build.txt out/
       - name: ověření (ruff, mypy, pytest)
         if: steps.diff.outputs.changed == 'true'
         id: verify
@@ -70,18 +77,45 @@ jobs:
           ruff format --check src tests
           mypy
           pytest -q
-      - name: PR
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: steps.diff.outputs.changed == 'true'
+        with:
+          name: locks
+          path: out/
+          retention-days: 7
+
+  pr:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: locks
+          path: ${{ runner.temp }}/locks
+      - name: PR
         env:
-          GH_TOKEN: ${{ secrets.DEPENDENCY_PR_TOKEN || github.token }}
-          VERIFY: ${{ steps.verify.outcome }}
+          TOKEN: ${{ secrets.DEPENDENCY_PR_TOKEN || github.token }}
+          VERIFY: ${{ needs.update.outputs.verify }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
+          set -euo pipefail
+          export GH_TOKEN="$TOKEN"
+          cp "$RUNNER_TEMP/locks/requirements-dev.txt" "$RUNNER_TEMP/locks/requirements-build.txt" .
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$BRANCH"
           git add requirements-dev.txt requirements-build.txt
           git commit -m "chore(deps): týdenní aktualizace zamčených závislostí"
-          git push --force origin "$BRANCH"
+          auth="$(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)"
+          echo "::add-mask::$auth"
+          git -c http.extraheader="Authorization: Basic $auth" push --force origin "$BRANCH"
           if [ "$VERIFY" = "success" ]; then
             verdict="✅ Ruff, mypy a pytest na Pythonu 3.12 prošly."
             draft=""
@@ -96,7 +130,7 @@ jobs:
             echo "Automatická týdenní aktualizace zamčených závislostí (\`pip-compile --upgrade\`, Python 3.12, s hashi)."
             echo
             echo "## Co bylo změněno"
-            cat "$RUNNER_TEMP/changes.md"
+            cat "$RUNNER_TEMP/locks/changes.md"
             echo "## Jak ověřit"
             echo "$verdict"
             echo "Běh: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
@@ -107,11 +141,11 @@ jobs:
             gh pr edit "$BRANCH" --title "$title" --body-file "$RUNNER_TEMP/body.md"
           else
             # shellcheck disable=SC2086
-            gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" \
+            gh pr create --base "$DEFAULT_BRANCH" --head "$BRANCH" \
               --title "$title" --body-file "$RUNNER_TEMP/body.md" --assignee Luquas95 $draft
           fi
       - name: ověření selhalo
-        if: steps.verify.outcome == 'failure'
+        if: needs.update.outputs.verify == 'failure'
         run: |
           echo "::error::Aktualizované závislosti neprošly ruff/mypy/pytest – PR je koncept."
           exit 1
