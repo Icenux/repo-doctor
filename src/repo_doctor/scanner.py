@@ -185,7 +185,11 @@ class Scanner:
         if self.ssh_config is None:
             self.ssh_config = await asyncio.to_thread(SshConfig.load)
         if not self.options.offline and self._net is None:
-            self._net = NetServices.create(self.config, cache_dir=paths.http_cache_dir())
+            # Tokeny z klíčenky / `token_cmd` mohou trvat sekundy (nebo čekat na odemčení klíčenky) –
+            # mimo event loop, jinak zamrzne celé TUI (#134).
+            self._net = await asyncio.to_thread(
+                NetServices.create, self.config, cache_dir=paths.http_cache_dir()
+            )
         if self._net:
             for name, reason in self._net.forges.unavailable.items():
                 msg = _("Hosting {name} je nedostupný: {reason}").format(name=name, reason=reason)

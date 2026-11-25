@@ -342,3 +342,23 @@ async def test_concurrency_respects_jobs(tmp_path: Path) -> None:
     ).run()
     assert peak == 1
     await asyncio.sleep(0)
+
+
+async def test_scan_connects_forges_off_event_loop(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#134: token z klíčenky / token_cmd se získává při startu skenu – nesmí blokovat event loop (UI)."""
+    import threading
+
+    main = threading.get_ident()
+    seen: list[int] = []
+    original = NetServices.create.__func__  # type: ignore[attr-defined]
+
+    def recording(cls: type[NetServices], /, *args: object, **kwargs: object) -> NetServices:
+        seen.append(threading.get_ident())
+        return original(cls, *args, **kwargs)  # type: ignore[no-any-return]
+
+    monkeypatch.setattr(NetServices, "create", classmethod(recording))
+    cfg = Config(roots=[RootConfig(path=str(make_tree(tmp_path)))])
+    await Scanner(cfg, ScanOptions(now=NOW), ssh_config=SshConfig()).run()
+    assert seen and main not in seen
