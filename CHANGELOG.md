@@ -4,6 +4,8 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+## [0.4.3] – 2026-11-25
+
 ### Přidáno
 - **Týdenní kontrola aktualizací:** workflow `dependency-updates.yml` každé pondělí přegeneruje zámky závislostí, ověří je a otevře PR; akce GitHub Actions hlídá Dependabot.
 
