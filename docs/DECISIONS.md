@@ -755,3 +755,18 @@ Záznam rozhodnutí, která zadání nechalo otevřená. Nejnovější nahoře v
   akce, repo, cíl a výsledek; bez obsahu souborů, diffů a tajemství. Rotace 1 MB × 5 souborů.
 - **Hostingy (#111, #118, #121):** každý deklaruje schopnosti, chybějící UI skryje s vysvětlením; GitHub, Forgejo/Gitea
   i GitLab mají ve 0.5.0 stejný rozsah včetně editace přes API a logů CI (GitLab pipelines jako Actions).
+
+## Týdenní aktualizace závislostí
+
+- **Python zámky:** workflow `dependency-updates.yml` každé pondělí (05:00 UTC) pustí `pip-compile --upgrade` na
+  Pythonu 3.12 (stejném jako původní zámky), ověří ruff + mypy + pytest a otevře PR `chore/weekly-dependency-update`.
+  Selže-li ověření, PR je koncept. Beze změn se nic nevytvoří. Vlastní skript místo Dependabotu, protože ten
+  `pip-compile` zámky s hashi z `pyproject.toml` nezvládá.
+- **Akce GitHub Actions:** Dependabot (`.github/dependabot.yml`), pondělí 06:00 Praha, jedna skupina; SHA zůstávají
+  připnuté s verzí v komentáři.
+- **Oddělená oprávnění:** job `update` (pip-compile, pytest = kód ze závislostí) běží jen s `contents: read`, bez
+  secretů a bez uložených přihlašovacích údajů; zámky předá artefaktem. Job `pr` kód ze závislostí nespouští, jen
+  pushne a otevře PR; PAT dostane jen v tomto jobu (fine-grained, jen toto repo).
+- **CI na PR z workflow:** PR vytvořený `GITHUB_TOKENEM` CI nespouští. Pro plnou CI je potřeba secret
+  `DEPENDENCY_PR_TOKEN` (PAT); bez něj je výsledek testů v popisu PR a CI jde spustit ručně.
+- **Nastavení repa:** Settings → Actions → General → „Allow GitHub Actions to create and approve pull requests“.

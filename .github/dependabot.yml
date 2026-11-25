@@ -1,0 +1,16 @@
+# Akce GitHub Actions (připnuté SHA s verzí v komentáři) aktualizuje Dependabot každé pondělí.
+# Python zámky (requirements-*.txt s hashi) řeší workflow dependency-updates.yml.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Prague
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      github-actions:
+        patterns: ["*"]

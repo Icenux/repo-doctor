@@ -4,13 +4,14 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Přidáno
+- **Týdenní kontrola aktualizací:** workflow `dependency-updates.yml` každé pondělí přegeneruje zámky závislostí, ověří je a otevře PR; akce GitHub Actions hlídá Dependabot.
+
 ### Změněno
 - Aktualizace zamčených závislostí (`requirements-dev.txt`, `requirements-build.txt`; mj. typer 0.29, pydantic 2.14.4, pyyaml 6.0.4, syrupy 7, pytest-asyncio 1.5) a akcí GitHub Actions (checkout 7, setup-python 7, upload-artifact 7.0.2, download-artifact 8.0.2).
 
 ### Opraveno
 - **Karta repa po zavření editoru drží kurzor u nálezu (#135):** oprava z #127 pamatovala jen vybraný nález, ale zvýrazněný řádek stromu po překreslení skočil úplně nahoru. Kurzor se nově vrací na stejný nález (a po otevření karty stojí na prvním nálezu, ne na hlavičce kategorie).
-
-### Opraveno
 - **Aplikace se při skenu sekla (#134):** token hostingu z klíčenky (nebo `token_cmd`) se získával na vlákně UI a blokoval ho na sekundy i déle. Nově se hostingy připojují mimo event loop.
 
 ## [0.4.2] – 2026-11-11
