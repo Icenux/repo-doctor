@@ -5,6 +5,9 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 ## [Nevydáno]
 
 ### Opraveno
+- **Karta repa po zavření editoru drží kurzor u nálezu (#135):** oprava z #127 pamatovala jen vybraný nález, ale zvýrazněný řádek stromu po překreslení skočil úplně nahoru. Kurzor se nově vrací na stejný nález (a po otevření karty stojí na prvním nálezu, ne na hlavičce kategorie).
+
+### Opraveno
 - **Aplikace se při skenu sekla (#134):** token hostingu z klíčenky (nebo `token_cmd`) se získával na vlákně UI a blokoval ho na sekundy i déle. Nově se hostingy připojují mimo event loop.
 
 ## [0.4.2] – 2026-11-11

@@ -6,6 +6,7 @@ from typing import Any
 
 import pytest
 import respx
+from textual.widgets import Tree
 
 from repo_doctor.config import ConfigStore
 from repo_doctor.tui.app import RepoDoctorApp
@@ -245,6 +246,10 @@ async def test_detail_keeps_selected_finding_on_rerender(tmp_path: Path) -> None
         await pilot.pause()
         assert detail.current is not None
         assert detail.current.fingerprint(name) == chosen.fingerprint(name)
+        # #135: viditelný kurzor ve stromu musí zůstat u téhož nálezu, ne skočit na první řádek
+        node = detail.query_one(Tree).cursor_node
+        assert node is not None and node.data is not None
+        assert node.data.fingerprint(name) == chosen.fingerprint(name)
 
 
 async def test_detail_without_fixable(tmp_path: Path) -> None:
