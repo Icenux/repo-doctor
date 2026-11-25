@@ -4,6 +4,9 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Změněno
+- Aktualizace zamčených závislostí (`requirements-dev.txt`, `requirements-build.txt`; mj. typer 0.29, pydantic 2.14.4, pyyaml 6.0.4, syrupy 7, pytest-asyncio 1.5) a akcí GitHub Actions (checkout 7, setup-python 7, upload-artifact 7.0.2, download-artifact 8.0.2).
+
 ### Opraveno
 - **Karta repa po zavření editoru drží kurzor u nálezu (#135):** oprava z #127 pamatovala jen vybraný nález, ale zvýrazněný řádek stromu po překreslení skočil úplně nahoru. Kurzor se nově vrací na stejný nález (a po otevření karty stojí na prvním nálezu, ne na hlavičce kategorie).
 
