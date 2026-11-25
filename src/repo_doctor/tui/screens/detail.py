@@ -408,7 +408,11 @@ class DetailScreen(BaseScreen):
         if target is not None:
             if target.parent is not None:
                 target.parent.expand()
-            tree.move_cursor(target)
+            if kept is not None:
+                # Řádky stromu se přepočítají až po překreslení – dřív by kurzor skočil na první řádek (#135)
+                tree.call_after_refresh(tree.move_cursor, target)
+            else:
+                tree.move_cursor(target)
             self.current = target.data
         else:
             self.current = None
