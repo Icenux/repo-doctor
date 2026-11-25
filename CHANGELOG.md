@@ -4,6 +4,9 @@ Formát podle [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/), verze po
 
 ## [Nevydáno]
 
+### Opraveno
+- **Aplikace se při skenu sekla (#134):** token hostingu z klíčenky (nebo `token_cmd`) se získával na vlákně UI a blokoval ho na sekundy i déle. Nově se hostingy připojují mimo event loop.
+
 ## [0.4.2] – 2026-11-11
 
 ### Přidáno
